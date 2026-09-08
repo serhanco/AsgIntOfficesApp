@@ -1,0 +1,21 @@
+RewriteEngine On
+
+# Clean URL rules
+RewriteRule ^office/([a-z0-9-]+)/?$ office.php?slug=$1 [L,QSA]
+RewriteRule ^offices/?$ offices.php [L,QSA]
+RewriteRule ^map/?$ map.php [L,QSA]
+RewriteRule ^api/offices/?$ api.php [L,QSA]
+
+# Block direct access to config and private directories
+RewriteRule ^(config\.php|includes/|database/) - [F,L]
+
+# Custom 404 error document
+ErrorDocument 404 /404.php
+
+# Security headers
+Header set X-Content-Type-Options "nosniff"
+Header set X-Frame-Options "SAMEORIGIN"
+Header set X-XSS-Protection "1; mode=block"
+
+# Prevent directory listing
+Options -Indexes

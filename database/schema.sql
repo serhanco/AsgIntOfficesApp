@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS `offices` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `legacy_id` VARCHAR(10) DEFAULT NULL,
+    `name` VARCHAR(255) NOT NULL,
+    `display_name` VARCHAR(255) NOT NULL,
+    `slug` VARCHAR(255) NOT NULL,
+    `country` VARCHAR(100) NOT NULL,
+    `country_code` VARCHAR(5) DEFAULT NULL,
+    `address` TEXT NOT NULL,
+    `phone` VARCHAR(255) NOT NULL,
+    `email` VARCHAR(255) NOT NULL,
+    `latitude` DECIMAL(10,7) NOT NULL DEFAULT 0.0000000,
+    `longitude` DECIMAL(10,7) NOT NULL DEFAULT 0.0000000,
+    `image_url` VARCHAR(500) DEFAULT NULL,
+    `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+    `sort_order` INT NOT NULL DEFAULT 0,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY `uk_slug` (`slug`),
+    INDEX `idx_country` (`country`),
+    INDEX `idx_active` (`is_active`),
+    INDEX `idx_country_active` (`country`, `is_active`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
