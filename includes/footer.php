@@ -4,8 +4,8 @@
             <div class="flex flex-col md:flex-row justify-between items-center md:items-start space-y-8 md:space-y-0">
                 
                 <!-- Left: Logo & Subtitle -->
-                <div class="flex flex-col items-center md:items-start">
-                    <img class="h-6 w-auto mb-3" src="https://acibademinternational.com/wp-content/uploads/2026/06/cropped-acibadem-beyaz-logo-2-1.webp" alt="Acıbadem Logo">
+                <div class="flex-col items-center md:items-start flex">
+                    <img class="h-6 w-auto mb-3" src="<?= getBaseUrl() ?>/assets/images/acibadem-white-logo.webp" alt="Acıbadem Logo">
                     <span class="text-gray-400 text-sm font-medium tracking-wide">International Offices</span>
                 </div>
                 

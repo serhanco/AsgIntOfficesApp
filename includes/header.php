@@ -4,7 +4,7 @@ $pageTitle = $pageTitle ?? 'Home';
 $currentPage = $currentPage ?? 'home';
 $needsMap = $needsMap ?? false;
 $metaDescription = $metaDescription ?? 'Acıbadem International Offices - Find our global healthcare network locations.';
-$ogImage = $ogImage ?? 'https://acibademinternational.com/wp-content/themes/acibadem/assets/images/logo.png';
+$ogImage = $ogImage ?? (getBaseUrl() . '/assets/images/og-logo.png');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,7 +22,8 @@ $ogImage = $ogImage ?? 'https://acibademinternational.com/wp-content/themes/acib
     <meta property="og:type" content="website">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="https://acibademinternational.com/wp-content/themes/acibadem/assets/images/favicon.png">
+    <link rel="icon" type="image/png" href="<?= getBaseUrl() ?>/assets/images/favicon.png">
+    <link rel="icon" type="image/x-icon" href="<?= getBaseUrl() ?>/assets/images/favicon.ico">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -74,7 +75,7 @@ $ogImage = $ogImage ?? 'https://acibademinternational.com/wp-content/themes/acib
                 <!-- Logo -->
                 <div class="flex-shrink-0">
                     <a href="<?= getBaseUrl() ?>/index.php" class="flex items-center">
-                        <img class="h-8 w-auto" src="https://acibademinternational.com/wp-content/uploads/2026/06/cropped-acibadem-beyaz-logo-2-1.webp" alt="Acıbadem Logo">
+                        <img class="h-8 w-auto" src="<?= getBaseUrl() ?>/assets/images/acibadem-white-logo.webp" alt="Acıbadem Logo">
                     </a>
                 </div>
                 

@@ -137,6 +137,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
     </style>
@@ -145,11 +147,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- Header -->
     <header class="bg-[#0c2d74] text-white py-4 shadow-md">
-        <div class="max-w-3xl mx-auto px-4 flex items-center gap-3">
-            <i class="ph-fill ph-shield-plus text-3xl text-white"></i>
-            <div>
-                <div class="font-bold tracking-tight text-xl">Acıbadem</div>
-                <div class="text-[10px] uppercase tracking-widest text-blue-200">International Offices</div>
+        <div class="max-w-3xl mx-auto px-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img class="h-8 w-auto" src="assets/images/acibadem-white-logo.webp" alt="Acıbadem Logo">
+            </div>
+            <div class="text-xs uppercase tracking-widest text-blue-200 font-semibold bg-white/10 px-3 py-1.5 rounded-full border border-white/10">
+                Installation Wizard
             </div>
         </div>
     </header>
