@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Acibadem International Offices</title>
+    <link rel="icon" type="image/png" href="https://acibademinternational.com/wp-content/themes/acibadem/assets/images/favicon.png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        acibadem: {
+                            blue: '#112F5A', // Corporate Navy Blue
+                            light: '#E6F0FA',
+                            dark: '#0A1C36'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Leaflet.js (Interactive Map) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #e5e7eb; }
+        
+        /* Hide Scrollbar but keep functionality */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Safe area for mobile navigation */
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 16px); }
+        
+        /* Animations */
+        .fade-in { animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Leaflet Map Customizations */
+        .custom-tooltip {
+            background-color: rgba(255, 255, 255, 0.95);
+            border: none !important;
+            border-radius: 12px !important;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+            font-family: 'Inter', sans-serif !important;
+            padding: 10px 14px;
+            color: #112F5A;
+        }
+        .custom-tooltip::before { display: none; }
+        .leaflet-container { font-family: 'Inter', sans-serif; }
+        
+        /* Shift map controls up to avoid bottom navigation */
+        .leaflet-bottom { padding-bottom: 80px !important; }
+    </style>
+</head>
+<body class="min-h-screen bg-white">
+
+    <!-- App Container -->
+    <main class="w-full h-[100dvh] relative overflow-hidden flex flex-col bg-white">
+        
+        <!-- HEADER -->
+        <header class="bg-acibadem-blue h-16 flex items-center justify-between px-5 md:px-8 shrink-0 z-50 relative shadow-md">
+            <img src="https://acibademinternational.com/wp-content/uploads/2026/06/cropped-acibadem-beyaz-logo-2-1.webp" alt="Acibadem Logo" class="h-6">
+            <button id="header-list-btn" onclick="showView('list')" class="hidden text-white p-2 bg-white/10 rounded-xl hover:bg-white/20 transition-colors active:scale-95 flex items-center justify-center">
+                <i class="ph ph-list text-xl"></i>
+            </button>
+        </header>
+
+        <!-- CONTENT AREA -->
+        <div id="content-area" class="flex-1 overflow-y-auto no-scrollbar relative bg-gray-50 pb-20">
+            
+            <!-- VIEW 1: Loading / Splash -->
+            <div id="view-splash" class="absolute inset-0 bg-white z-50 flex flex-col items-center justify-center transition-opacity duration-300">
+                <div class="w-16 h-16 border-4 border-acibadem-light border-t-acibadem-blue rounded-full animate-spin mb-4"></div>
+                <h2 class="text-acibadem-blue font-semibold">Finding nearest office...</h2>
+                <p class="text-sm text-gray-500 mt-2 px-8 text-center">Please allow location access when prompted.</p>
+            </div>
+
+            <!-- VIEW 2: Office Profile (Native App Style) -->
+            <div id="view-profile" class="hidden flex-col w-full min-h-full">
+                <!-- Dynamically injected via JS -->
+            </div>
+
+            <!-- VIEW 3: Interactive Map -->
+            <div id="view-map" class="hidden absolute inset-0 z-10 flex-col bg-gray-100">
+                <div id="map-container" class="w-full h-full z-0"></div>
+                
+                <!-- Map Floating Header -->
+                <div class="absolute top-4 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-2xl z-[400] bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/50 flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold text-acibadem-dark text-[15px]">Global Network</h3>
+                        <p class="text-[12px] text-gray-500 font-medium leading-tight mt-0.5">Select a pin to view details</p>
+                    </div>
+                    <button onclick="showView('list')" class="bg-white border border-gray-200 text-acibadem-blue px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-transform hover:bg-gray-50">
+                        <i class="ph-fill ph-list-bullets text-lg"></i> List View
+                    </button>
+                </div>
+            </div>
+
+            <!-- VIEW 4: All Offices List -->
+            <div id="view-list" class="hidden flex-col w-full min-h-full p-5 md:p-8 bg-gray-50">
+                <div class="max-w-6xl mx-auto w-full">
+                    <div class="flex justify-between items-center mb-6 md:mb-8">
+                        <h2 class="text-xl md:text-3xl font-bold text-acibadem-dark">All Offices</h2>
+                        <button onclick="showView('map')" class="bg-white border border-gray-200 text-acibadem-blue px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-transform hover:bg-gray-50">
+                            <i class="ph ph-list-bullets text-lg"></i> Map View
+                        </button>
+                    </div>
+                    
+                    <!-- Smart Country Select -->
+                    <div class="relative mb-6 md:mb-10 md:max-w-md">
+                        <select id="country-select" onchange="scrollToCountry(this.value)" class="w-full appearance-none bg-white border border-gray-200 text-gray-700 py-3.5 pl-4 pr-10 rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-acibadem-blue/20 focus:border-acibadem-blue font-medium text-[15px] transition-shadow cursor-pointer">
+                            <option value="">Jump to a country...</option>
+                            <!-- Options injected via JS -->
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400">
+                            <i class="ph-bold ph-caret-down"></i>
+                        </div>
+                    </div>
+
+                    <!-- List Content -->
+                    <div id="list-content" class="pb-8 md:columns-2 lg:columns-3 md:gap-8 space-y-8 md:space-y-0">
+                        <!-- List injected via JS -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- BOTTOM NAVIGATION -->
+        <nav class="bg-white border-t border-gray-100 absolute bottom-0 w-full shadow-[0_-4px_20px_rgba(0,0,0,0.03)] pb-safe z-50">
+            <div class="flex justify-around items-center h-16 max-w-lg mx-auto w-full">
+                <button onclick="requestLocation()" id="nav-btn-profile" class="flex flex-col items-center justify-center w-full h-full text-acibadem-blue transition-colors relative">
+                    <i class="ph-fill ph-target text-[22px] mb-1"></i>
+                    <span class="text-[10px] font-semibold">Nearest</span>
+                </button>
+                
+                <button onclick="showView('map')" id="nav-btn-map" class="flex flex-col items-center justify-center w-full h-full text-gray-400 hover:text-acibadem-blue transition-colors relative">
+                    <i class="ph ph-globe-hemisphere-west text-[22px] mb-1"></i>
+                    <span class="text-[10px] font-semibold">Global Map</span>
+                </button>
+                
+                <button onclick="showView('list')" id="nav-btn-list" class="flex flex-col items-center justify-center w-full h-full text-gray-400 hover:text-acibadem-blue transition-colors relative">
+                    <i class="ph ph-buildings text-[22px] mb-1"></i>
+                    <span class="text-[10px] font-semibold">All Offices</span>
+                </button>
+            </div>
+        </nav>
+        
+        <!-- Toast Notification -->
+        <div id="toast" class="absolute top-20 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-5 py-3 rounded-full text-sm font-medium shadow-xl transition-all duration-300 opacity-0 pointer-events-none z-[1000] w-max max-w-[90%] text-center">
+        </div>
+
+    </main>
+
+    <script>
+        // Office Data provided by user
+        const rawOffices = [{"id":"2","name":"Acibadem Information Office Tirane","country":"Albania","address":"Rruga Abdi Toptani Tirane Shqiperi, 1023, Tirane","phone":"+355 69 56 29 686","email":"albania@acibadem.com"},{"id":"62","name":"Acibadem Information Office Algiers","country":"Algeria","address":"126 Rue Didouche Mourad N° 01 Alger Centre 16000, Algiers, Algeria","phone":"+213 661 89 80 69","email":"acibademalgeria@gmail.com"},{"id":"1","name":"Acibadem Information Office Wien","country":"Austria","address":"Zieglergasse 6 1070 Wien","phone":"+43 1 522 62 77","email":"wien@acibadem.com"},{"id":"3","name":"Acibadem Information Office Baku","country":"Azerbaijan","address":"S.Vurgun str, 36 , Nasimi Rayonu, Baku","phone":"+994 12 595 96 81","email":"azerbaijan@acibadem.com"},{"id":"4","name":"Acibadem Information Office Gence","country":"Azerbaijan","address":"Memmed Xelefov str, 4. Mikrorayon, bina 15/26, Gence","phone":"+994 22 255 07 06","email":"azerbaijan@acibadem.com"},{"id":"48","name":"Acıbadem Information Office Brussels","country":"Belgium","address":"Chaussée de Haecht 97, 1030 Schaerbeek - BRUXELLES","phone":"+32 471 90 60 12","email":"brussels@acibadem.com"},{"id":"5","name":"Acibadem Information Office Sarajevo","country":"Bosnia and Herzegovina","address":"Sarajevo, street Kalmija Baruha no. 3A. 71000 Sarajevo","phone":"+387 332 230 13","email":"bosnia@acibadem.com"},{"id":"6","name":"Acibadem Information Office Tuzla","country":"Bosnia and Herzegovina","address":"Maršala Tita 84/1 75 000 Tuzla","phone":"+387 354 812 75","email":"bosnia@acibadem.com"},{"id":"59","name":"Acibadem Information Office Burgas","country":"Bulgaria","address":"Ulitsa Tsar Simeon I, 12 Burgas","phone":"+359 877 9 59040","email":"acibadem.burgas@gmail.com"},{"id":"8","name":"Acibadem Information Office Sofia","country":"Bulgaria","address":"Patriarch Evtimiy’’ 55, 1463 Sofia","phone":"+359 28511228","email":"bulgaria@acibadem.com"},{"id":"54","name":"Acibadem Information Office - Plovdiv","country":"Bulgaria","address":"Bulgaria, Plovdiv, bul. Tsar Boris III Obedinitel, 145, 4000","phone":"+359 32 207 666","email":"nayen.halil@acibadem.com"},{"id":"51","name":"Acıbadem Information Office Yaounde/Cameroon","country":"Cameroon","address":"La rue d’ecole publique Bastos. (En face de l’hotel diplomate)","phone":"+237 6 97 59 26 50","email":"cameroon@acibadem.com"},{"id":"61","name":"Acibadem Information Office - Abidjan","country":"Cote d’Ivoire","address":"Boulevard LATTRILLE, Immeuble K-GARDEN, Cocody Deux-Plateaux, Abidjan","phone":"+225 0710011105","email":"arafat.soubiane@acibadem.com"},{"id":"10","name":"Acıbadem Information Office Rijeka","country":"Croatia","address":"Hilton Rijeka Costabella Beach Resort & Spa, Opatijska ul. 9, 51000, Rijeka","phone":"+385 51 565 264","email":"rijeka@acibadem.com"},{"id":"64","name":"Acıbadem Information Office Zagreb","country":"Croatia","address":"Lovinčićeva ulica 3d, 10000 Zagreb Croatia","phone":"+385 1 4242 430","email":"zagreb@acibadem.com"},{"id":"56","name":"Acibadem Information Office - Paris","country":"France","address":"9 Rue Bausset 75015, Paris, France, 75015","phone":"+33 9 53 22 88 89","email":"france@acibadem.com"},{"id":"12","name":"Acibadem Information Office Tbilisi","country":"Georgia","address":"58, Chavchavadze Avenue., - 0162 Tbilisi, Georgia","phone":"+995 322 158 500","email":"georgia@acibadem.com"},{"id":"13","name":"Acibadem Information Office Kutaisi","country":"Georgia","address":"Tamar Mepe Sokak No: 60","phone":"+995 431 258 500","email":"georgia@acibadem.com"},{"id":"14","name":"Acibadem Information Office Batumi","country":"Georgia","address":"Zurab Gorgiladze N2, Batumi, Georgia","phone":"+995 422 22 30 00","email":"georgia@acibadem.com"},{"id":"15","name":"Acıbadem Information Office Dusseldorf","country":"Germany","address":"Oststrasse156, 40210 Dusseldorf","phone":"+49 157 365 635 04","email":"dusseldorf@acibadem.com"},{"id":"16","name":"Acıbadem Information Office Berlin","country":"Germany","address":"ACIBADEM Healthcare Group, Potsdamerstraße 141, 10783 Berlin","phone":"+49 157 833 433 07","email":"berlin@acibadem.com"},{"id":"70","name":"Acibadem Information Office Munich","country":"Germany","address":"Rosenheimer Landstraße 129 85521 Ottobrunn","phone":"+49 178 6861585","email":"international@acibadem.com"},{"id":"18","name":"Acibadem Information Office Dohuk","country":"Iraq","address":"Gre basè, Horses square, beside Asiacel Co. and Baghdad bank.","phone":"+964 750 827 8668","email":"duhok@acibadem.com"},{"id":"19","name":"Acibadem Information Office Erbil","country":"Iraq","address":"Doktorlar Cad. Noor medikal Apartman /Erbil","phone":"+964 751 523 64 07","email":"erbil@acibadem.com"},{"id":"20","name":"Acibadem Information Office Almaty","country":"Kazakhstan","address":"Kabanbai Batyr St 96, Almaty, Kazakhstan","phone":"+7 778 638 22 00","email":"kazakhistan@acibadem.com.tr"},{"id":"21","name":"Acibadem Information Office Shymkent","country":"Kazakhstan","address":"Проспект Республики 10","phone":"+7 7015505944","email":"kazakhistan@acibadem.com.tr"},{"id":"69","name":"Acibadem Information Office Astana","country":"Kazakhstan","address":"Kabanbay Batyr 64, Astana, Kazakhstan","phone":"+7 701 826 4375","email":"kazakhistan@acibadem.com.tr"},{"id":"23","name":"Acibadem Information Office Prishtine","country":"Kosovo","address":"Rruga: “ İbrahim Lutfiu”, 2C Pristina Kosovo, Pristina 10000","phone":"+383 382 340 04","email":"kosovo@acibadem.com"},{"id":"52","name":"Acibadem Information Office Kuwait","country":"Kuwait","address":"Official Representative - Eman Khalaf","phone":"+965 9933 6005","email":"kuwait@acibadem.com"},{"id":"22","name":"Acibadem Information Office Bishkek","country":"Kyrgyzstan","address":"Manaschy-Sagynbay street No: 101/1 Bishkek, Kyrgyz Republic","phone":"+996 312 624 588","email":"kyrgyzstan@acibadem.com"},{"id":"25","name":"Acibadem Information Office Chisinau","country":"Moldova","address":"Strada Alexandru Bernardazzi 59, Chișinău, cod poştal 2009, Moldova","phone":"+373 612 11 255","email":"info.md@acibadem.com.tr"},{"id":"26","name":"Acibadem Information Office Podgorica","country":"Montenegro","address":"Vaka Djurovica bb, Grdaski stadion. Podgorica","phone":"+382 68 880 406","email":"montenegro@acibadem.com"},{"id":"24","name":"Acıbadem Information Office Skopje","country":"North Macedonia","address":"Ul. Bul. Partizanski Odredi br. 14-a, Skopje - Centar","phone":"+389 70 258 416","email":"macedonia@acibadem.com"},{"id":"68","name":"Acibadem Information Office Sistina Hospital","country":"North Macedonia","address":"Skupi 5a, Skopje 1000 Sistina Hospital","phone":"+389 70 258 416","email":"macedonia@acibadem.com"},{"id":"29","name":"Acibadem Information Office Bucharest","country":"Romania","address":"Bucuresti Str.Nicolae Golescu Nr 17 Etaj 2 Sector1","phone":"+40 730 519 254","email":"info.ro@acibadem.com.tr"},{"id":"30","name":"Acibadem Information Office Iaşi","country":"Romania","address":"Şoseaua Ştefan Cel Mare şi Sfant No 4, Bloc A 19 / Parter / Exclusive Residence","phone":"+40 739 883 640","email":"info.iasi@acibadem.com"},{"id":"31","name":"Acibadem Information Office Cluj Napoca","country":"Romania","address":"str. Regele Ferdinand nr 30, ap 12","phone":"+40 264 701 754","email":"info.cluj@acibadem.com.tr"},{"id":"32","name":"Acibadem Information Office Constanta","country":"Romania","address":"B-dul Tomis Nr.137, Bl.LV1, Capitol, Constanta","phone":"+40 241 660 888","email":"info.ct@acibadem.com.tr"},{"id":"33","name":"Acibadem Information Office Timisoara","country":"Romania","address":"Str. Eroilor de la Tisa nr.8 Timisoara","phone":"+40 356 401 089","email":"info.tm@acibadem.com"},{"id":"37","name":"Acibadem Information Office Moscow","country":"Russia","address":"Bolshaya Yakimanka,26; Moscow, Russia","phone":"+7 985 747 12 79","email":"ASGRusya@acibadem.com"},{"id":"49","name":"Acibadem Information Office Grozny","country":"Russia","address":"Kadırova 137 korp, 3","phone":"+7 929 890 5056","email":"ASGRusya@acibadem.com"},{"id":"55","name":"Acibadem Information Office - Kazan","country":"Russia","address":"Russia, Tatarstan, Kazan, Hadi Taktash, 2, 420059","phone":"+7 906 111 19 10","email":"ASGRusya@acibadem.com"},{"id":"38","name":"Acibadem Information Office Belgrad","country":"Serbia","address":"Ulica Bregalnička 16, Belgrade, Serbia","phone":"+381 62 820 8151","email":"serbia@acibadem.com"},{"id":"39","name":"Acibadem Information Office Nis","country":"Serbia","address":"Rajićeva 12, 18000 Niš, Srbija","phone":"+381 60 33 99 315","email":"serbia@acibadem.com"},{"id":"40","name":"Acibadem Call Center Novi Sad","country":"Serbia","address":"Novi Sad","phone":"+381 60 33 99 425","email":"serbia@acibadem.com"},{"id":"41","name":"Acibadem Call Center in Slovenia","country":"Slovenia","address":"Prihaja Kmalu...","phone":"+385 51 565 264","email":"slovenia@acibadem.com"},{"id":"58","name":"Acibadem Information Office Madrid","country":"Spain","address":"Calle Raimundo Fernandez Villaverde 29, 28003 Madrid, Spain","phone":"+34 673 04 23 43","email":"tanya.nevenova@acibadem.com"},{"id":"65","name":"Acibadem Information Office Barcelona","country":"Spain","address":"Carrer del Comte Borrell 204 L´Eixample, 08029 Barcelona, Spain","phone":"+34 930 256872","email":"spain@acibadem.com"},{"id":"53","name":"Acibadem Information Office Dushanbe","country":"Tajikistan","address":"Tajikistan, Dushanbe, Dushanbe, Ayni street, 46,734000","phone":"+992 44 650 1717","email":"tajikistan@acibadem.com"},{"id":"63","name":"Acıbadem Information Office - Kampala","country":"Uganda","address":"Acacia Mall Building, Floor LG2. 12 Street Plot 8A-12A Cooper Road P.O. Box 148877, Kampala, UGANDA","phone":"+256 704766299","email":"uganda@acibadem.com"},{"id":"42","name":"Acibadem Information Office Kiev","country":"Ukraine","address":"Bulvarno-Kudryavskaya 14, office 1, Kiev / Ukraine","phone":"+380 93 955 48 40","email":"ukraine@acibadem.com.tr"},{"id":"44","name":"Acibadem Information Office Lviv","country":"Ukraine","address":"Dzhokhara Dudaieva, 9, Liviv","phone":"+380 322 61 09 09","email":"ukraine@acibadem.com.tr"},{"id":"47","name":"Acibadem Information Office London","country":"United Kingdom","address":"68 Great Portland St, London W1W 7NG","phone":"+44 7387 680090","email":"london@acibadem.com"},{"id":"45","name":"Acibadem Information Office Tashkent","country":"Uzbekistan","address":"Ozbekistan. Tashkent İndex 100000 Mirzo Ulugbek district C1 19/2","phone":"+998 951 445 445","email":"Oezbekistan@acibadem.com"},{"id":"46","name":"Acibadem Information Office Samarkand","country":"Uzbekistan","address":"Mirzo Ulugbek, 140","phone":"+998 66 234 41 71","email":"Oezbekistan@acibadem.com"}];
+
+        const coordMap = {
+            "2": {lat: 41.3275, lon: 19.8187}, "62": {lat: 36.7528, lon: 3.0420}, "1": {lat: 48.2082, lon: 16.3738},
+            "3": {lat: 40.4093, lon: 49.8671}, "4": {lat: 40.6828, lon: 46.3606}, "48": {lat: 50.8503, lon: 4.3517},
+            "5": {lat: 43.8563, lon: 18.4131}, "6": {lat: 44.5328, lon: 18.6670}, "59": {lat: 42.5048, lon: 27.4626},
+            "8": {lat: 42.6977, lon: 23.3219}, "54": {lat: 42.1354, lon: 24.7453}, "51": {lat: 3.8480, lon: 11.5021},
+            "61": {lat: 5.3600, lon: -4.0083}, "10": {lat: 45.3271, lon: 14.4422}, "64": {lat: 45.8150, lon: 15.9819},
+            "56": {lat: 48.8566, lon: 2.3522}, "12": {lat: 41.7151, lon: 44.8271}, "13": {lat: 42.2662, lon: 42.7180},
+            "14": {lat: 41.6168, lon: 41.6367}, "15": {lat: 51.2277, lon: 6.7735}, "16": {lat: 52.5200, lon: 13.4050},
+            "70": {lat: 48.1351, lon: 11.5820}, "18": {lat: 36.8679, lon: 42.9884}, "19": {lat: 36.1901, lon: 44.0090},
+            "20": {lat: 43.2220, lon: 76.8512}, "21": {lat: 42.3417, lon: 69.5901}, "69": {lat: 51.1694, lon: 71.4491},
+            "23": {lat: 42.6629, lon: 21.1655}, "52": {lat: 29.3117, lon: 47.4818}, "22": {lat: 42.8746, lon: 74.5698},
+            "25": {lat: 47.0105, lon: 28.8638}, "26": {lat: 42.4411, lon: 19.2636}, "24": {lat: 42.0024, lon: 21.4361},
+            "68": {lat: 42.0024, lon: 21.4361}, "29": {lat: 44.4268, lon: 26.1025}, "30": {lat: 47.1585, lon: 27.6014},
+            "31": {lat: 46.7712, lon: 23.6236}, "32": {lat: 44.1733, lon: 28.6383}, "33": {lat: 45.7489, lon: 21.2087},
+            "37": {lat: 55.7558, lon: 37.6173}, "49": {lat: 43.3136, lon: 45.6960}, "55": {lat: 55.8304, lon: 49.0661},
+            "38": {lat: 44.7866, lon: 20.4489}, "39": {lat: 43.3209, lon: 21.8958}, "40": {lat: 45.2396, lon: 19.8227},
+            "41": {lat: 46.1512, lon: 14.9955}, "58": {lat: 40.4168, lon: -3.7038}, "65": {lat: 41.3851, lon: 2.1734},
+            "53": {lat: 38.5598, lon: 68.7870}, "63": {lat: 0.3476, lon: 32.5825}, "42": {lat: 50.4501, lon: 30.5234},
+            "44": {lat: 49.8397, lon: 24.0297}, "47": {lat: 51.5074, lon: -0.1278}, "45": {lat: 41.2995, lon: 69.2401},
+            "46": {lat: 39.6270, lon: 66.9750}
+        };
+
+        // Combine data
+        let offices = rawOffices.map(o => {
+            const coords = coordMap[o.id] || {lat: 0, lon: 0};
+            return {
+                ...o,
+                displayName: o.name.replace('Acibadem Information Office ', '').replace('Acıbadem Information Office ', '').replace('- ', ''),
+                lat: coords.lat,
+                lon: coords.lon
+            };
+        });
+
+        let userLocation = null;
+        let currentNearestOffice = null;
+        let globalMap = null;
+        const defaultImage = "https://echinusdesign.co.uk/wp-content/uploads/2025/05/KP_8K_S7_02750-Edit-1536x1024.jpg";
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; 
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c; 
+        }
+
+        function requestLocation() {
+            document.getElementById('view-splash').classList.remove('hidden');
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        userLocation = {
+                            lat: position.coords.latitude,
+                            lon: position.coords.longitude
+                        };
+                        findNearestAndRender();
+                    },
+                    (error) => {
+                        console.warn("Location error:", error);
+                        showToast("Location access denied. Please select an office from the map.");
+                        showView('map');
+                    },
+                    { enableHighAccuracy: true, timeout: 5000 }
+                );
+            } else {
+                showToast("Geolocation is not supported by your browser.");
+                showView('map');
+            }
+        }
+
+        function findNearestAndRender() {
+            if (!userLocation) return;
+            
+            offices.forEach(office => {
+                office.distanceToUser = calculateDistance(userLocation.lat, userLocation.lon, office.lat, office.lon);
+            });
+
+            offices.sort((a, b) => a.distanceToUser - b.distanceToUser);
+            currentNearestOffice = offices[0];
+            
+            // If the nearest office is further than 2500km, fallback to map
+            if (currentNearestOffice.distanceToUser > 2500) {
+                showToast("No office found near your location. Explore our global map.");
+                showView('map');
+            } else {
+                renderProfile(currentNearestOffice);
+                showView('profile');
+            }
+        }
+
+        function initOrUpdateMap() {
+            if (!globalMap) {
+                // Initialize map centered on Europe/Turkey
+                globalMap = L.map('map-container', { zoomControl: false }).setView([41.0082, 28.9784], 4);
+                
+                // Remove Leaflet prefix (which includes the flag) for corporate neutrality
+                globalMap.attributionControl.setPrefix(false);
+                
+                // Add OpenStreetMap Tile Layer (Completely Free, No API Key Required)
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap',
+                    maxZoom: 19
+                }).addTo(globalMap);
+
+                L.control.zoom({ position: 'bottomright' }).addTo(globalMap);
+
+                // Plot offices
+                offices.forEach(office => {
+                    if (office.lat !== 0 && office.lon !== 0) {
+                        const customIcon = L.divIcon({
+                            className: 'bg-transparent',
+                            html: `<div class="w-10 h-10 bg-acibadem-blue text-white rounded-full flex items-center justify-center shadow-xl border-[3px] border-white transition-transform transform hover:scale-110"><i class="ph-fill ph-map-pin text-2xl"></i></div>`,
+                            iconSize: [40, 40],
+                            iconAnchor: [20, 40]
+                        });
+                        
+                        const marker = L.marker([office.lat, office.lon], { icon: customIcon }).addTo(globalMap);
+                        
+                        marker.bindTooltip(`
+                            <div class="text-center w-max min-w-[120px]">
+                                <div class="font-bold text-[14px] text-acibadem-blue mb-1">${office.displayName}</div>
+                                <div class="text-[11px] text-gray-500">${office.country}</div>
+                                <div class="mt-2 text-[10px] font-semibold text-acibadem-blue bg-blue-50 py-1 rounded-md">Tap to view</div>
+                            </div>
+                        `, {
+                            direction: 'top',
+                            offset: [0, -40],
+                            className: 'custom-tooltip'
+                        });
+
+                        marker.on('click', () => {
+                            renderProfile(office);
+                            showView('profile');
+                        });
+                    }
+                });
+            }
+
+            // Fix leaflet rendering bug inside hidden containers
+            setTimeout(() => { globalMap.invalidateSize(); }, 300);
+        }
+
+        function renderProfile(office) {
+            const profileContainer = document.getElementById('view-profile');
+            
+            // Find other offices in the same country
+            const relatedOffices = offices.filter(o => o.country === office.country && o.id !== office.id);
+            
+            let relatedHTML = '';
+            if (relatedOffices.length > 0) {
+                relatedHTML = `
+                    <div class="mt-8 mb-4 px-5 md:px-0">
+                        <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Other offices in ${office.country}</h3>
+                        <div class="flex overflow-x-auto no-scrollbar gap-4 pb-4 md:pb-6 -mx-5 px-5 md:mx-0 md:px-0">
+                            ${relatedOffices.map(ro => `
+                                <div onclick="switchToOffice('${ro.id}')" class="min-w-[200px] bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex-shrink-0 cursor-pointer active:scale-95 hover:shadow-md transition-all group">
+                                    <div class="w-10 h-10 rounded-full bg-acibadem-light text-acibadem-blue flex items-center justify-center mb-3 group-hover:bg-acibadem-blue group-hover:text-white transition-colors">
+                                        <i class="ph-fill ph-buildings text-xl"></i>
+                                    </div>
+                                    <h4 class="font-semibold text-acibadem-dark text-sm mb-1 line-clamp-1">${ro.displayName}</h4>
+                                    <p class="text-xs text-gray-500 line-clamp-2">${ro.address}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            profileContainer.innerHTML = `
+                <!-- Image Header with Gradient Overlay -->
+                <div class="relative w-full h-72 md:h-[40vh] shrink-0">
+                    <img src="${defaultImage}" alt="${office.displayName}" class="w-full h-full object-cover">
+                    <!-- Overlay to make text readable -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-acibadem-dark via-acibadem-dark/60 to-transparent"></div>
+                    
+                    <!-- Floating Text Info inside Image -->
+                    <div class="absolute bottom-16 md:bottom-20 left-5 right-5 md:left-10 md:right-10 text-white max-w-5xl mx-auto w-full">
+                        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/20 backdrop-blur-sm text-[11px] font-semibold mb-3 border border-white/20">
+                            <i class="ph-fill ph-map-pin"></i> ${office.country}
+                        </div>
+                        <h2 class="text-2xl md:text-4xl font-bold leading-tight mb-2 shadow-sm">${office.displayName}</h2>
+                        <p class="text-sm md:text-base text-gray-200 opacity-90 line-clamp-2 font-light flex items-start gap-2">
+                            ${office.address}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Desktop Centered Content Wrapper -->
+                <div class="max-w-3xl mx-auto w-full pb-10">
+                    <!-- Floating C2A Action Buttons (Overlapping Image) -->
+                    <div class="grid grid-cols-4 gap-3 px-5 md:px-0 -mt-6 md:-mt-8 relative z-10">
+                        
+                        <a href="tel:${office.phone.split(';')[0]}" class="group flex flex-col items-center justify-center bg-white rounded-2xl p-3 shadow-lg border border-gray-50 active:scale-95 hover:shadow-xl hover:-translate-y-1 transition-all text-acibadem-blue">
+                            <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center mb-1.5 group-hover:bg-acibadem-blue group-hover:text-white transition-colors"><i class="ph-fill ph-phone text-xl"></i></div>
+                            <span class="text-[10px] font-semibold text-gray-700">Call</span>
+                        </a>
+                        
+                        <a href="https://wa.me/${office.phone.split(';')[0].replace(/[^0-9]/g, '')}" target="_blank" class="group flex flex-col items-center justify-center bg-white rounded-2xl p-3 shadow-lg border border-gray-50 active:scale-95 hover:shadow-xl hover:-translate-y-1 transition-all text-[#25D366]">
+                            <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center mb-1.5 group-hover:bg-[#25D366] group-hover:text-white transition-colors"><i class="ph-fill ph-whatsapp-logo text-xl"></i></div>
+                            <span class="text-[10px] font-semibold text-gray-700">WhatsApp</span>
+                        </a>
+                        
+                        <a href="mailto:${office.email}" class="group flex flex-col items-center justify-center bg-white rounded-2xl p-3 shadow-lg border border-gray-50 active:scale-95 hover:shadow-xl hover:-translate-y-1 transition-all text-acibadem-blue">
+                            <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center mb-1.5 group-hover:bg-acibadem-blue group-hover:text-white transition-colors"><i class="ph-fill ph-envelope-simple text-xl"></i></div>
+                            <span class="text-[10px] font-semibold text-gray-700">Email</span>
+                        </a>
+                        
+                        <a href="https://maps.google.com/?q=${encodeURIComponent(office.address)}" target="_blank" class="group flex flex-col items-center justify-center bg-white rounded-2xl p-3 shadow-lg border border-gray-50 active:scale-95 hover:shadow-xl hover:-translate-y-1 transition-all text-acibadem-blue">
+                            <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center mb-1.5 group-hover:bg-acibadem-blue group-hover:text-white transition-colors"><i class="ph-fill ph-navigation-arrow text-xl"></i></div>
+                            <span class="text-[10px] font-semibold text-gray-700">Route</span>
+                        </a>
+                    </div>
+
+                <!-- Contact Details List -->
+                <div class="mt-8 px-5 md:px-0">
+                    <div class="bg-white rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 flex flex-col gap-5 md:gap-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center shrink-0 text-gray-400">
+                                <i class="ph-fill ph-map-pin text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-[11px] font-bold text-gray-400 uppercase mb-0.5">Address</p>
+                                <p class="text-sm md:text-base text-acibadem-dark font-medium leading-relaxed">${office.address}</p>
+                            </div>
+                        </div>
+                        <div class="h-px w-full bg-gray-100"></div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center shrink-0 text-gray-400">
+                                <i class="ph-fill ph-phone text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-[11px] font-bold text-gray-400 uppercase mb-0.5">Phone</p>
+                                <p class="text-sm md:text-base text-acibadem-dark font-medium">${office.phone.replace(/;/g, '<br>')}</p>
+                            </div>
+                        </div>
+                        <div class="h-px w-full bg-gray-100"></div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center shrink-0 text-gray-400">
+                                <i class="ph-fill ph-envelope-simple text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-[11px] font-bold text-gray-400 uppercase mb-0.5">Email</p>
+                                <p class="text-sm md:text-base text-acibadem-dark font-medium">${office.email}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                ${relatedHTML}
+                
+                <!-- View All Offices Button -->
+                <div class="mt-8 mb-6 px-5 md:px-0">
+                    <button onclick="showView('list')" class="w-full bg-white hover:bg-gray-50 text-acibadem-blue border-2 border-gray-100 rounded-2xl py-4 font-bold text-[15px] flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all">
+                        <i class="ph-bold ph-globe-hemisphere-west text-xl"></i> View All Global Offices
+                    </button>
+                </div>
+
+                </div> <!-- End Desktop Centered Wrapper -->
+                <div class="h-10"></div>
+            `;
+        }
+
+        const countryCodes = {
+            "Albania": "al", "Algeria": "dz", "Austria": "at", "Azerbaijan": "az",
+            "Belgium": "be", "Bosnia and Herzegovina": "ba", "Bulgaria": "bg",
+            "Cameroon": "cm", "Cote d’Ivoire": "ci", "Croatia": "hr", "France": "fr",
+            "Georgia": "ge", "Germany": "de", "Iraq": "iq", "Kazakhstan": "kz",
+            "Kosovo": "xk", "Kuwait": "kw", "Kyrgyzstan": "kg", "Moldova": "md",
+            "Montenegro": "me", "North Macedonia": "mk", "Romania": "ro",
+            "Russia": "ru", "Serbia": "rs", "Slovenia": "si", "Spain": "es",
+            "Tajikistan": "tj", "Uganda": "ug", "Ukraine": "ua", "United Kingdom": "gb",
+            "Uzbekistan": "uz"
+        };
+
+        function getFlagImg(countryName) {
+            const code = countryCodes[countryName];
+            if (code) {
+                return `<img src="https://flagcdn.com/w40/${code}.png" alt="${countryName}" class="w-6 h-4.5 object-cover rounded shadow-[0_0_3px_rgba(0,0,0,0.2)]">`;
+            }
+            return `<i class="ph-fill ph-flag text-gray-400"></i>`;
+        }
+
+        function renderListView() {
+            const listContainer = document.getElementById('list-content');
+            const selectContainer = document.getElementById('country-select');
+            
+            // Group by country
+            const grouped = {};
+            offices.forEach(o => {
+                if (!grouped[o.country]) grouped[o.country] = [];
+                grouped[o.country].push(o);
+            });
+
+            const sortedCountries = Object.keys(grouped).sort();
+            
+            // Populate Select
+            selectContainer.innerHTML = '<option value="">Jump to a country...</option>';
+            sortedCountries.forEach(country => {
+                selectContainer.innerHTML += `<option value="${country.replace(/\s+/g, '-')}">${country}</option>`;
+            });
+
+            // Populate List
+            let html = '';
+            sortedCountries.forEach(country => {
+                const countryId = country.replace(/\s+/g, '-');
+                html += `
+                    <div id="country-${countryId}" class="country-group scroll-mt-24 pt-2 break-inside-avoid mb-8 transition-colors duration-500 -mx-3 px-3 py-2 rounded-2xl">
+                        <h3 class="text-lg font-bold text-acibadem-blue mb-4 flex items-center gap-2 border-b border-gray-200 pb-2">
+                            ${getFlagImg(country)} ${country}
+                            <span class="ml-auto text-xs font-semibold bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">${grouped[country].length}</span>
+                        </h3>
+                        <div class="flex flex-col gap-3">
+                            ${grouped[country].map(o => `
+                                <div onclick="switchToOffice('${o.id}')" class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4 cursor-pointer active:scale-95 transition-transform hover:shadow-md">
+                                    <div class="w-12 h-12 rounded-full bg-acibadem-light text-acibadem-blue flex items-center justify-center shrink-0">
+                                        <i class="ph-fill ph-buildings text-2xl"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <h4 class="font-bold text-acibadem-dark text-sm truncate">${o.displayName}</h4>
+                                        <p class="text-xs text-gray-500 truncate mt-0.5">${o.address}</p>
+                                    </div>
+                                    <div class="text-gray-300">
+                                        <i class="ph-bold ph-caret-right"></i>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            listContainer.innerHTML = html;
+        }
+
+        function scrollToCountry(countryId) {
+            if(!countryId) return;
+            const element = document.getElementById(`country-${countryId}`);
+            const contentArea = document.getElementById('content-area');
+            
+            // Remove highlight from all countries
+            document.querySelectorAll('.country-group').forEach(el => {
+                el.classList.remove('bg-orange-50', 'ring-1', 'ring-orange-200', 'shadow-sm');
+            });
+
+            if (element) {
+                // Calculate scroll position accounting for the sticky select if necessary
+                const topPos = element.offsetTop - 80; 
+                contentArea.scrollTo({ top: topPos, behavior: 'smooth' });
+                
+                // Add highlight to selected country
+                element.classList.add('bg-orange-50', 'ring-1', 'ring-orange-200', 'shadow-sm');
+            }
+        }
+
+        function switchToOffice(id) {
+            const target = offices.find(o => o.id === id);
+            if (target) {
+                renderProfile(target);
+                showView('profile');
+            }
+        }
+
+        function showView(viewId) {
+            // Hide all
+            document.getElementById('view-splash').classList.add('hidden');
+            document.getElementById('view-profile').classList.add('hidden');
+            document.getElementById('view-list').classList.add('hidden');
+            document.getElementById('view-map').classList.add('hidden');
+            
+            // Header List Button Logic
+            const headerListBtn = document.getElementById('header-list-btn');
+            if(viewId === 'profile') {
+                headerListBtn.classList.remove('hidden');
+            } else {
+                headerListBtn.classList.add('hidden');
+            }
+
+            // Reset Nav Icons
+            document.getElementById('nav-btn-profile').className = 'flex flex-col items-center justify-center w-full h-full text-gray-400 hover:text-acibadem-blue transition-colors relative';
+            const viewElement = document.getElementById(`view-${viewId}`);
+            viewElement.classList.remove('hidden');
+            viewElement.classList.add('fade-in');
+            
+            // Scroll logic & Nav active state
+            if(viewId !== 'map') { document.getElementById('content-area').scrollTop = 0; }
+
+            if (viewId === 'profile') {
+                const btn = document.getElementById('nav-btn-profile');
+                btn.className = 'flex flex-col items-center justify-center w-full h-full text-acibadem-blue transition-colors';
+                btn.querySelector('i').classList.replace('ph', 'ph-fill');
+            } else if (viewId === 'list') {
+                renderListView();
+                const btn = document.getElementById('nav-btn-list');
+                btn.className = 'flex flex-col items-center justify-center w-full h-full text-acibadem-blue transition-colors';
+                btn.querySelector('i').classList.replace('ph', 'ph-fill');
+            } else if (viewId === 'map') {
+                initOrUpdateMap();
+                const btn = document.getElementById('nav-btn-map');
+                btn.className = 'flex flex-col items-center justify-center w-full h-full text-acibadem-blue transition-colors';
+                btn.querySelector('i').classList.replace('ph', 'ph-fill');
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            toast.classList.add('opacity-100');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        // Initialize App
+        window.onload = () => {
+            requestLocation();
+        };
+    </script>
+</body>
+</html>
