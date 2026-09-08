@@ -14,3 +14,15 @@ Currently, the "Find Nearest Office" feature on the homepage relies purely on Ha
     *   *Suggested Copy:* "World-class care is a single click away." / "We don't have a physical office in your country yet, but our international team is ready to assist you."
     *   *Actions:* Direct buttons to the Global Call Center, International WhatsApp line, and Global Email.
     *   *Secondary Info:* Optionally display the physically closest international office (e.g., "Nearest physical office: Burgas, 300km") as a small, secondary footnote.
+
+## 2. Global Contact Info in Footer
+
+**Context:**
+Currently, the footer contains a simple link to `acibademinternational.com`.
+
+**Proposed Solution:**
+*   Replace the single website link in the footer with direct contact channels to the International Patient Center.
+*   Once the actual global contact details are provided, the footer will be updated to include:
+    *   Global Call Center Phone Number
+    *   Global WhatsApp Number
+    *   Global Email Address
