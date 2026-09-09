@@ -22,7 +22,7 @@ require_once __DIR__ . '/includes/header.php';
             <h1 class="text-xl font-bold text-[#0c2d74]">Global Network</h1>
             <p class="text-sm text-gray-500">Select a pin to view details</p>
         </div>
-        <a href="<?= getBaseUrl() ?>/offices.php" class="bg-[#0c2d74] text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-[#1a4ba0] transition-colors flex items-center gap-2">
+        <a href="<?= getBaseUrl() ?>/offices" class="bg-[#0c2d74] text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-[#1a4ba0] transition-colors flex items-center gap-2">
             <i class="ph-fill ph-list-dashes"></i>
             List View
         </a>

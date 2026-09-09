@@ -23,7 +23,7 @@ require_once __DIR__ . '/includes/header.php';
                 <i class="ph-fill ph-navigation-arrow"></i>
                 Locate Nearest Office
             </button>
-            <a href="<?= getBaseUrl() ?>/offices.php" class="border-2 border-white/30 text-white hover:bg-white/10 font-semibold py-4 px-8 rounded-2xl transition-colors text-lg">
+            <a href="<?= getBaseUrl() ?>/offices" class="border-2 border-white/30 text-white hover:bg-white/10 font-semibold py-4 px-8 rounded-2xl transition-colors text-lg">
                 View All Offices
             </a>
         </div>
@@ -99,7 +99,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="max-w-7xl mx-auto px-4">
         <h2 class="text-3xl font-bold text-center mb-10 text-[#0c2d74]">Explore Our Network</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <a href="<?= getBaseUrl() ?>/offices.php" class="block group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all p-8 text-center hover:-translate-y-1">
+            <a href="<?= getBaseUrl() ?>/offices" class="block group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all p-8 text-center hover:-translate-y-1">
                 <div class="w-16 h-16 bg-[#E6F0FA] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-[#0c2d74] transition-colors">
                     <i class="ph-fill ph-list-dashes text-2xl text-[#0c2d74] group-hover:text-white transition-colors"></i>
                 </div>
@@ -107,7 +107,7 @@ require_once __DIR__ . '/includes/header.php';
                 <p class="text-gray-600">Browse our complete directory of international information offices.</p>
             </a>
             
-            <a href="<?= getBaseUrl() ?>/map.php" class="block group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all p-8 text-center hover:-translate-y-1">
+            <a href="<?= getBaseUrl() ?>/map" class="block group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all p-8 text-center hover:-translate-y-1">
                 <div class="w-16 h-16 bg-[#E6F0FA] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-[#0c2d74] transition-colors">
                     <i class="ph-fill ph-map-trifold text-2xl text-[#0c2d74] group-hover:text-white transition-colors"></i>
                 </div>
@@ -115,7 +115,7 @@ require_once __DIR__ . '/includes/header.php';
                 <p class="text-gray-600">Explore all office locations interactively on our global map.</p>
             </a>
 
-            <a href="<?= getBaseUrl() ?>/api.php" class="block group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all p-8 text-center hover:-translate-y-1">
+            <a href="<?= getBaseUrl() ?>/api/offices" class="block group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all p-8 text-center hover:-translate-y-1">
                 <div class="w-16 h-16 bg-[#E6F0FA] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-[#0c2d74] transition-colors">
                     <i class="ph-fill ph-code text-2xl text-[#0c2d74] group-hover:text-white transition-colors"></i>
                 </div>
@@ -153,7 +153,7 @@ require_once __DIR__ . '/includes/header.php';
                 if (nearest.distance > 2500) {
                     showToast('The nearest office is quite far. Redirecting to all offices.');
                     setTimeout(() => {
-                        window.location.href = '<?= getBaseUrl() ?>/offices.php';
+                        window.location.href = '<?= getBaseUrl() ?>/offices';
                     }, 2000);
                     return;
                 }

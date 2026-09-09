@@ -25,10 +25,10 @@ require_once __DIR__ . '/includes/header.php';
         </p>
         
         <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-            <a href="<?= getBaseUrl() ?>/index.php" class="bg-[#0c2d74] text-white hover:bg-[#1a4ba0] font-semibold py-3 px-8 rounded-xl shadow transition-colors w-full sm:w-auto">
+            <a href="<?= getBaseUrl() ?>/" class="bg-[#0c2d74] text-white hover:bg-[#1a4ba0] font-semibold py-3 px-8 rounded-xl shadow transition-colors w-full sm:w-auto">
                 Go to Homepage
             </a>
-            <a href="<?= getBaseUrl() ?>/offices.php" class="bg-gray-100 text-[#0c2d74] hover:bg-gray-200 font-semibold py-3 px-8 rounded-xl transition-colors w-full sm:w-auto">
+            <a href="<?= getBaseUrl() ?>/offices" class="bg-gray-100 text-[#0c2d74] hover:bg-gray-200 font-semibold py-3 px-8 rounded-xl transition-colors w-full sm:w-auto">
                 View All Offices
             </a>
         </div>

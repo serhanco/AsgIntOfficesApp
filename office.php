@@ -152,7 +152,7 @@ require_once __DIR__ . '/includes/header.php';
     <?php endif; ?>
 
     <div class="mt-12 text-center">
-        <a href="<?= getBaseUrl() ?>/offices.php" class="inline-flex items-center gap-2 border-2 border-[#0c2d74] text-[#0c2d74] hover:bg-[#0c2d74] hover:text-white font-semibold py-3 px-8 rounded-xl transition-colors">
+        <a href="<?= getBaseUrl() ?>/offices" class="inline-flex items-center gap-2 border-2 border-[#0c2d74] text-[#0c2d74] hover:bg-[#0c2d74] hover:text-white font-semibold py-3 px-8 rounded-xl transition-colors">
             <i class="ph ph-list"></i>
             View All Offices
         </a>

@@ -13,9 +13,9 @@
                 <div class="flex flex-col items-center md:items-start">
                     <h3 class="text-white text-sm font-semibold mb-4 uppercase tracking-wider">Quick Links</h3>
                     <ul class="space-y-2 text-center md:text-left">
-                        <li><a href="<?= getBaseUrl() ?>/index.php" class="text-gray-400 hover:text-white transition-colors text-sm">Home</a></li>
-                        <li><a href="<?= getBaseUrl() ?>/offices.php" class="text-gray-400 hover:text-white transition-colors text-sm">All Offices</a></li>
-                        <li><a href="<?= getBaseUrl() ?>/map.php" class="text-gray-400 hover:text-white transition-colors text-sm">Global Map</a></li>
+                        <li><a href="<?= getBaseUrl() ?>/" class="text-gray-400 hover:text-white transition-colors text-sm">Home</a></li>
+                        <li><a href="<?= getBaseUrl() ?>/offices" class="text-gray-400 hover:text-white transition-colors text-sm">All Offices</a></li>
+                        <li><a href="<?= getBaseUrl() ?>/map" class="text-gray-400 hover:text-white transition-colors text-sm">Global Map</a></li>
                     </ul>
                 </div>
                 

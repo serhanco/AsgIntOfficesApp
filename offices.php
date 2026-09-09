@@ -31,7 +31,7 @@ require_once __DIR__ . '/includes/header.php';
                 <p class="text-gray-500 text-lg"><?= $totalOffices ?> offices across <?= $totalCountries ?> countries</p>
             </div>
             <div>
-                <a href="<?= getBaseUrl() ?>/map.php" class="bg-[#E6F0FA] text-[#0c2d74] hover:bg-[#0c2d74] hover:text-white font-semibold py-3 px-6 rounded-xl transition-colors flex items-center gap-2">
+                <a href="<?= getBaseUrl() ?>/map" class="bg-[#E6F0FA] text-[#0c2d74] hover:bg-[#0c2d74] hover:text-white font-semibold py-3 px-6 rounded-xl transition-colors flex items-center gap-2">
                     <i class="ph-fill ph-map-trifold"></i>
                     View on Map
                 </a>

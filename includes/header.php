@@ -74,20 +74,20 @@ $ogImage = $ogImage ?? (getBaseUrl() . '/assets/images/og-logo.png');
             <div class="flex items-center justify-between h-16">
                 <!-- Logo -->
                 <div class="flex-shrink-0">
-                    <a href="<?= getBaseUrl() ?>/index.php" class="flex items-center">
+                    <a href="<?= getBaseUrl() ?>/" class="flex items-center">
                         <img class="h-8 w-auto" src="<?= getBaseUrl() ?>/assets/images/acibadem-white-logo.webp" alt="Acıbadem Logo">
                     </a>
                 </div>
                 
                 <!-- Desktop Nav -->
                 <nav class="hidden md:flex space-x-2">
-                    <a href="<?= getBaseUrl() ?>/index.php" class="flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors <?= $currentPage === 'home' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
+                    <a href="<?= getBaseUrl() ?>/" class="flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors <?= $currentPage === 'home' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
                         <i class="ph ph-target text-lg mr-2"></i>Nearest Office
                     </a>
-                    <a href="<?= getBaseUrl() ?>/map.php" class="flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors <?= $currentPage === 'map' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
+                    <a href="<?= getBaseUrl() ?>/map" class="flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors <?= $currentPage === 'map' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
                         <i class="ph ph-globe-hemisphere-west text-lg mr-2"></i>Global Map
                     </a>
-                    <a href="<?= getBaseUrl() ?>/offices.php" class="flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors <?= $currentPage === 'offices' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
+                    <a href="<?= getBaseUrl() ?>/offices" class="flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors <?= $currentPage === 'offices' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
                         <i class="ph ph-buildings text-lg mr-2"></i>All Offices
                     </a>
                 </nav>
@@ -104,13 +104,13 @@ $ogImage = $ogImage ?? (getBaseUrl() . '/assets/images/og-logo.png');
         <!-- Mobile Nav Menu -->
         <div id="mobile-menu" class="hidden md:hidden bg-acibadem-blue border-t border-white/10">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="<?= getBaseUrl() ?>/index.php" class="flex items-center px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'home' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
+                <a href="<?= getBaseUrl() ?>/" class="flex items-center px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'home' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
                     <i class="ph ph-target text-xl mr-3"></i>Nearest Office
                 </a>
-                <a href="<?= getBaseUrl() ?>/map.php" class="flex items-center px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'map' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
+                <a href="<?= getBaseUrl() ?>/map" class="flex items-center px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'map' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
                     <i class="ph ph-globe-hemisphere-west text-xl mr-3"></i>Global Map
                 </a>
-                <a href="<?= getBaseUrl() ?>/offices.php" class="flex items-center px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'offices' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
+                <a href="<?= getBaseUrl() ?>/offices" class="flex items-center px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'offices' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
                     <i class="ph ph-buildings text-xl mr-3"></i>All Offices
                 </a>
             </div>

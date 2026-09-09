@@ -197,7 +197,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                         </div>
 
-                        <a href="index.php" class="inline-block bg-[#0c2d74] text-white hover:bg-[#1a4ba0] font-semibold py-4 px-10 rounded-xl transition-colors text-lg shadow-md">
+                        <a href="/" class="inline-block bg-[#0c2d74] text-white hover:bg-[#1a4ba0] font-semibold py-4 px-10 rounded-xl transition-colors text-lg shadow-md">
                             Go to Homepage
                         </a>
                     </div>
