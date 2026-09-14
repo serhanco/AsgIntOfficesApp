@@ -7,7 +7,7 @@ $offices = getAllOffices();
 $pageTitle = 'Find Your Nearest Office';
 $currentPage = 'home';
 $needsMap = false;
-$metaDescription = 'Find the nearest Acıbadem International information office. Our global network spans 31 countries with 55+ offices ready to assist you.';
+$metaDescription = 'Find the nearest Acıbadem International information office. Our global network spans ' . count(array_unique(array_column($offices, 'country'))) . ' countries with ' . count($offices) . '+ offices ready to assist you.';
 
 require_once __DIR__ . '/includes/header.php';
 ?>
@@ -16,7 +16,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
         <i class="ph-fill ph-shield-plus text-6xl text-white mb-6"></i>
         <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Find Your Nearest Office</h1>
-        <p class="text-xl text-blue-100 max-w-2xl mx-auto mb-10">Our global network of 55+ information offices across 31 countries is here to assist you.</p>
+        <p class="text-xl text-blue-100 max-w-2xl mx-auto mb-10">Our global network of <?= count($offices) ?>+ information offices across <?= count(array_unique(array_column($offices, 'country'))) ?> countries is here to assist you.</p>
         
         <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
             <button onclick="handleNearestOfficeClick()" class="bg-white text-[#0c2d74] hover:bg-gray-50 font-semibold py-4 px-8 rounded-2xl shadow-lg transition-transform hover:scale-105 flex items-center gap-2 text-lg">
@@ -73,12 +73,12 @@ require_once __DIR__ . '/includes/header.php';
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div class="bg-white p-6 rounded-2xl text-center shadow-sm">
                 <i class="ph-fill ph-buildings text-3xl text-[#1a4ba0] mb-3"></i>
-                <div class="text-2xl font-bold text-gray-900">55+</div>
+                <div class="text-2xl font-bold text-gray-900"><?= count($offices) ?>+</div>
                 <div class="text-gray-500">Offices</div>
             </div>
             <div class="bg-white p-6 rounded-2xl text-center shadow-sm">
                 <i class="ph-fill ph-globe-hemisphere-west text-3xl text-[#1a4ba0] mb-3"></i>
-                <div class="text-2xl font-bold text-gray-900">31</div>
+                <div class="text-2xl font-bold text-gray-900"><?= count(array_unique(array_column($offices, "country"))) ?></div>
                 <div class="text-gray-500">Countries</div>
             </div>
             <div class="bg-white p-6 rounded-2xl text-center shadow-sm">
