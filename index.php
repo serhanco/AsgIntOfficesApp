@@ -12,8 +12,13 @@ $metaDescription = 'Find the nearest Acıbadem International information office.
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<div class="relative bg-gradient-to-br from-[#0c2d74] to-[#0A1C36] overflow-hidden">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
+<div class="relative bg-[#0A1C36] overflow-hidden">
+    <!-- Background Image -->
+    <img src="<?= getBaseUrl() ?>/assets/images/home-hero.webp" alt="Acıbadem Global Offices" class="absolute inset-0 w-full h-full object-cover opacity-70">
+    <!-- Gradient Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-t from-[#0A1C36] via-[#0A1C36]/50 to-transparent"></div>
+    
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 text-center">
         <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Find Nearest ACIBADEM</h1>
         <p class="text-xl text-blue-100 max-w-2xl mx-auto mb-10">Our global network of <?= count($offices) ?>+ information offices across <?= count(array_unique(array_column($offices, 'country'))) ?> countries is here to assist you.</p>
         
