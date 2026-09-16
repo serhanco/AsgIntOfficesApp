@@ -25,10 +25,10 @@ require_once __DIR__ . '/includes/header.php';
         <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
             <button onclick="handleNearestOfficeClick()" class="bg-white text-[#0c2d74] hover:bg-gray-50 font-semibold py-4 px-8 rounded-2xl shadow-lg transition-transform hover:scale-105 flex items-center gap-2 text-lg">
                 <i class="ph-fill ph-navigation-arrow"></i>
-                Locate Nearest Office
+                Locate Nearest Acibadem
             </button>
-            <a href="<?= getBaseUrl() ?>/offices" class="border-2 border-white/30 text-white hover:bg-white/10 font-semibold py-4 px-8 rounded-2xl transition-colors text-lg">
-                View All Offices
+            <a href="<?= getBaseUrl() ?>/map" class="border-2 border-white/30 text-white hover:bg-white/10 font-semibold py-4 px-8 rounded-2xl transition-colors text-lg">
+                See Acibadem on World Map
             </a>
         </div>
     </div>
