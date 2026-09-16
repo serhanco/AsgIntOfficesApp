@@ -362,6 +362,22 @@ require_once __DIR__ . '/includes/header.php';
 
     </div>
 
+    <!-- ===== Become a Partner CTA ===== -->
+    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:px-8 md:py-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 group hover:border-[#0c2d74] transition-colors">
+        <div class="flex items-center gap-5">
+            <div class="w-12 h-12 bg-[#E6F0FA] text-[#0c2d74] rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
+                <i class="ph-fill ph-handshake text-2xl"></i>
+            </div>
+            <div>
+                <h3 class="text-lg md:text-xl font-bold text-[#0c2d74]">Become a Partner</h3>
+                <p class="text-sm text-gray-500 mt-1">Join our global network of healthcare professionals and agencies.</p>
+            </div>
+        </div>
+        <a href="https://partner.acibademinternational.com/london/" target="_blank" rel="noopener" class="flex-shrink-0 w-full md:w-auto text-center bg-[#0c2d74] hover:bg-[#1a4ba0] text-white px-8 py-3 rounded-xl font-bold text-sm transition-colors shadow-sm whitespace-nowrap inline-flex items-center justify-center gap-2">
+            Apply Now <i class="ph ph-arrow-right"></i>
+        </a>
+    </div>
+
     <!-- ===== Contact Info + Map ===== -->
     <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
         <!-- Contact Details -->
