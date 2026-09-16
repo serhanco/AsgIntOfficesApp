@@ -75,148 +75,6 @@ require_once __DIR__ . '/includes/header.php';
         </a>
     </div>
 
-    <!-- ===== Contact Form + Consultation Cards ===== -->
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-8">
-
-        <!-- Contact This Office (form) — 3/5 width -->
-        <div class="lg:col-span-3 bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8">
-            <div class="flex items-start justify-between mb-1">
-                <div>
-                    <h3 class="text-xl font-bold text-[#0c2d74]">Contact This Office</h3>
-                    <p class="text-sm text-gray-500 mt-1">Our team will get back to you personally.</p>
-                </div>
-                <div class="hidden sm:flex flex-col items-end gap-1 text-right">
-                    <span class="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
-                        <i class="ph-fill ph-check-circle"></i> Free
-                    </span>
-                    <span class="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
-                        <i class="ph-fill ph-check-circle"></i> No obligation
-                    </span>
-                    <span class="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
-                        <i class="ph-fill ph-check-circle"></i> Reply within 24h
-                    </span>
-                </div>
-            </div>
-
-            <!-- Mobile trust signals -->
-            <div class="flex flex-wrap gap-2 mt-3 mb-5 sm:hidden">
-                <span class="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full"><i class="ph-fill ph-check-circle"></i> Free</span>
-                <span class="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full"><i class="ph-fill ph-check-circle"></i> No obligation</span>
-                <span class="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full"><i class="ph-fill ph-check-circle"></i> Reply within 24h</span>
-            </div>
-
-            <div id="office-form-wrap" class="mt-5">
-                <form id="office-contact-form" class="space-y-4" onsubmit="submitOfficeForm(event)">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-600 mb-1.5">Full Name <span class="text-red-400">*</span></label>
-                            <input type="text" name="name" required placeholder="Your name"
-                                class="w-full text-sm border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#0c2d74]/30 focus:border-[#0c2d74] transition placeholder-gray-300">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-600 mb-1.5">Email <span class="text-red-400">*</span></label>
-                            <input type="email" name="email" required placeholder="your@email.com"
-                                class="w-full text-sm border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#0c2d74]/30 focus:border-[#0c2d74] transition placeholder-gray-300">
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-600 mb-1.5">Phone / WhatsApp</label>
-                            <input type="tel" name="phone" placeholder="+44 7700 000000"
-                                class="w-full text-sm border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#0c2d74]/30 focus:border-[#0c2d74] transition placeholder-gray-300">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-600 mb-1.5">Subject <span class="text-red-400">*</span></label>
-                            <select name="subject" required
-                                class="w-full text-sm border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#0c2d74]/30 focus:border-[#0c2d74] transition text-gray-700 bg-white">
-                                <option value="" disabled selected>Select a topic…</option>
-                                <option>General Inquiry</option>
-                                <option>Second Opinion Request</option>
-                                <option>Treatment Cost Estimate</option>
-                                <option>Appointment / Consultation</option>
-                                <option>B2B Partnership</option>
-                                <option>Other</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1.5">Message <span class="text-red-400">*</span></label>
-                        <textarea name="message" required rows="4" placeholder="Briefly describe your request or medical situation…"
-                            class="w-full text-sm border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#0c2d74]/30 focus:border-[#0c2d74] transition placeholder-gray-300 resize-none"></textarea>
-                    </div>
-                    <div class="flex items-center justify-between gap-4 pt-1">
-                        <p class="text-xs text-gray-400 leading-snug">Your data is handled securely and never shared with third parties.</p>
-                        <button type="submit"
-                            class="flex-shrink-0 inline-flex items-center gap-2 bg-[#0c2d74] hover:bg-[#1a4ba0] text-white text-sm font-bold px-6 py-2.5 rounded-xl transition-colors">
-                            <i class="ph-fill ph-paper-plane-right"></i>
-                            Send Message
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Success state (hidden by default) -->
-            <div id="office-form-success" class="hidden mt-5 flex flex-col items-center justify-center py-10 text-center">
-                <div class="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mb-4">
-                    <i class="ph-fill ph-check-circle text-4xl text-emerald-500"></i>
-                </div>
-                <h4 class="text-lg font-bold text-gray-900 mb-1">Message Sent!</h4>
-                <p class="text-sm text-gray-500 max-w-xs">Thank you. Our office team will get back to you within 24 hours.</p>
-            </div>
-        </div>
-
-        <!-- Consultation Action Cards — 2/5 width -->
-        <div class="lg:col-span-2 flex flex-col gap-4">
-            <h3 class="text-base font-bold text-gray-700 px-1">Quick Access</h3>
-
-            <!-- Card 1: Second Opinion -->
-            <a href="https://acibademinternational.com/second-opinion/" target="_blank" rel="noopener"
-               class="group flex items-center gap-4 bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200">
-                <div class="flex-shrink-0 w-12 h-12 bg-[#E6F0FA] text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
-                    <i class="ph-fill ph-microscope text-2xl"></i>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Get a Second Opinion</p>
-                    <p class="text-xs text-gray-400 mt-0.5">Send your reports & get expert review</p>
-                </div>
-                <i class="ph ph-arrow-right text-gray-300 group-hover:text-[#0c2d74] transition-colors flex-shrink-0"></i>
-            </a>
-
-            <!-- Card 2: Online Consultation -->
-            <a href="https://acibademinternational.com/online-consultation/" target="_blank" rel="noopener"
-               class="group flex items-center gap-4 bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200">
-                <div class="flex-shrink-0 w-12 h-12 bg-[#E6F0FA] text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
-                    <i class="ph-fill ph-video-camera text-2xl"></i>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Online Doctor Consultation</p>
-                    <p class="text-xs text-gray-400 mt-0.5">Meet a specialist via video call</p>
-                </div>
-                <i class="ph ph-arrow-right text-gray-300 group-hover:text-[#0c2d74] transition-colors flex-shrink-0"></i>
-            </a>
-
-            <!-- Card 3: Free Medical Consultation -->
-            <a href="https://acibademinternational.com/contact/" target="_blank" rel="noopener"
-               class="group flex items-center gap-4 bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200">
-                <div class="flex-shrink-0 w-12 h-12 bg-[#E6F0FA] text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
-                    <i class="ph-fill ph-stethoscope text-2xl"></i>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Free Medical Consultation</p>
-                    <p class="text-xs text-gray-400 mt-0.5">Talk to our patient coordinators</p>
-                </div>
-                <i class="ph ph-arrow-right text-gray-300 group-hover:text-[#0c2d74] transition-colors flex-shrink-0"></i>
-            </a>
-
-            <!-- JCI trust badge -->
-            <div class="mt-auto flex items-center gap-3 bg-gray-50 rounded-2xl px-4 py-3 border border-gray-100">
-                <i class="ph-fill ph-seal-check text-2xl text-[#0c2d74] flex-shrink-0"></i>
-                <p class="text-xs text-gray-500 leading-snug"><span class="font-semibold text-gray-700">JCI Accredited</span> — Acıbadem hospitals meet the highest international quality standards.</p>
-            </div>
-        </div>
-
-    </div>
-
     <!-- ===== Recent Activities + Our Team ===== -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
 
@@ -238,7 +96,7 @@ require_once __DIR__ . '/includes/header.php';
                             <span class="text-xs font-bold uppercase tracking-wide text-[#1a4ba0] group-hover:text-blue-200 transition-colors">Meet the Doctor</span>
                         </div>
                         <p class="text-sm font-semibold text-gray-900 group-hover:text-white transition-colors leading-snug">Prof. Yaşar Çolak</p>
-                        <p class="text-xs text-gray-500 group-hover:text-blue-200 transition-colors mt-1">Thoracic Surgery Specialist · London</p>
+                        <p class="text-xs text-gray-500 group-hover:text-blue-200 transition-colors mt-1">Gastroenterology, Endoscopy and Nutrition</p>
                     </div>
                     <div class="flex-shrink-0 self-center text-gray-300 group-hover:text-white transition-colors">
                         <i class="ph ph-arrow-right text-lg"></i>
@@ -381,67 +239,116 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 
     <!-- ===== Contact Info + Map (existing) ===== -->
-    <!-- ===== FAQ ===== -->
-    <div class="mt-10 bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8">
-        <div class="flex items-center gap-3 mb-8">
-            <div class="w-10 h-10 bg-[#E6F0FA] text-[#0c2d74] rounded-xl flex items-center justify-center">
-                <i class="ph-fill ph-question text-xl"></i>
+    <!-- ===== FAQ + Quick Access ===== -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 mt-10">
+
+        <!-- FAQ -->
+        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 bg-[#E6F0FA] text-[#0c2d74] rounded-xl flex items-center justify-center">
+                    <i class="ph-fill ph-question text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-[#0c2d74]">Frequently Asked Questions</h3>
             </div>
-            <h3 class="text-xl font-bold text-[#0c2d74]">Frequently Asked Questions</h3>
+            <div class="divide-y divide-gray-100" id="faq-accordion">
+
+                <div class="faq-item py-4">
+                    <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
+                        <span class="text-sm font-semibold text-gray-900">Is the office a clinic where I can be treated?</span>
+                        <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
+                        No. It is a patient-support and information office. Your treatment takes place at an Acıbadem hospital in Turkey. The office team guides you through the entire process — from your first enquiry to your follow-up care after returning home.
+                    </div>
+                </div>
+
+                <div class="faq-item py-4">
+                    <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
+                        <span class="text-sm font-semibold text-gray-900">How much will my treatment cost?</span>
+                        <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
+                        You receive a personalised, itemised cost estimate after your case is reviewed by the relevant specialist. Prices are confirmed only after a consultation — there is no obligation before that point.
+                    </div>
+                </div>
+
+                <div class="faq-item py-4">
+                    <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
+                        <span class="text-sm font-semibold text-gray-900">How do I get a second opinion or online consultation?</span>
+                        <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
+                        Send your medical reports, scans and test results to the office team by WhatsApp or email. The team will forward them to the relevant Acıbadem specialist and arrange either an online video consultation or a written second opinion — before you travel.
+                    </div>
+                </div>
+
+                <div class="faq-item py-4">
+                    <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
+                        <span class="text-sm font-semibold text-gray-900">Do I need a visa to travel to Turkey?</span>
+                        <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
+                        Entry requirements depend on your nationality. Please check the current Turkey entry rules for your country. The office can provide an official invitation letter from Acıbadem where one is needed for visa or entry formalities.
+                    </div>
+                </div>
+
+                <div class="faq-item py-4">
+                    <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
+                        <span class="text-sm font-semibold text-gray-900">How can I be sure Acıbadem hospitals are safe?</span>
+                        <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
+                        Acıbadem operates JCI-accredited hospitals held to international quality and patient-safety standards — the same accreditation used by leading hospitals in the US, UK and across Europe. Each facility is independently audited and certified.
+                    </div>
+                </div>
+
+            </div>
         </div>
-        <div class="divide-y divide-gray-100" id="faq-accordion">
 
-            <div class="faq-item py-4">
-                <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
-                    <span class="text-sm font-semibold text-gray-900">Is the office a clinic where I can be treated?</span>
-                    <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
-                </button>
-                <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
-                    No. It is a patient-support and information office. Your treatment takes place at an Acıbadem hospital in Turkey. The office team guides you through the entire process — from your first enquiry to your follow-up care after returning home.
+        <!-- Quick Access -->
+        <div class="flex flex-col gap-4">
+            <h3 class="text-xl font-bold text-[#0c2d74] mb-2 px-1">Quick Access</h3>
+
+            <!-- Card 1: Second Opinion -->
+            <a href="https://acibademinternational.com/second-opinion/" target="_blank" rel="noopener"
+               class="group flex items-center gap-4 bg-white rounded-3xl border border-gray-100 shadow-sm p-6 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200 flex-1">
+                <div class="flex-shrink-0 w-12 h-12 bg-[#E6F0FA] text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
+                    <i class="ph-fill ph-microscope text-2xl"></i>
                 </div>
-            </div>
-
-            <div class="faq-item py-4">
-                <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
-                    <span class="text-sm font-semibold text-gray-900">How much will my treatment cost?</span>
-                    <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
-                </button>
-                <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
-                    You receive a personalised, itemised cost estimate after your case is reviewed by the relevant specialist. Prices are confirmed only after a consultation — there is no obligation before that point.
+                <div class="flex-1 min-w-0">
+                    <p class="text-base font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Get a Second Opinion</p>
+                    <p class="text-sm text-gray-500 mt-0.5">Send your reports & get expert review</p>
                 </div>
-            </div>
+                <i class="ph ph-arrow-right text-gray-300 group-hover:text-[#0c2d74] transition-colors flex-shrink-0"></i>
+            </a>
 
-            <div class="faq-item py-4">
-                <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
-                    <span class="text-sm font-semibold text-gray-900">How do I get a second opinion or online consultation?</span>
-                    <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
-                </button>
-                <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
-                    Send your medical reports, scans and test results to the office team by WhatsApp or email. The team will forward them to the relevant Acıbadem specialist and arrange either an online video consultation or a written second opinion — before you travel.
+            <!-- Card 2: Online Consultation -->
+            <a href="https://acibademinternational.com/online-consultation/" target="_blank" rel="noopener"
+               class="group flex items-center gap-4 bg-white rounded-3xl border border-gray-100 shadow-sm p-6 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200 flex-1">
+                <div class="flex-shrink-0 w-12 h-12 bg-[#E6F0FA] text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
+                    <i class="ph-fill ph-video-camera text-2xl"></i>
                 </div>
-            </div>
-
-            <div class="faq-item py-4">
-                <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
-                    <span class="text-sm font-semibold text-gray-900">Do I need a visa to travel to Turkey?</span>
-                    <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
-                </button>
-                <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
-                    Entry requirements depend on your nationality. Please check the current Turkey entry rules for your country. The office can provide an official invitation letter from Acıbadem where one is needed for visa or entry formalities.
+                <div class="flex-1 min-w-0">
+                    <p class="text-base font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Online Doctor Consultation</p>
+                    <p class="text-sm text-gray-500 mt-0.5">Meet a specialist via video call</p>
                 </div>
-            </div>
+                <i class="ph ph-arrow-right text-gray-300 group-hover:text-[#0c2d74] transition-colors flex-shrink-0"></i>
+            </a>
 
-            <div class="faq-item py-4">
-                <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
-                    <span class="text-sm font-semibold text-gray-900">How can I be sure Acıbadem hospitals are safe?</span>
-                    <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
-                </button>
-                <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
-                    Acıbadem operates JCI-accredited hospitals held to international quality and patient-safety standards — the same accreditation used by leading hospitals in the US, UK and across Europe. Each facility is independently audited and certified.
+            <!-- Card 3: Free Medical Consultation -->
+            <a href="https://acibademinternational.com/contact/" target="_blank" rel="noopener"
+               class="group flex items-center gap-4 bg-white rounded-3xl border border-gray-100 shadow-sm p-6 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200 flex-1">
+                <div class="flex-shrink-0 w-12 h-12 bg-[#E6F0FA] text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
+                    <i class="ph-fill ph-stethoscope text-2xl"></i>
                 </div>
-            </div>
-
+                <div class="flex-1 min-w-0">
+                    <p class="text-base font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Free Medical Consultation</p>
+                    <p class="text-sm text-gray-500 mt-0.5">Talk to our patient coordinators</p>
+                </div>
+                <i class="ph ph-arrow-right text-gray-300 group-hover:text-[#0c2d74] transition-colors flex-shrink-0"></i>
+            </a>
         </div>
+
     </div>
 
     <!-- ===== Contact Info + Map ===== -->
@@ -558,34 +465,6 @@ function toggleFaq(btn) {
         answer.classList.remove('hidden');
         icon.style.transform = 'rotate(180deg)';
     }
-}
-
-function submitOfficeForm(e) {
-    e.preventDefault();
-    const form    = document.getElementById('office-contact-form');
-    const wrap    = document.getElementById('office-form-wrap');
-    const success = document.getElementById('office-form-success');
-
-    // Build a mailto link as a lightweight no-backend fallback
-    const name    = form.name.value;
-    const email   = form.email.value;
-    const phone   = form.phone.value;
-    const subject = form.subject.value;
-    const message = form.message.value;
-    const body    = encodeURIComponent(
-        'Name: '    + name    + '\n' +
-        'Email: '   + email   + '\n' +
-        'Phone: '   + phone   + '\n\n' +
-        message
-    );
-    const officeEmail = '<?= e($office['email']) ?>';
-    window.location.href = 'mailto:' + officeEmail
-        + '?subject=' + encodeURIComponent('[acibadem.world] ' + subject)
-        + '&body='    + body;
-
-    // Show success state
-    wrap.classList.add('hidden');
-    success.classList.remove('hidden');
 }
 </script>
 
