@@ -5,8 +5,10 @@
                 
                 <!-- Left: Logo & Subtitle -->
                 <div class="flex-col items-center md:items-start flex">
-                    <img class="h-6 w-auto mb-3" src="<?= getBaseUrl() ?>/assets/images/acibadem-white-logo.webp" alt="Acıbadem Logo">
-                    <span class="text-gray-400 text-sm font-medium tracking-wide">International Offices</span>
+                    <div class="flex flex-col items-center">
+                        <img class="h-6 w-auto mb-3" src="<?= getBaseUrl() ?>/assets/images/acibadem-white-logo.webp" alt="Acıbadem Logo">
+                        <span class="text-gray-400 text-sm font-medium tracking-wide">acibadem.world</span>
+                    </div>
                 </div>
                 
                 <!-- Center: Quick links -->
