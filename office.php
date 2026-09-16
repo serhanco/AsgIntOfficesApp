@@ -82,7 +82,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-xl font-bold text-[#0c2d74]">Recent Activities</h3>
-                <span class="text-xs font-semibold bg-[#E6F0FA] text-[#0c2d74] px-3 py-1 rounded-full">2025</span>
+                <span class="text-xs font-semibold bg-[#E6F0FA] text-[#0c2d74] px-3 py-1 rounded-full">2026</span>
             </div>
             <div class="space-y-4">
 
@@ -162,9 +162,18 @@ require_once __DIR__ . '/includes/header.php';
                             <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-[#0c2d74] px-2 py-0.5 rounded-full font-medium"><i class="ph-fill ph-translate text-xs"></i> English</span>
                         </div>
                     </div>
-                    <a href="mailto:<?= e($office['email']) ?>" class="flex-shrink-0 text-gray-300 hover:text-[#0c2d74] transition-colors">
-                        <i class="ph-fill ph-envelope-simple text-xl"></i>
-                    </a>
+                    <div class="flex items-center gap-3 flex-shrink-0">
+                        <?php if (!empty($office['phone'])): ?>
+                        <a href="tel:<?= preg_replace('/[^0-9+]/', '', $office['phone']) ?>" class="text-gray-300 hover:text-[#0c2d74] transition-colors" title="Call Office">
+                            <i class="ph-fill ph-phone text-xl"></i>
+                        </a>
+                        <?php endif; ?>
+                        <?php if (!empty($office['email'])): ?>
+                        <a href="mailto:<?= e($office['email']) ?>" class="text-gray-300 hover:text-[#0c2d74] transition-colors" title="Email Office">
+                            <i class="ph-fill ph-envelope-simple text-xl"></i>
+                        </a>
+                        <?php endif; ?>
+                    </div>
                 </div>
 
                 <!-- Member 2 -->
@@ -182,9 +191,18 @@ require_once __DIR__ . '/includes/header.php';
                             <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-[#0c2d74] px-2 py-0.5 rounded-full font-medium"><i class="ph-fill ph-translate text-xs"></i> German</span>
                         </div>
                     </div>
-                    <a href="mailto:<?= e($office['email']) ?>" class="flex-shrink-0 text-gray-300 hover:text-[#0c2d74] transition-colors">
-                        <i class="ph-fill ph-envelope-simple text-xl"></i>
-                    </a>
+                    <div class="flex items-center gap-3 flex-shrink-0">
+                        <?php if (!empty($office['phone'])): ?>
+                        <a href="tel:<?= preg_replace('/[^0-9+]/', '', $office['phone']) ?>" class="text-gray-300 hover:text-[#0c2d74] transition-colors" title="Call Office">
+                            <i class="ph-fill ph-phone text-xl"></i>
+                        </a>
+                        <?php endif; ?>
+                        <?php if (!empty($office['email'])): ?>
+                        <a href="mailto:<?= e($office['email']) ?>" class="text-gray-300 hover:text-[#0c2d74] transition-colors" title="Email Office">
+                            <i class="ph-fill ph-envelope-simple text-xl"></i>
+                        </a>
+                        <?php endif; ?>
+                    </div>
                 </div>
 
                 <!-- Member 3 -->
@@ -202,9 +220,18 @@ require_once __DIR__ . '/includes/header.php';
                             <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-[#0c2d74] px-2 py-0.5 rounded-full font-medium"><i class="ph-fill ph-translate text-xs"></i> French</span>
                         </div>
                     </div>
-                    <a href="mailto:<?= e($office['email']) ?>" class="flex-shrink-0 text-gray-300 hover:text-[#0c2d74] transition-colors">
-                        <i class="ph-fill ph-envelope-simple text-xl"></i>
-                    </a>
+                    <div class="flex items-center gap-3 flex-shrink-0">
+                        <?php if (!empty($office['phone'])): ?>
+                        <a href="tel:<?= preg_replace('/[^0-9+]/', '', $office['phone']) ?>" class="text-gray-300 hover:text-[#0c2d74] transition-colors" title="Call Office">
+                            <i class="ph-fill ph-phone text-xl"></i>
+                        </a>
+                        <?php endif; ?>
+                        <?php if (!empty($office['email'])): ?>
+                        <a href="mailto:<?= e($office['email']) ?>" class="text-gray-300 hover:text-[#0c2d74] transition-colors" title="Email Office">
+                            <i class="ph-fill ph-envelope-simple text-xl"></i>
+                        </a>
+                        <?php endif; ?>
+                    </div>
                 </div>
 
             </div>
