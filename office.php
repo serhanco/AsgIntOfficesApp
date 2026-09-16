@@ -151,9 +151,7 @@ require_once __DIR__ . '/includes/header.php';
                 <!-- Member 1 -->
                 <div class="flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200 group">
                     <div class="flex-shrink-0 relative">
-                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#0c2d74] to-[#1a4ba0] flex items-center justify-center shadow-sm">
-                            <span class="text-white text-lg font-bold select-none">CÜ</span>
-                        </div>
+                        <img src="<?= getBaseUrl() ?>/assets/images/team-cem-ustundag.jpg" alt="Cem Üstündağ" class="w-14 h-14 rounded-2xl object-cover object-top shadow-sm">
                         <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 border-2 border-white rounded-full"></span>
                     </div>
                     <div class="flex-1 min-w-0">
@@ -172,9 +170,7 @@ require_once __DIR__ . '/includes/header.php';
                 <!-- Member 2 -->
                 <div class="flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200 group">
                     <div class="flex-shrink-0 relative">
-                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-600 to-purple-800 flex items-center justify-center shadow-sm">
-                            <span class="text-white text-lg font-bold select-none">EE</span>
-                        </div>
+                        <img src="<?= getBaseUrl() ?>/assets/images/team-erim-ekiz.jpg" alt="Erim Ekiz" class="w-14 h-14 rounded-2xl object-cover object-top shadow-sm">
                         <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 border-2 border-white rounded-full"></span>
                     </div>
                     <div class="flex-1 min-w-0">
@@ -194,9 +190,7 @@ require_once __DIR__ . '/includes/header.php';
                 <!-- Member 3 -->
                 <div class="flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200 group">
                     <div class="flex-shrink-0 relative">
-                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center shadow-sm">
-                            <span class="text-white text-lg font-bold select-none">IR</span>
-                        </div>
+                        <img src="<?= getBaseUrl() ?>/assets/images/team-ionea-ruxandra.jpg" alt="Ionea Ruxandra" class="w-14 h-14 rounded-2xl object-cover object-top shadow-sm">
                         <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-yellow-400 border-2 border-white rounded-full"></span>
                     </div>
                     <div class="flex-1 min-w-0">
@@ -218,58 +212,6 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 
     <!-- ===== Contact Info + Map (existing) ===== -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <!-- Contact Details -->
-        <div>
-            <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
-                <h3 class="text-xl font-bold text-[#0c2d74] mb-6">Contact Information</h3>
-                
-                <div class="space-y-6">
-                    <div class="flex items-start gap-4 pb-4 border-b border-gray-50">
-                        <div class="mt-1 bg-gray-50 p-2 rounded-lg text-[#1a4ba0]">
-                            <i class="ph-fill ph-map-pin text-xl"></i>
-                        </div>
-                        <div>
-                            <div class="text-sm font-semibold text-gray-900 mb-1">Address</div>
-                            <div class="text-gray-600 text-sm leading-relaxed"><?= nl2br(e($office['address'])) ?></div>
-                        </div>
-                    </div>
-
-                    <?php if (!empty($office['phone'])): ?>
-                    <div class="flex items-start gap-4 pb-4 border-b border-gray-50">
-                        <div class="mt-1 bg-gray-50 p-2 rounded-lg text-[#1a4ba0]">
-                            <i class="ph-fill ph-phone text-xl"></i>
-                        </div>
-                        <div>
-                            <div class="text-sm font-semibold text-gray-900 mb-1">Phone</div>
-                            <a href="tel:<?= preg_replace('/[^0-9+]/', '', $office['phone']) ?>" class="text-gray-600 text-sm hover:text-[#0c2d74]"><?= e($office['phone']) ?></a>
-                        </div>
-                    </div>
-                    <?php endif; ?>
-
-                    <?php if (!empty($office['email'])): ?>
-                    <div class="flex items-start gap-4">
-                        <div class="mt-1 bg-gray-50 p-2 rounded-lg text-[#1a4ba0]">
-                            <i class="ph-fill ph-envelope-simple text-xl"></i>
-                        </div>
-                        <div>
-                            <div class="text-sm font-semibold text-gray-900 mb-1">Email</div>
-                            <a href="mailto:<?= e($office['email']) ?>" class="text-gray-600 text-sm hover:text-[#0c2d74]"><?= e($office['email']) ?></a>
-                        </div>
-                    </div>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-
-        <!-- Mini Map -->
-        <div>
-            <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-2 h-full min-h-[300px]">
-                <div id="office-map" class="w-full h-full rounded-2xl z-0 min-h-[300px]"></div>
-            </div>
-        </div>
-    </div>
-
     <!-- ===== FAQ ===== -->
     <div class="mt-10 bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8">
         <div class="flex items-center gap-3 mb-8">
@@ -330,6 +272,59 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <!-- ===== Contact Info + Map ===== -->
+    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Contact Details -->
+        <div>
+            <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+                <h3 class="text-xl font-bold text-[#0c2d74] mb-6">Contact Information</h3>
+                
+                <div class="space-y-6">
+                    <div class="flex items-start gap-4 pb-4 border-b border-gray-50">
+                        <div class="mt-1 bg-gray-50 p-2 rounded-lg text-[#1a4ba0]">
+                            <i class="ph-fill ph-map-pin text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm font-semibold text-gray-900 mb-1">Address</div>
+                            <div class="text-gray-600 text-sm leading-relaxed"><?= nl2br(e($office['address'])) ?></div>
+                        </div>
+                    </div>
+
+                    <?php if (!empty($office['phone'])): ?>
+                    <div class="flex items-start gap-4 pb-4 border-b border-gray-50">
+                        <div class="mt-1 bg-gray-50 p-2 rounded-lg text-[#1a4ba0]">
+                            <i class="ph-fill ph-phone text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm font-semibold text-gray-900 mb-1">Phone</div>
+                            <a href="tel:<?= preg_replace('/[^0-9+]/', '', $office['phone']) ?>" class="text-gray-600 text-sm hover:text-[#0c2d74]"><?= e($office['phone']) ?></a>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($office['email'])): ?>
+                    <div class="flex items-start gap-4">
+                        <div class="mt-1 bg-gray-50 p-2 rounded-lg text-[#1a4ba0]">
+                            <i class="ph-fill ph-envelope-simple text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm font-semibold text-gray-900 mb-1">Email</div>
+                            <a href="mailto:<?= e($office['email']) ?>" class="text-gray-600 text-sm hover:text-[#0c2d74]"><?= e($office['email']) ?></a>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mini Map -->
+        <div>
+            <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-2 h-full min-h-[300px]">
+                <div id="office-map" class="w-full h-full rounded-2xl z-0 min-h-[300px]"></div>
+            </div>
         </div>
     </div>
     
