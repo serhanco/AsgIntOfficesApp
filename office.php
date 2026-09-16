@@ -75,6 +75,148 @@ require_once __DIR__ . '/includes/header.php';
         </a>
     </div>
 
+    <!-- ===== Contact Form + Consultation Cards ===== -->
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-8">
+
+        <!-- Contact This Office (form) — 3/5 width -->
+        <div class="lg:col-span-3 bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8">
+            <div class="flex items-start justify-between mb-1">
+                <div>
+                    <h3 class="text-xl font-bold text-[#0c2d74]">Contact This Office</h3>
+                    <p class="text-sm text-gray-500 mt-1">Our team will get back to you personally.</p>
+                </div>
+                <div class="hidden sm:flex flex-col items-end gap-1 text-right">
+                    <span class="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
+                        <i class="ph-fill ph-check-circle"></i> Free
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
+                        <i class="ph-fill ph-check-circle"></i> No obligation
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
+                        <i class="ph-fill ph-check-circle"></i> Reply within 24h
+                    </span>
+                </div>
+            </div>
+
+            <!-- Mobile trust signals -->
+            <div class="flex flex-wrap gap-2 mt-3 mb-5 sm:hidden">
+                <span class="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full"><i class="ph-fill ph-check-circle"></i> Free</span>
+                <span class="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full"><i class="ph-fill ph-check-circle"></i> No obligation</span>
+                <span class="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full"><i class="ph-fill ph-check-circle"></i> Reply within 24h</span>
+            </div>
+
+            <div id="office-form-wrap" class="mt-5">
+                <form id="office-contact-form" class="space-y-4" onsubmit="submitOfficeForm(event)">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1.5">Full Name <span class="text-red-400">*</span></label>
+                            <input type="text" name="name" required placeholder="Your name"
+                                class="w-full text-sm border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#0c2d74]/30 focus:border-[#0c2d74] transition placeholder-gray-300">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1.5">Email <span class="text-red-400">*</span></label>
+                            <input type="email" name="email" required placeholder="your@email.com"
+                                class="w-full text-sm border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#0c2d74]/30 focus:border-[#0c2d74] transition placeholder-gray-300">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1.5">Phone / WhatsApp</label>
+                            <input type="tel" name="phone" placeholder="+44 7700 000000"
+                                class="w-full text-sm border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#0c2d74]/30 focus:border-[#0c2d74] transition placeholder-gray-300">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1.5">Subject <span class="text-red-400">*</span></label>
+                            <select name="subject" required
+                                class="w-full text-sm border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#0c2d74]/30 focus:border-[#0c2d74] transition text-gray-700 bg-white">
+                                <option value="" disabled selected>Select a topic…</option>
+                                <option>General Inquiry</option>
+                                <option>Second Opinion Request</option>
+                                <option>Treatment Cost Estimate</option>
+                                <option>Appointment / Consultation</option>
+                                <option>B2B Partnership</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1.5">Message <span class="text-red-400">*</span></label>
+                        <textarea name="message" required rows="4" placeholder="Briefly describe your request or medical situation…"
+                            class="w-full text-sm border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#0c2d74]/30 focus:border-[#0c2d74] transition placeholder-gray-300 resize-none"></textarea>
+                    </div>
+                    <div class="flex items-center justify-between gap-4 pt-1">
+                        <p class="text-xs text-gray-400 leading-snug">Your data is handled securely and never shared with third parties.</p>
+                        <button type="submit"
+                            class="flex-shrink-0 inline-flex items-center gap-2 bg-[#0c2d74] hover:bg-[#1a4ba0] text-white text-sm font-bold px-6 py-2.5 rounded-xl transition-colors">
+                            <i class="ph-fill ph-paper-plane-right"></i>
+                            Send Message
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Success state (hidden by default) -->
+            <div id="office-form-success" class="hidden mt-5 flex flex-col items-center justify-center py-10 text-center">
+                <div class="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mb-4">
+                    <i class="ph-fill ph-check-circle text-4xl text-emerald-500"></i>
+                </div>
+                <h4 class="text-lg font-bold text-gray-900 mb-1">Message Sent!</h4>
+                <p class="text-sm text-gray-500 max-w-xs">Thank you. Our office team will get back to you within 24 hours.</p>
+            </div>
+        </div>
+
+        <!-- Consultation Action Cards — 2/5 width -->
+        <div class="lg:col-span-2 flex flex-col gap-4">
+            <h3 class="text-base font-bold text-gray-700 px-1">Quick Access</h3>
+
+            <!-- Card 1: Second Opinion -->
+            <a href="https://acibademinternational.com/second-opinion/" target="_blank" rel="noopener"
+               class="group flex items-center gap-4 bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200">
+                <div class="flex-shrink-0 w-12 h-12 bg-[#E6F0FA] text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
+                    <i class="ph-fill ph-microscope text-2xl"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Get a Second Opinion</p>
+                    <p class="text-xs text-gray-400 mt-0.5">Send your reports & get expert review</p>
+                </div>
+                <i class="ph ph-arrow-right text-gray-300 group-hover:text-[#0c2d74] transition-colors flex-shrink-0"></i>
+            </a>
+
+            <!-- Card 2: Online Consultation -->
+            <a href="https://acibademinternational.com/online-consultation/" target="_blank" rel="noopener"
+               class="group flex items-center gap-4 bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200">
+                <div class="flex-shrink-0 w-12 h-12 bg-[#E6F0FA] text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
+                    <i class="ph-fill ph-video-camera text-2xl"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Online Doctor Consultation</p>
+                    <p class="text-xs text-gray-400 mt-0.5">Meet a specialist via video call</p>
+                </div>
+                <i class="ph ph-arrow-right text-gray-300 group-hover:text-[#0c2d74] transition-colors flex-shrink-0"></i>
+            </a>
+
+            <!-- Card 3: Free Medical Consultation -->
+            <a href="https://acibademinternational.com/contact/" target="_blank" rel="noopener"
+               class="group flex items-center gap-4 bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200">
+                <div class="flex-shrink-0 w-12 h-12 bg-[#E6F0FA] text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
+                    <i class="ph-fill ph-stethoscope text-2xl"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Free Medical Consultation</p>
+                    <p class="text-xs text-gray-400 mt-0.5">Talk to our patient coordinators</p>
+                </div>
+                <i class="ph ph-arrow-right text-gray-300 group-hover:text-[#0c2d74] transition-colors flex-shrink-0"></i>
+            </a>
+
+            <!-- JCI trust badge -->
+            <div class="mt-auto flex items-center gap-3 bg-gray-50 rounded-2xl px-4 py-3 border border-gray-100">
+                <i class="ph-fill ph-seal-check text-2xl text-[#0c2d74] flex-shrink-0"></i>
+                <p class="text-xs text-gray-500 leading-snug"><span class="font-semibold text-gray-700">JCI Accredited</span> — Acıbadem hospitals meet the highest international quality standards.</p>
+            </div>
+        </div>
+
+    </div>
+
     <!-- ===== Recent Activities + Our Team ===== -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
 
@@ -416,6 +558,34 @@ function toggleFaq(btn) {
         answer.classList.remove('hidden');
         icon.style.transform = 'rotate(180deg)';
     }
+}
+
+function submitOfficeForm(e) {
+    e.preventDefault();
+    const form    = document.getElementById('office-contact-form');
+    const wrap    = document.getElementById('office-form-wrap');
+    const success = document.getElementById('office-form-success');
+
+    // Build a mailto link as a lightweight no-backend fallback
+    const name    = form.name.value;
+    const email   = form.email.value;
+    const phone   = form.phone.value;
+    const subject = form.subject.value;
+    const message = form.message.value;
+    const body    = encodeURIComponent(
+        'Name: '    + name    + '\n' +
+        'Email: '   + email   + '\n' +
+        'Phone: '   + phone   + '\n\n' +
+        message
+    );
+    const officeEmail = '<?= e($office['email']) ?>';
+    window.location.href = 'mailto:' + officeEmail
+        + '?subject=' + encodeURIComponent('[acibadem.world] ' + subject)
+        + '&body='    + body;
+
+    // Show success state
+    wrap.classList.add('hidden');
+    success.classList.remove('hidden');
 }
 </script>
 
