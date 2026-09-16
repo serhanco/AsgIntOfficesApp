@@ -22,9 +22,29 @@
                 <!-- Right: Contact info -->
                 <div class="flex flex-col items-center md:items-start">
                     <h3 class="text-white text-sm font-semibold mb-4 uppercase tracking-wider">Contact</h3>
-                    <a href="https://acibademinternational.com" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors text-sm flex items-center">
-                        <i class="ph ph-link text-lg mr-2"></i> acibademinternational.com
-                    </a>
+                    <ul class="space-y-3">
+                        <li>
+                            <a href="https://wa.me/905359650466" target="_blank" rel="noopener noreferrer"
+                               class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2">
+                                <i class="ph-fill ph-whatsapp-logo text-lg text-green-400"></i>
+                                +90 535 965 0466
+                            </a>
+                        </li>
+                        <li>
+                            <a href="tel:+902164445544"
+                               class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2">
+                                <i class="ph-fill ph-phone text-lg"></i>
+                                +90 216 444 5544
+                            </a>
+                        </li>
+                        <li>
+                            <a href="mailto:international@acibadem.com"
+                               class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2">
+                                <i class="ph-fill ph-envelope-simple text-lg"></i>
+                                international@acibadem.com
+                            </a>
+                        </li>
+                    </ul>
                 </div>
                 
             </div>
