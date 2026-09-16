@@ -457,7 +457,7 @@ document.addEventListener('DOMContentLoaded', function() {
           country: '<?= e($office['country']) ?>' 
       }], { 
           center: [<?= $office['latitude'] ?>, <?= $office['longitude'] ?>], 
-          zoom: 14, 
+          zoom: 16, 
           singleOffice: true 
       });
   }
