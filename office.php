@@ -306,47 +306,58 @@ require_once __DIR__ . '/includes/header.php';
         </div>
 
         <!-- Quick Access -->
-        <div class="flex flex-col gap-4">
-            <h3 class="text-xl font-bold text-[#0c2d74] mb-2 px-1">Quick Access</h3>
+        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-[#0c2d74]">Quick Access</h3>
+                <span class="text-xs font-semibold bg-[#E6F0FA] text-[#0c2d74] px-3 py-1 rounded-full">3 options</span>
+            </div>
+            
+            <div class="flex flex-col gap-4">
+                <!-- Card 1: Second Opinion -->
+                <a href="https://acibademinternational.com/second-opinion/" target="_blank" rel="noopener"
+                   class="group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200">
+                    <div class="flex-shrink-0 w-12 h-12 bg-blue-50 text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
+                        <i class="ph-fill ph-microscope text-2xl"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Get a Second Opinion</p>
+                        <p class="text-xs text-gray-500 mt-0.5">Send your reports & get expert review</p>
+                    </div>
+                    <div class="flex-shrink-0 text-gray-300 group-hover:text-[#0c2d74] transition-colors">
+                        <i class="ph ph-arrow-right text-lg"></i>
+                    </div>
+                </a>
 
-            <!-- Card 1: Second Opinion -->
-            <a href="https://acibademinternational.com/second-opinion/" target="_blank" rel="noopener"
-               class="group flex items-center gap-4 bg-white rounded-3xl border border-gray-100 shadow-sm p-6 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200 flex-1">
-                <div class="flex-shrink-0 w-12 h-12 bg-[#E6F0FA] text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
-                    <i class="ph-fill ph-microscope text-2xl"></i>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-base font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Get a Second Opinion</p>
-                    <p class="text-sm text-gray-500 mt-0.5">Send your reports & get expert review</p>
-                </div>
-                <i class="ph ph-arrow-right text-gray-300 group-hover:text-[#0c2d74] transition-colors flex-shrink-0"></i>
-            </a>
+                <!-- Card 2: Online Consultation -->
+                <a href="https://acibademinternational.com/online-consultation/" target="_blank" rel="noopener"
+                   class="group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200">
+                    <div class="flex-shrink-0 w-12 h-12 bg-blue-50 text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
+                        <i class="ph-fill ph-video-camera text-2xl"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Online Doctor Consultation</p>
+                        <p class="text-xs text-gray-500 mt-0.5">Meet a specialist via video call</p>
+                    </div>
+                    <div class="flex-shrink-0 text-gray-300 group-hover:text-[#0c2d74] transition-colors">
+                        <i class="ph ph-arrow-right text-lg"></i>
+                    </div>
+                </a>
 
-            <!-- Card 2: Online Consultation -->
-            <a href="https://acibademinternational.com/online-consultation/" target="_blank" rel="noopener"
-               class="group flex items-center gap-4 bg-white rounded-3xl border border-gray-100 shadow-sm p-6 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200 flex-1">
-                <div class="flex-shrink-0 w-12 h-12 bg-[#E6F0FA] text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
-                    <i class="ph-fill ph-video-camera text-2xl"></i>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-base font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Online Doctor Consultation</p>
-                    <p class="text-sm text-gray-500 mt-0.5">Meet a specialist via video call</p>
-                </div>
-                <i class="ph ph-arrow-right text-gray-300 group-hover:text-[#0c2d74] transition-colors flex-shrink-0"></i>
-            </a>
-
-            <!-- Card 3: Free Medical Consultation -->
-            <a href="https://acibademinternational.com/contact/" target="_blank" rel="noopener"
-               class="group flex items-center gap-4 bg-white rounded-3xl border border-gray-100 shadow-sm p-6 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200 flex-1">
-                <div class="flex-shrink-0 w-12 h-12 bg-[#E6F0FA] text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
-                    <i class="ph-fill ph-stethoscope text-2xl"></i>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-base font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Free Medical Consultation</p>
-                    <p class="text-sm text-gray-500 mt-0.5">Talk to our patient coordinators</p>
-                </div>
-                <i class="ph ph-arrow-right text-gray-300 group-hover:text-[#0c2d74] transition-colors flex-shrink-0"></i>
-            </a>
+                <!-- Card 3: Free Medical Consultation -->
+                <a href="https://acibademinternational.com/contact/" target="_blank" rel="noopener"
+                   class="group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200">
+                    <div class="flex-shrink-0 w-12 h-12 bg-blue-50 text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
+                        <i class="ph-fill ph-stethoscope text-2xl"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Free Medical Consultation</p>
+                        <p class="text-xs text-gray-500 mt-0.5">Talk to our patient coordinators</p>
+                    </div>
+                    <div class="flex-shrink-0 text-gray-300 group-hover:text-[#0c2d74] transition-colors">
+                        <i class="ph ph-arrow-right text-lg"></i>
+                    </div>
+                </a>
+            </div>
         </div>
 
     </div>
