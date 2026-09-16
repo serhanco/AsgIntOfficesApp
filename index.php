@@ -4,7 +4,7 @@ require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/functions.php';
 
 $offices = getAllOffices();
-$pageTitle = 'Find Your Nearest Office';
+$pageTitle = 'Find Nearest ACIBADEM';
 $currentPage = 'home';
 $needsMap = false;
 $metaDescription = 'Find the nearest Acıbadem International information office. Our global network spans ' . count(array_unique(array_column($offices, 'country'))) . ' countries with ' . count($offices) . '+ offices ready to assist you.';
@@ -14,8 +14,7 @@ require_once __DIR__ . '/includes/header.php';
 
 <div class="relative bg-gradient-to-br from-[#0c2d74] to-[#0A1C36] overflow-hidden">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
-        <i class="ph-fill ph-shield-plus text-6xl text-white mb-6"></i>
-        <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Find Your Nearest Office</h1>
+        <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Find Nearest ACIBADEM</h1>
         <p class="text-xl text-blue-100 max-w-2xl mx-auto mb-10">Our global network of <?= count($offices) ?>+ information offices across <?= count(array_unique(array_column($offices, 'country'))) ?> countries is here to assist you.</p>
         
         <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
