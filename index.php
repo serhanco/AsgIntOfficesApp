@@ -134,12 +134,12 @@ require_once __DIR__ . '/includes/header.php';
                     <i class="ph-fill ph-handshake text-3xl"></i>
                 </div>
                 <div>
-                    <h3 class="text-2xl font-bold text-[#0c2d74] mb-2">Contracted Institutions</h3>
+                    <h3 class="text-2xl font-bold text-[#0c2d74] mb-2">Insurance & Contracted Institutions</h3>
                     <p class="text-gray-600">We partner with leading global insurance and assistance providers to ensure seamless healthcare access for international patients.</p>
                 </div>
             </div>
             <a href="<?= getBaseUrl() ?>/contracted-institutions" class="flex-shrink-0 w-full md:w-auto text-center bg-[#0c2d74] hover:bg-[#1a4ba0] text-white px-8 py-4 rounded-xl font-bold transition-colors shadow-sm inline-flex items-center justify-center gap-2">
-                View All Partners <i class="ph ph-arrow-right"></i>
+                View All Institutions <i class="ph ph-arrow-right"></i>
             </a>
         </div>
 

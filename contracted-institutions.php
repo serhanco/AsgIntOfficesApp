@@ -3,7 +3,7 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/functions.php';
 
-$pageTitle = 'Contracted Institutions';
+$pageTitle = 'Insurance & Contracted Institutions';
 $currentPage = 'contracted-institutions';
 $metaDescription = 'Explore the list of international insurance and assistance companies partnered with Acıbadem Hospitals Group.';
 
@@ -84,7 +84,7 @@ $institutions = [
 
 <div class="relative bg-gradient-to-br from-[#0c2d74] to-[#0A1C36] overflow-hidden pt-32 pb-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-        <h1 class="text-4xl md:text-5xl font-bold text-white mb-6">Contracted Institutions</h1>
+        <h1 class="text-4xl md:text-5xl font-bold text-white mb-6">Insurance & Contracted Institutions</h1>
         <p class="text-xl text-blue-100 max-w-3xl mx-auto">We partner with leading global insurance and assistance providers to ensure seamless healthcare access for international patients.</p>
     </div>
 </div>

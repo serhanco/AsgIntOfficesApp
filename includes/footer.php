@@ -16,7 +16,7 @@
                         <li><a href="<?= getBaseUrl() ?>/" class="text-gray-400 hover:text-white transition-colors text-sm">Home</a></li>
                         <li><a href="<?= getBaseUrl() ?>/offices" class="text-gray-400 hover:text-white transition-colors text-sm">All Offices</a></li>
                         <li><a href="<?= getBaseUrl() ?>/map" class="text-gray-400 hover:text-white transition-colors text-sm">Global Map</a></li>
-                        <li><a href="<?= getBaseUrl() ?>/contracted-institutions" class="text-gray-400 hover:text-white transition-colors text-sm">Contracted Institutions</a></li>
+                        <li><a href="<?= getBaseUrl() ?>/contracted-institutions" class="text-gray-400 hover:text-white transition-colors text-sm">Insurance & Contracted Institutions</a></li>
                         <li><a href="https://partner.acibademinternational.com/london/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors text-sm">Become a Partner</a></li>
                         <li><a href="https://www.acibadem.com.tr/acibademonline/#/login" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors text-sm">Acıbadem Online</a></li>
                     </ul>
