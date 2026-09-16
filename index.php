@@ -27,7 +27,8 @@ require_once __DIR__ . '/includes/header.php';
                 <i class="ph-fill ph-navigation-arrow"></i>
                 Locate Nearest Acibadem
             </button>
-            <a href="<?= getBaseUrl() ?>/map" class="border-2 border-white/30 text-white hover:bg-white/10 font-semibold py-4 px-8 rounded-2xl transition-colors text-lg">
+            <a href="<?= getBaseUrl() ?>/map" class="border-2 border-white/30 text-white hover:bg-white/10 font-semibold py-4 px-8 rounded-2xl transition-colors text-lg flex items-center gap-2">
+                <i class="ph-fill ph-globe-hemisphere-west"></i>
                 See Acibadem on World Map
             </a>
         </div>
