@@ -81,7 +81,7 @@ require_once __DIR__ . '/includes/header.php';
         <!-- Recent Activities -->
         <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold text-[#0c2d74]">Recent Activities</h3>
+                <h3 class="text-xl font-bold text-[#0c2d74]">Recent Activities in <?= e($office['country']) ?></h3>
                 <span class="text-xs font-semibold bg-[#E6F0FA] text-[#0c2d74] px-3 py-1 rounded-full">2026</span>
             </div>
             <div class="space-y-4">
