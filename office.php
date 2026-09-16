@@ -23,7 +23,7 @@ require_once __DIR__ . '/includes/header.php';
 ?>
 
 <div class="relative h-72 md:h-[45vh] w-full bg-[#0A1C36] overflow-hidden">
-    <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1200" alt="Acibadem Office" class="absolute inset-0 w-full h-full object-cover opacity-50">
+    <img src="<?= getBaseUrl() ?>/assets/images/office-hero.webp" alt="Acibadem Office" class="absolute inset-0 w-full h-full object-cover opacity-70">
     <div class="absolute inset-0 bg-gradient-to-t from-[#0A1C36] via-transparent to-transparent"></div>
     <div class="absolute bottom-10 left-0 w-full">
         <div class="max-w-5xl mx-auto px-4">
