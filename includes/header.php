@@ -14,6 +14,7 @@ $ogImage = $ogImage ?? (getBaseUrl() . '/assets/images/og-logo.png');
     <title><?= htmlspecialchars($pageTitle) ?> | Acıbadem International Offices</title>
     
     <meta name="description" content="<?= htmlspecialchars($metaDescription) ?>">
+    <meta name="robots" content="noindex, nofollow">
     
     <!-- Open Graph -->
     <meta property="og:title" content="<?= htmlspecialchars($pageTitle) ?> | Acıbadem International Offices">
