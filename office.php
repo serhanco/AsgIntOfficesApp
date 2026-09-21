@@ -22,20 +22,28 @@ $metaDescription = 'Acıbadem Information Office in ' . $office['display_name'] 
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<div class="relative h-72 md:h-[45vh] w-full bg-[#0A1C36] overflow-hidden">
-    <img src="<?= getBaseUrl() ?>/assets/images/office-hero.webp" alt="Acibadem Office" class="absolute inset-0 w-full h-full object-cover opacity-70">
-    <div class="absolute inset-0 bg-gradient-to-t from-[#0A1C36] via-transparent to-transparent"></div>
-    <div class="absolute bottom-10 left-0 w-full">
-        <div class="max-w-5xl mx-auto px-4">
-            <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-full mb-3 border border-white/20">
-                <?= getFlagImg($office['country'], $office['country_code']) ?>
-                <span class="text-white text-sm font-semibold"><?= e($office['country']) ?></span>
+<div class="w-full bg-[#0A1C36]">
+    <div class="relative h-72 md:h-[45vh] lg:max-h-[500px] w-full max-w-[1920px] mx-auto overflow-hidden">
+        <img src="<?= getBaseUrl() ?>/assets/images/office-hero.webp" alt="Acibadem Office" class="absolute inset-0 w-full h-full object-cover opacity-70">
+        
+        <!-- Edge Fades for Ultrawide Screens -->
+        <div class="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-[#0A1C36] to-transparent hidden 2xl:block pointer-events-none z-0"></div>
+        <div class="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-[#0A1C36] to-transparent hidden 2xl:block pointer-events-none z-0"></div>
+        
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0A1C36] via-[#0A1C36]/30 to-transparent pointer-events-none z-0"></div>
+        
+        <div class="absolute bottom-10 left-0 w-full z-10">
+            <div class="max-w-5xl mx-auto px-4">
+                <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-full mb-3 border border-white/20">
+                    <?= getFlagImg($office['country'], $office['country_code']) ?>
+                    <span class="text-white text-sm font-semibold"><?= e($office['country']) ?></span>
+                </div>
+                <h1 class="text-3xl md:text-5xl font-bold text-white mb-2"><?= e($office['display_name']) ?></h1>
+                <p class="text-gray-300 text-sm md:text-base max-w-2xl flex items-center gap-2">
+                    <i class="ph-fill ph-map-pin"></i>
+                    <?= e($office['address']) ?>
+                </p>
             </div>
-            <h1 class="text-3xl md:text-5xl font-bold text-white mb-2"><?= e($office['display_name']) ?></h1>
-            <p class="text-gray-300 text-sm md:text-base max-w-2xl flex items-center gap-2">
-                <i class="ph-fill ph-map-pin"></i>
-                <?= e($office['address']) ?>
-            </p>
         </div>
     </div>
 </div>
