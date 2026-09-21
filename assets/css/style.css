@@ -31,12 +31,12 @@
   border: none !important;
   border-radius: 16px !important;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12) !important;
-  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-family: 'Inter', sans-serif !important;
   padding: 12px 16px !important;
   color: #0c2d74;
 }
 .custom-tooltip::before { display: none !important; }
-.leaflet-container { font-family: 'Plus Jakarta Sans', sans-serif; }
+.leaflet-container { font-family: 'Inter', sans-serif; }
 
 /* Card hover effects */
 .office-card {
