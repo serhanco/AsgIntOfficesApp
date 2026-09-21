@@ -93,7 +93,7 @@ return [
 
     // Office detail — CTA buttons (hero bottom)
     'office_cta_call'     => 'Позвонить',
-    'office_cta_email'    => 'Написать',
+    'office_cta_email'    => 'Email',
     'office_cta_route'    => 'Маршрут',
 
     // Office detail — Recent Activities
