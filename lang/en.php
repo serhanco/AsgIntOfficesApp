@@ -83,4 +83,11 @@ return [
     'js_whatsapp'         => 'WhatsApp',
     'js_email'            => 'Email',
     'js_route'            => 'Route',
+
+    // Footer
+    'footer_quick_links'  => 'Quick Links',
+    'footer_home'         => 'Home',
+    'footer_contact'      => 'Contact',
+    'footer_partner'      => 'Become a Partner',
+    'footer_copyright'    => '&copy; 2026 Acıbadem Healthcare Group. All rights reserved.',
 ];
