@@ -48,13 +48,13 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="w-12 h-12 bg-blue-50 text-[#0c2d74] rounded-full flex items-center justify-center mx-auto mb-2 group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
                     <i class="ph-fill ph-phone text-2xl"></i>
                 </div>
-                <span class="block text-sm font-bold text-gray-800">Call Now</span>
+                <span class="block text-sm font-bold text-gray-800"><?= __('office_cta_call') ?></span>
             </a>
             <a href="https://wa.me/<?= preg_replace('/[^0-9]/', '', $office['phone']) ?>" target="_blank" class="cta-btn bg-white rounded-2xl shadow-lg p-4 text-center transform transition hover:-translate-y-1 hover:shadow-xl group border border-gray-100">
                 <div class="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-2 group-hover:bg-green-600 group-hover:text-white transition-colors">
                     <i class="ph-fill ph-whatsapp-logo text-2xl"></i>
                 </div>
-                <span class="block text-sm font-bold text-gray-800">WhatsApp</span>
+                <span class="block text-sm font-bold text-gray-800"><?= __('js_whatsapp') ?></span>
             </a>
         <?php endif; ?>
 
@@ -63,7 +63,7 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="w-12 h-12 bg-blue-50 text-[#0c2d74] rounded-full flex items-center justify-center mx-auto mb-2 group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
                     <i class="ph-fill ph-envelope-simple text-2xl"></i>
                 </div>
-                <span class="block text-sm font-bold text-gray-800">Email Us</span>
+                <span class="block text-sm font-bold text-gray-800"><?= __('office_cta_email') ?></span>
             </a>
         <?php endif; ?>
         
@@ -71,7 +71,7 @@ require_once __DIR__ . '/includes/header.php';
             <div class="w-12 h-12 bg-blue-50 text-[#0c2d74] rounded-full flex items-center justify-center mx-auto mb-2 group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
                 <i class="ph-fill ph-navigation-arrow text-2xl"></i>
             </div>
-            <span class="block text-sm font-bold text-gray-800">Get Route</span>
+            <span class="block text-sm font-bold text-gray-800"><?= __('office_cta_route') ?></span>
         </a>
     </div>
 
@@ -81,7 +81,7 @@ require_once __DIR__ . '/includes/header.php';
         <!-- Recent Activities -->
         <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold text-[#0c2d74]">Recent Activities in <?= e($office['country']) ?></h3>
+                <h3 class="text-xl font-bold text-[#0c2d74]"><?= __('office_activities_h', e($office['country'])) ?></h3>
                 <span class="text-xs font-semibold bg-[#E6F0FA] text-[#0c2d74] px-3 py-1 rounded-full">2026</span>
             </div>
             <div class="space-y-4">
@@ -93,10 +93,10 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2 mb-1">
-                            <span class="text-xs font-bold uppercase tracking-wide text-[#1a4ba0] group-hover:text-blue-200 transition-colors">Meet the Doctor</span>
+                            <span class="text-xs font-bold uppercase tracking-wide text-[#1a4ba0] group-hover:text-blue-200 transition-colors"><?= __('act_tag_doctor') ?></span>
                         </div>
-                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white transition-colors leading-snug">Prof. Yaşar Çolak</p>
-                        <p class="text-xs text-gray-500 group-hover:text-blue-200 transition-colors mt-1">Gastroenterology, Endoscopy and Nutrition</p>
+                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white transition-colors leading-snug"><?= __('act_doc_title') ?></p>
+                        <p class="text-xs text-gray-500 group-hover:text-blue-200 transition-colors mt-1"><?= __('act_doc_spec') ?></p>
                     </div>
                     <div class="flex-shrink-0 self-center text-gray-300 group-hover:text-white transition-colors">
                         <i class="ph ph-arrow-right text-lg"></i>
@@ -110,10 +110,10 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2 mb-1">
-                            <span class="text-xs font-bold uppercase tracking-wide text-purple-700 group-hover:text-purple-200 transition-colors">Presentation</span>
+                            <span class="text-xs font-bold uppercase tracking-wide text-purple-700 group-hover:text-purple-200 transition-colors"><?= __('act_tag_presentation') ?></span>
                         </div>
-                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white transition-colors leading-snug">Robotic Single Port Surgery</p>
-                        <p class="text-xs text-gray-500 group-hover:text-purple-200 transition-colors mt-1">Latest techniques in minimal-invasive care</p>
+                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white transition-colors leading-snug"><?= __('act_pres_title') ?></p>
+                        <p class="text-xs text-gray-500 group-hover:text-purple-200 transition-colors mt-1"><?= __('act_pres_desc') ?></p>
                     </div>
                     <div class="flex-shrink-0 self-center text-gray-300 group-hover:text-white transition-colors">
                         <i class="ph ph-arrow-right text-lg"></i>
@@ -127,10 +127,10 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2 mb-1">
-                            <span class="text-xs font-bold uppercase tracking-wide text-emerald-700 group-hover:text-emerald-200 transition-colors">Exhibition</span>
+                            <span class="text-xs font-bold uppercase tracking-wide text-emerald-700 group-hover:text-emerald-200 transition-colors"><?= __('act_tag_exhibition') ?></span>
                         </div>
-                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white transition-colors leading-snug">Growing B2B Network</p>
-                        <p class="text-xs text-gray-500 group-hover:text-emerald-200 transition-colors mt-1">International healthcare partnerships fair</p>
+                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white transition-colors leading-snug"><?= __('act_exh_title') ?></p>
+                        <p class="text-xs text-gray-500 group-hover:text-emerald-200 transition-colors mt-1"><?= __('act_exh_desc') ?></p>
                     </div>
                     <div class="flex-shrink-0 self-center text-gray-300 group-hover:text-white transition-colors">
                         <i class="ph ph-arrow-right text-lg"></i>
@@ -143,8 +143,8 @@ require_once __DIR__ . '/includes/header.php';
         <!-- Our Team -->
         <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold text-[#0c2d74]">Our Team</h3>
-                <span class="text-xs font-semibold bg-[#E6F0FA] text-[#0c2d74] px-3 py-1 rounded-full">3 members</span>
+                <h3 class="text-xl font-bold text-[#0c2d74]"><?= __('office_team_h') ?></h3>
+                <span class="text-xs font-semibold bg-[#E6F0FA] text-[#0c2d74] px-3 py-1 rounded-full"><?= __('office_team_count') ?></span>
             </div>
             <div class="space-y-4">
 
@@ -156,7 +156,7 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Cem Üstündağ</p>
-                        <p class="text-xs text-gray-500 mt-0.5">Office Coordinator</p>
+                        <p class="text-xs text-gray-500 mt-0.5"><?= __('team_role_coord') ?></p>
                         <div class="flex flex-wrap gap-1 mt-2">
                             <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-[#0c2d74] px-2 py-0.5 rounded-full font-medium"><i class="ph-fill ph-translate text-xs"></i> Turkish</span>
                             <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-[#0c2d74] px-2 py-0.5 rounded-full font-medium"><i class="ph-fill ph-translate text-xs"></i> English</span>
@@ -184,7 +184,7 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Erim Ekiz</p>
-                        <p class="text-xs text-gray-500 mt-0.5">Patient Relations</p>
+                        <p class="text-xs text-gray-500 mt-0.5"><?= __('team_role_patient') ?></p>
                         <div class="flex flex-wrap gap-1 mt-2">
                             <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-[#0c2d74] px-2 py-0.5 rounded-full font-medium"><i class="ph-fill ph-translate text-xs"></i> Turkish</span>
                             <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-[#0c2d74] px-2 py-0.5 rounded-full font-medium"><i class="ph-fill ph-translate text-xs"></i> English</span>
@@ -213,7 +213,7 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Ionea Ruxandra</p>
-                        <p class="text-xs text-gray-500 mt-0.5">International Liaison</p>
+                        <p class="text-xs text-gray-500 mt-0.5"><?= __('team_role_liaison') ?></p>
                         <div class="flex flex-wrap gap-1 mt-2">
                             <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-[#0c2d74] px-2 py-0.5 rounded-full font-medium"><i class="ph-fill ph-translate text-xs"></i> Romanian</span>
                             <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-[#0c2d74] px-2 py-0.5 rounded-full font-medium"><i class="ph-fill ph-translate text-xs"></i> English</span>
@@ -248,57 +248,57 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="w-10 h-10 bg-[#E6F0FA] text-[#0c2d74] rounded-xl flex items-center justify-center">
                     <i class="ph-fill ph-question text-xl"></i>
                 </div>
-                <h3 class="text-xl font-bold text-[#0c2d74]">Frequently Asked Questions</h3>
+                <h3 class="text-xl font-bold text-[#0c2d74]"><?= __('office_faq_h') ?></h3>
             </div>
             <div class="divide-y divide-gray-100" id="faq-accordion">
 
                 <div class="faq-item py-4">
                     <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
-                        <span class="text-sm font-semibold text-gray-900">Is the office a clinic where I can be treated?</span>
+                        <span class="text-sm font-semibold text-gray-900"><?= __('faq_q1') ?></span>
                         <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
                     </button>
                     <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
-                        No. It is a patient-support and information office. Your treatment takes place at an Acıbadem hospital in Turkey. The office team guides you through the entire process — from your first enquiry to your follow-up care after returning home.
+                        <?= __('faq_a1') ?>
                     </div>
                 </div>
 
                 <div class="faq-item py-4">
                     <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
-                        <span class="text-sm font-semibold text-gray-900">How much will my treatment cost?</span>
+                        <span class="text-sm font-semibold text-gray-900"><?= __('faq_q2') ?></span>
                         <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
                     </button>
                     <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
-                        You receive a personalised, itemised cost estimate after your case is reviewed by the relevant specialist. Prices are confirmed only after a consultation — there is no obligation before that point.
+                        <?= __('faq_a2') ?>
                     </div>
                 </div>
 
                 <div class="faq-item py-4">
                     <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
-                        <span class="text-sm font-semibold text-gray-900">How do I get a second opinion or online consultation?</span>
+                        <span class="text-sm font-semibold text-gray-900"><?= __('faq_q3') ?></span>
                         <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
                     </button>
                     <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
-                        Send your medical reports, scans and test results to the office team by WhatsApp or email. The team will forward them to the relevant Acıbadem specialist and arrange either an online video consultation or a written second opinion — before you travel.
+                        <?= __('faq_a3') ?>
                     </div>
                 </div>
 
                 <div class="faq-item py-4">
                     <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
-                        <span class="text-sm font-semibold text-gray-900">Do I need a visa to travel to Turkey?</span>
+                        <span class="text-sm font-semibold text-gray-900"><?= __('faq_q4') ?></span>
                         <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
                     </button>
                     <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
-                        Entry requirements depend on your nationality. Please check the current Turkey entry rules for your country. The office can provide an official invitation letter from Acıbadem where one is needed for visa or entry formalities.
+                        <?= __('faq_a4') ?>
                     </div>
                 </div>
 
                 <div class="faq-item py-4">
                     <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
-                        <span class="text-sm font-semibold text-gray-900">How can I be sure Acıbadem hospitals are safe?</span>
+                        <span class="text-sm font-semibold text-gray-900"><?= __('faq_q5') ?></span>
                         <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
                     </button>
                     <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
-                        Acıbadem operates JCI-accredited hospitals held to international quality and patient-safety standards — the same accreditation used by leading hospitals in the US, UK and across Europe. Each facility is independently audited and certified.
+                        <?= __('faq_a5') ?>
                     </div>
                 </div>
 
@@ -308,8 +308,8 @@ require_once __DIR__ . '/includes/header.php';
         <!-- Quick Access -->
         <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold text-[#0c2d74]">Quick Access</h3>
-                <span class="text-xs font-semibold bg-[#E6F0FA] text-[#0c2d74] px-3 py-1 rounded-full">3 options</span>
+                <h3 class="text-xl font-bold text-[#0c2d74]"><?= __('office_quick_h') ?></h3>
+                <span class="text-xs font-semibold bg-[#E6F0FA] text-[#0c2d74] px-3 py-1 rounded-full"><?= __('office_quick_count') ?></span>
             </div>
             
             <div class="flex flex-col gap-4">
@@ -320,8 +320,8 @@ require_once __DIR__ . '/includes/header.php';
                         <i class="ph-fill ph-microscope text-2xl"></i>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Get a Second Opinion</p>
-                        <p class="text-xs text-gray-500 mt-0.5">Send your reports & get expert review</p>
+                        <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors"><?= __('quick_2nd_opinion_h') ?></p>
+                        <p class="text-xs text-gray-500 mt-0.5"><?= __('quick_2nd_opinion_p') ?></p>
                     </div>
                     <div class="flex-shrink-0 text-gray-300 group-hover:text-[#0c2d74] transition-colors">
                         <i class="ph ph-arrow-right text-lg"></i>
@@ -335,8 +335,8 @@ require_once __DIR__ . '/includes/header.php';
                         <i class="ph-fill ph-video-camera text-2xl"></i>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Online Doctor Consultation</p>
-                        <p class="text-xs text-gray-500 mt-0.5">Meet a specialist via video call</p>
+                        <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors"><?= __('quick_online_h') ?></p>
+                        <p class="text-xs text-gray-500 mt-0.5"><?= __('quick_online_p') ?></p>
                     </div>
                     <div class="flex-shrink-0 text-gray-300 group-hover:text-[#0c2d74] transition-colors">
                         <i class="ph ph-arrow-right text-lg"></i>

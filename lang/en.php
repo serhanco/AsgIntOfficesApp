@@ -90,4 +90,49 @@ return [
     'footer_contact'      => 'Contact',
     'footer_partner'      => 'Become a Partner',
     'footer_copyright'    => '&copy; 2026 Acıbadem Healthcare Group. All rights reserved.',
+
+    // Office detail — CTA buttons (hero bottom)
+    'office_cta_call'     => 'Call Now',
+    'office_cta_email'    => 'Email Us',
+    'office_cta_route'    => 'Get Route',
+
+    // Office detail — Recent Activities
+    'office_activities_h' => 'Recent Activities in %s',
+    'act_tag_doctor'      => 'Meet the Doctor',
+    'act_tag_presentation'=> 'Presentation',
+    'act_tag_exhibition'  => 'Exhibition',
+    'act_doc_title'       => 'Prof. Yaşar Çolak',
+    'act_doc_spec'        => 'Gastroenterology, Endoscopy and Nutrition',
+    'act_pres_title'      => 'Robotic Single Port Surgery',
+    'act_pres_desc'       => 'Latest techniques in minimal-invasive care',
+    'act_exh_title'       => 'Growing B2B Network',
+    'act_exh_desc'        => 'International healthcare partnerships fair',
+
+    // Office detail — Our Team
+    'office_team_h'       => 'Our Team',
+    'office_team_count'   => '3 members',
+    'team_role_coord'     => 'Office Coordinator',
+    'team_role_patient'   => 'Patient Relations',
+    'team_role_liaison'   => 'International Liaison',
+
+    // Office detail — FAQ
+    'office_faq_h'        => 'Frequently Asked Questions',
+    'faq_q1'              => 'Is the office a clinic where I can be treated?',
+    'faq_a1'              => 'No. It is a patient-support and information office. Your treatment takes place at an Acıbadem hospital in Turkey. The office team guides you through the entire process — from your first enquiry to your follow-up care after returning home.',
+    'faq_q2'              => 'How much will my treatment cost?',
+    'faq_a2'              => 'You receive a personalised, itemised cost estimate after your case is reviewed by the relevant specialist. Prices are confirmed only after a consultation — there is no obligation before that point.',
+    'faq_q3'              => 'How do I get a second opinion or online consultation?',
+    'faq_a3'              => 'Send your medical reports, scans and test results to the office team by WhatsApp or email. The team will forward them to the relevant Acıbadem specialist and arrange either an online video consultation or a written second opinion — before you travel.',
+    'faq_q4'              => 'Do I need a visa to travel to Turkey?',
+    'faq_a4'              => 'Entry requirements depend on your nationality. Please check the current Turkey entry rules for your country. The office can provide an official invitation letter from Acıbadem where one is needed for visa or entry formalities.',
+    'faq_q5'              => 'How can I be sure Acıbadem hospitals are safe?',
+    'faq_a5'              => 'Acıbadem operates JCI-accredited hospitals held to international quality and patient-safety standards — the same accreditation used by leading hospitals in the US, UK and across Europe. Each facility is independently audited and certified.',
+
+    // Office detail — Quick Access
+    'office_quick_h'      => 'Quick Access',
+    'office_quick_count'  => '3 options',
+    'quick_2nd_opinion_h' => 'Get a Second Opinion',
+    'quick_2nd_opinion_p' => 'Send your reports & get expert review',
+    'quick_online_h'      => 'Online Doctor Consultation',
+    'quick_online_p'      => 'Meet a specialist via video call',
 ];
