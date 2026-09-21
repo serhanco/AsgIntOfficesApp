@@ -362,6 +362,25 @@ require_once __DIR__ . '/includes/header.php';
 
     </div>
 
+    <!-- Contracted Institutions CTA -->
+    <div class="mb-8 relative overflow-hidden bg-gradient-to-br from-[#0c2d74] to-[#0A1C36] rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 group shadow-2xl shadow-blue-900/20">
+        <i class="ph-fill ph-handshake absolute -right-8 -bottom-8 text-[12rem] text-white opacity-5 group-hover:scale-110 group-hover:opacity-10 transition-all duration-700 pointer-events-none"></i>
+        
+        <div class="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-6 text-center md:text-left">
+            <div class="w-16 h-16 bg-white/10 backdrop-blur text-white rounded-2xl flex items-center justify-center flex-shrink-0 border border-white/10">
+                <i class="ph-fill ph-shield-check text-3xl"></i>
+            </div>
+            <div>
+                <h3 class="text-2xl md:text-3xl font-bold text-white mb-3"><?= __('inst_card_h') ?></h3>
+                <p class="text-blue-100 text-sm md:text-base max-w-2xl leading-relaxed"><?= __('inst_card_p') ?></p>
+            </div>
+        </div>
+        
+        <a href="<?= getBaseUrl() ?>/contracted-institutions" class="relative z-10 flex-shrink-0 w-full md:w-auto text-center bg-white text-[#0c2d74] hover:bg-gray-50 px-8 py-4 rounded-xl font-bold transition-transform shadow-lg inline-flex items-center justify-center gap-2 group-hover:-translate-y-1">
+            <?= __('inst_card_btn') ?> <i class="ph ph-arrow-right"></i>
+        </a>
+    </div>
+
     <!-- ===== Become a Partner CTA ===== -->
     <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:px-8 md:py-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 group hover:border-[#0c2d74] transition-colors">
         <div class="flex items-center gap-5">
