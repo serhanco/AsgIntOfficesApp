@@ -79,7 +79,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
 
         <!-- Recent Activities -->
-        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-xl font-bold text-[#0c2d74]"><?= __('office_activities_h', e($office['country'])) ?></h3>
                 <span class="text-xs font-semibold bg-[#E6F0FA] text-[#0c2d74] px-3 py-1 rounded-full">2026</span>
@@ -87,52 +87,55 @@ require_once __DIR__ . '/includes/header.php';
             <div class="space-y-4">
 
                 <!-- Activity 1: Meet the Doctor -->
-                <div class="group flex gap-4 p-4 rounded-2xl bg-blue-50 hover:bg-[#0c2d74] transition-all duration-300 cursor-pointer">
-                    <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-[#0c2d74] group-hover:bg-white flex items-center justify-center transition-colors">
+                <div class="relative overflow-hidden group flex gap-4 p-4 rounded-2xl bg-blue-50 hover:bg-[#0c2d74] hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+                    <i class="ph-fill ph-stethoscope absolute -right-2 -bottom-2 text-6xl text-white opacity-0 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500 pointer-events-none"></i>
+                    <div class="relative z-10 flex-shrink-0 w-12 h-12 rounded-xl bg-[#0c2d74] group-hover:bg-white flex items-center justify-center transition-colors">
                         <i class="ph-fill ph-stethoscope text-2xl text-white group-hover:text-[#0c2d74]"></i>
                     </div>
-                    <div class="flex-1 min-w-0">
+                    <div class="relative z-10 flex-1 min-w-0">
                         <div class="flex items-center gap-2 mb-1">
                             <span class="text-xs font-bold uppercase tracking-wide text-[#1a4ba0] group-hover:text-blue-200 transition-colors"><?= __('act_tag_doctor') ?></span>
                         </div>
                         <p class="text-sm font-semibold text-gray-900 group-hover:text-white transition-colors leading-snug"><?= __('act_doc_title') ?></p>
                         <p class="text-xs text-gray-500 group-hover:text-blue-200 transition-colors mt-1"><?= __('act_doc_spec') ?></p>
                     </div>
-                    <div class="flex-shrink-0 self-center text-gray-300 group-hover:text-white transition-colors">
+                    <div class="relative z-10 flex-shrink-0 self-center text-gray-300 group-hover:text-white transition-colors">
                         <i class="ph ph-arrow-right text-lg"></i>
                     </div>
                 </div>
 
                 <!-- Activity 2: Presentation -->
-                <div class="group flex gap-4 p-4 rounded-2xl bg-purple-50 hover:bg-purple-700 transition-all duration-300 cursor-pointer">
-                    <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-purple-700 group-hover:bg-white flex items-center justify-center transition-colors">
+                <div class="relative overflow-hidden group flex gap-4 p-4 rounded-2xl bg-purple-50 hover:bg-purple-700 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+                    <i class="ph-fill ph-presentation-chart absolute -right-2 -bottom-2 text-6xl text-white opacity-0 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500 pointer-events-none"></i>
+                    <div class="relative z-10 flex-shrink-0 w-12 h-12 rounded-xl bg-purple-700 group-hover:bg-white flex items-center justify-center transition-colors">
                         <i class="ph-fill ph-presentation-chart text-2xl text-white group-hover:text-purple-700"></i>
                     </div>
-                    <div class="flex-1 min-w-0">
+                    <div class="relative z-10 flex-1 min-w-0">
                         <div class="flex items-center gap-2 mb-1">
                             <span class="text-xs font-bold uppercase tracking-wide text-purple-700 group-hover:text-purple-200 transition-colors"><?= __('act_tag_presentation') ?></span>
                         </div>
                         <p class="text-sm font-semibold text-gray-900 group-hover:text-white transition-colors leading-snug"><?= __('act_pres_title') ?></p>
                         <p class="text-xs text-gray-500 group-hover:text-purple-200 transition-colors mt-1"><?= __('act_pres_desc') ?></p>
                     </div>
-                    <div class="flex-shrink-0 self-center text-gray-300 group-hover:text-white transition-colors">
+                    <div class="relative z-10 flex-shrink-0 self-center text-gray-300 group-hover:text-white transition-colors">
                         <i class="ph ph-arrow-right text-lg"></i>
                     </div>
                 </div>
 
                 <!-- Activity 3: Exhibition -->
-                <div class="group flex gap-4 p-4 rounded-2xl bg-emerald-50 hover:bg-emerald-700 transition-all duration-300 cursor-pointer">
-                    <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-emerald-600 group-hover:bg-white flex items-center justify-center transition-colors">
+                <div class="relative overflow-hidden group flex gap-4 p-4 rounded-2xl bg-emerald-50 hover:bg-emerald-700 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+                    <i class="ph-fill ph-handshake absolute -right-2 -bottom-2 text-6xl text-white opacity-0 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500 pointer-events-none"></i>
+                    <div class="relative z-10 flex-shrink-0 w-12 h-12 rounded-xl bg-emerald-600 group-hover:bg-white flex items-center justify-center transition-colors">
                         <i class="ph-fill ph-handshake text-2xl text-white group-hover:text-emerald-700"></i>
                     </div>
-                    <div class="flex-1 min-w-0">
+                    <div class="relative z-10 flex-1 min-w-0">
                         <div class="flex items-center gap-2 mb-1">
                             <span class="text-xs font-bold uppercase tracking-wide text-emerald-700 group-hover:text-emerald-200 transition-colors"><?= __('act_tag_exhibition') ?></span>
                         </div>
                         <p class="text-sm font-semibold text-gray-900 group-hover:text-white transition-colors leading-snug"><?= __('act_exh_title') ?></p>
                         <p class="text-xs text-gray-500 group-hover:text-emerald-200 transition-colors mt-1"><?= __('act_exh_desc') ?></p>
                     </div>
-                    <div class="flex-shrink-0 self-center text-gray-300 group-hover:text-white transition-colors">
+                    <div class="relative z-10 flex-shrink-0 self-center text-gray-300 group-hover:text-white transition-colors">
                         <i class="ph ph-arrow-right text-lg"></i>
                     </div>
                 </div>
@@ -149,12 +152,13 @@ require_once __DIR__ . '/includes/header.php';
             <div class="space-y-4">
 
                 <!-- Member 1 -->
-                <div class="flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200 group">
-                    <div class="flex-shrink-0 relative">
+                <div class="relative overflow-hidden flex items-center gap-4 p-4 rounded-2xl bg-white border border-gray-100 hover:border-[#0c2d74] hover:shadow-lg transition-all duration-300 group hover:-translate-y-1">
+                    <i class="ph-fill ph-user absolute -right-4 -bottom-4 text-7xl text-gray-50 opacity-0 group-hover:opacity-100 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
+                    <div class="relative z-10 flex-shrink-0 relative">
                         <img src="<?= getBaseUrl() ?>/assets/images/team-cem-ustundag.jpg" alt="Cem Üstündağ" class="w-14 h-14 rounded-2xl object-cover object-top shadow-sm">
                         <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 border-2 border-white rounded-full"></span>
                     </div>
-                    <div class="flex-1 min-w-0">
+                    <div class="relative z-10 flex-1 min-w-0">
                         <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Cem Üstündağ</p>
                         <p class="text-xs text-gray-500 mt-0.5"><?= __('team_role_coord') ?></p>
                         <div class="flex flex-wrap gap-1 mt-2">
@@ -162,7 +166,7 @@ require_once __DIR__ . '/includes/header.php';
                             <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-[#0c2d74] px-2 py-0.5 rounded-full font-medium"><i class="ph-fill ph-translate text-xs"></i> English</span>
                         </div>
                     </div>
-                    <div class="flex items-center gap-3 flex-shrink-0">
+                    <div class="relative z-10 flex items-center gap-3 flex-shrink-0">
                         <?php if (!empty($office['phone'])): ?>
                         <a href="tel:<?= preg_replace('/[^0-9+]/', '', $office['phone']) ?>" class="text-gray-300 hover:text-[#0c2d74] transition-colors" title="Call Office">
                             <i class="ph-fill ph-phone text-xl"></i>
@@ -177,12 +181,13 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
 
                 <!-- Member 2 -->
-                <div class="flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200 group">
-                    <div class="flex-shrink-0 relative">
+                <div class="relative overflow-hidden flex items-center gap-4 p-4 rounded-2xl bg-white border border-gray-100 hover:border-[#0c2d74] hover:shadow-lg transition-all duration-300 group hover:-translate-y-1">
+                    <i class="ph-fill ph-user absolute -right-4 -bottom-4 text-7xl text-gray-50 opacity-0 group-hover:opacity-100 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
+                    <div class="relative z-10 flex-shrink-0 relative">
                         <img src="<?= getBaseUrl() ?>/assets/images/team-erim-ekiz.jpg" alt="Erim Ekiz" class="w-14 h-14 rounded-2xl object-cover object-top shadow-sm">
                         <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 border-2 border-white rounded-full"></span>
                     </div>
-                    <div class="flex-1 min-w-0">
+                    <div class="relative z-10 flex-1 min-w-0">
                         <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Erim Ekiz</p>
                         <p class="text-xs text-gray-500 mt-0.5"><?= __('team_role_patient') ?></p>
                         <div class="flex flex-wrap gap-1 mt-2">
@@ -191,7 +196,7 @@ require_once __DIR__ . '/includes/header.php';
                             <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-[#0c2d74] px-2 py-0.5 rounded-full font-medium"><i class="ph-fill ph-translate text-xs"></i> German</span>
                         </div>
                     </div>
-                    <div class="flex items-center gap-3 flex-shrink-0">
+                    <div class="relative z-10 flex items-center gap-3 flex-shrink-0">
                         <?php if (!empty($office['phone'])): ?>
                         <a href="tel:<?= preg_replace('/[^0-9+]/', '', $office['phone']) ?>" class="text-gray-300 hover:text-[#0c2d74] transition-colors" title="Call Office">
                             <i class="ph-fill ph-phone text-xl"></i>
@@ -206,12 +211,13 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
 
                 <!-- Member 3 -->
-                <div class="flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200 group">
-                    <div class="flex-shrink-0 relative">
+                <div class="relative overflow-hidden flex items-center gap-4 p-4 rounded-2xl bg-white border border-gray-100 hover:border-[#0c2d74] hover:shadow-lg transition-all duration-300 group hover:-translate-y-1">
+                    <i class="ph-fill ph-user absolute -right-4 -bottom-4 text-7xl text-gray-50 opacity-0 group-hover:opacity-100 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
+                    <div class="relative z-10 flex-shrink-0 relative">
                         <img src="<?= getBaseUrl() ?>/assets/images/team-ionea-ruxandra.jpg" alt="Ionea Ruxandra" class="w-14 h-14 rounded-2xl object-cover object-top shadow-sm">
                         <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-yellow-400 border-2 border-white rounded-full"></span>
                     </div>
-                    <div class="flex-1 min-w-0">
+                    <div class="relative z-10 flex-1 min-w-0">
                         <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Ionea Ruxandra</p>
                         <p class="text-xs text-gray-500 mt-0.5"><?= __('team_role_liaison') ?></p>
                         <div class="flex flex-wrap gap-1 mt-2">
@@ -220,7 +226,7 @@ require_once __DIR__ . '/includes/header.php';
                             <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-[#0c2d74] px-2 py-0.5 rounded-full font-medium"><i class="ph-fill ph-translate text-xs"></i> French</span>
                         </div>
                     </div>
-                    <div class="flex items-center gap-3 flex-shrink-0">
+                    <div class="relative z-10 flex items-center gap-3 flex-shrink-0">
                         <?php if (!empty($office['phone'])): ?>
                         <a href="tel:<?= preg_replace('/[^0-9+]/', '', $office['phone']) ?>" class="text-gray-300 hover:text-[#0c2d74] transition-colors" title="Call Office">
                             <i class="ph-fill ph-phone text-xl"></i>
@@ -252,9 +258,9 @@ require_once __DIR__ . '/includes/header.php';
             </div>
             <div class="divide-y divide-gray-100" id="faq-accordion">
 
-                <div class="faq-item py-4">
+                <div class="faq-item py-4 transition-all duration-300 rounded-2xl px-4 -mx-4 hover:bg-blue-50/50 group">
                     <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
-                        <span class="text-sm font-semibold text-gray-900"><?= __('faq_q1') ?></span>
+                        <span class="text-sm font-semibold text-gray-900 group-[.is-open]:text-[#0c2d74] transition-colors duration-200"><?= __('faq_q1') ?></span>
                         <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
                     </button>
                     <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
@@ -262,9 +268,9 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                 </div>
 
-                <div class="faq-item py-4">
+                <div class="faq-item py-4 transition-all duration-300 rounded-2xl px-4 -mx-4 hover:bg-blue-50/50 group">
                     <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
-                        <span class="text-sm font-semibold text-gray-900"><?= __('faq_q2') ?></span>
+                        <span class="text-sm font-semibold text-gray-900 group-[.is-open]:text-[#0c2d74] transition-colors duration-200"><?= __('faq_q2') ?></span>
                         <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
                     </button>
                     <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
@@ -272,9 +278,9 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                 </div>
 
-                <div class="faq-item py-4">
+                <div class="faq-item py-4 transition-all duration-300 rounded-2xl px-4 -mx-4 hover:bg-blue-50/50 group">
                     <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
-                        <span class="text-sm font-semibold text-gray-900"><?= __('faq_q3') ?></span>
+                        <span class="text-sm font-semibold text-gray-900 group-[.is-open]:text-[#0c2d74] transition-colors duration-200"><?= __('faq_q3') ?></span>
                         <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
                     </button>
                     <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
@@ -282,9 +288,9 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                 </div>
 
-                <div class="faq-item py-4">
+                <div class="faq-item py-4 transition-all duration-300 rounded-2xl px-4 -mx-4 hover:bg-blue-50/50 group">
                     <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
-                        <span class="text-sm font-semibold text-gray-900"><?= __('faq_q4') ?></span>
+                        <span class="text-sm font-semibold text-gray-900 group-[.is-open]:text-[#0c2d74] transition-colors duration-200"><?= __('faq_q4') ?></span>
                         <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
                     </button>
                     <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
@@ -292,9 +298,9 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                 </div>
 
-                <div class="faq-item py-4">
+                <div class="faq-item py-4 transition-all duration-300 rounded-2xl px-4 -mx-4 hover:bg-blue-50/50 group">
                     <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
-                        <span class="text-sm font-semibold text-gray-900"><?= __('faq_q5') ?></span>
+                        <span class="text-sm font-semibold text-gray-900 group-[.is-open]:text-[#0c2d74] transition-colors duration-200"><?= __('faq_q5') ?></span>
                         <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
                     </button>
                     <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
@@ -315,45 +321,48 @@ require_once __DIR__ . '/includes/header.php';
             <div class="flex flex-col gap-4">
                 <!-- Card 1: Second Opinion -->
                 <a href="https://acibademinternational.com/second-opinion/" target="_blank" rel="noopener"
-                   class="group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200">
-                    <div class="flex-shrink-0 w-12 h-12 bg-blue-50 text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
+                   class="relative overflow-hidden group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#0c2d74] hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white">
+                    <i class="ph-fill ph-microscope absolute -right-2 -bottom-2 text-6xl text-gray-50 opacity-50 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
+                    <div class="relative z-10 flex-shrink-0 w-12 h-12 bg-blue-50 text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
                         <i class="ph-fill ph-microscope text-2xl"></i>
                     </div>
-                    <div class="flex-1 min-w-0">
+                    <div class="relative z-10 flex-1 min-w-0">
                         <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors"><?= __('quick_2nd_opinion_h') ?></p>
                         <p class="text-xs text-gray-500 mt-0.5"><?= __('quick_2nd_opinion_p') ?></p>
                     </div>
-                    <div class="flex-shrink-0 text-gray-300 group-hover:text-[#0c2d74] transition-colors">
+                    <div class="relative z-10 flex-shrink-0 text-gray-300 group-hover:text-[#0c2d74] transition-colors">
                         <i class="ph ph-arrow-right text-lg"></i>
                     </div>
                 </a>
 
                 <!-- Card 2: Online Consultation -->
                 <a href="https://acibademinternational.com/online-consultation/" target="_blank" rel="noopener"
-                   class="group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200">
-                    <div class="flex-shrink-0 w-12 h-12 bg-blue-50 text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
+                   class="relative overflow-hidden group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#0c2d74] hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white">
+                    <i class="ph-fill ph-video-camera absolute -right-2 -bottom-2 text-6xl text-gray-50 opacity-50 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
+                    <div class="relative z-10 flex-shrink-0 w-12 h-12 bg-blue-50 text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
                         <i class="ph-fill ph-video-camera text-2xl"></i>
                     </div>
-                    <div class="flex-1 min-w-0">
+                    <div class="relative z-10 flex-1 min-w-0">
                         <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors"><?= __('quick_online_h') ?></p>
                         <p class="text-xs text-gray-500 mt-0.5"><?= __('quick_online_p') ?></p>
                     </div>
-                    <div class="flex-shrink-0 text-gray-300 group-hover:text-[#0c2d74] transition-colors">
+                    <div class="relative z-10 flex-shrink-0 text-gray-300 group-hover:text-[#0c2d74] transition-colors">
                         <i class="ph ph-arrow-right text-lg"></i>
                     </div>
                 </a>
 
                 <!-- Card 3: Free Medical Consultation -->
                 <a href="https://acibademinternational.com/contact/" target="_blank" rel="noopener"
-                   class="group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#0c2d74] hover:shadow-md transition-all duration-200">
-                    <div class="flex-shrink-0 w-12 h-12 bg-blue-50 text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
+                   class="relative overflow-hidden group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#0c2d74] hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white">
+                    <i class="ph-fill ph-stethoscope absolute -right-2 -bottom-2 text-6xl text-gray-50 opacity-50 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
+                    <div class="relative z-10 flex-shrink-0 w-12 h-12 bg-blue-50 text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
                         <i class="ph-fill ph-stethoscope text-2xl"></i>
                     </div>
-                    <div class="flex-1 min-w-0">
+                    <div class="relative z-10 flex-1 min-w-0">
                         <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors"><?= __('office_free_consult') ?></p>
                         <p class="text-xs text-gray-500 mt-0.5"><?= __('office_free_consul_p') ?></p>
                     </div>
-                    <div class="flex-shrink-0 text-gray-300 group-hover:text-[#0c2d74] transition-colors">
+                    <div class="relative z-10 flex-shrink-0 text-gray-300 group-hover:text-[#0c2d74] transition-colors">
                         <i class="ph ph-arrow-right text-lg"></i>
                     </div>
                 </a>
@@ -382,9 +391,10 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 
     <!-- ===== Become a Partner CTA ===== -->
-    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:px-8 md:py-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 group hover:border-[#0c2d74] transition-colors">
-        <div class="flex items-center gap-5">
-            <div class="w-12 h-12 bg-[#E6F0FA] text-[#0c2d74] rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
+    <div class="relative overflow-hidden bg-gradient-to-r from-blue-50/50 to-white rounded-3xl shadow-sm border border-blue-50 p-6 md:px-8 md:py-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 group hover:shadow-lg hover:border-blue-100 transition-all duration-300 hover:-translate-y-1">
+        <i class="ph-fill ph-handshake absolute -right-4 -bottom-4 text-8xl text-blue-100 opacity-30 group-hover:scale-110 group-hover:opacity-50 transition-all duration-500 pointer-events-none"></i>
+        <div class="relative z-10 flex items-center gap-5">
+            <div class="w-12 h-12 bg-white text-[#0c2d74] rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm group-hover:bg-[#0c2d74] group-hover:text-white transition-colors duration-300">
                 <i class="ph-fill ph-handshake text-2xl"></i>
             </div>
             <div>
@@ -392,7 +402,7 @@ require_once __DIR__ . '/includes/header.php';
                 <p class="text-sm text-gray-500 mt-1"><?= __('office_partner_p') ?></p>
             </div>
         </div>
-        <a href="https://partner.acibademinternational.com/london/" target="_blank" rel="noopener" class="flex-shrink-0 w-full md:w-auto text-center bg-[#0c2d74] hover:bg-[#1a4ba0] text-white px-8 py-3 rounded-xl font-bold text-sm transition-colors shadow-sm whitespace-nowrap inline-flex items-center justify-center gap-2">
+        <a href="https://partner.acibademinternational.com/london/" target="_blank" rel="noopener" class="relative z-10 flex-shrink-0 w-full md:w-auto text-center bg-[#0c2d74] hover:bg-[#1a4ba0] text-white px-8 py-3 rounded-xl font-bold text-sm transition-all shadow-sm whitespace-nowrap inline-flex items-center justify-center gap-2 group-hover:shadow-md">
             <?= __('office_partner_btn') ?> <i class="ph ph-arrow-right"></i>
         </a>
     </div>
@@ -501,15 +511,20 @@ document.addEventListener('DOMContentLoaded', function() {
 function toggleFaq(btn) {
     const answer = btn.nextElementSibling;
     const icon   = btn.querySelector('i');
+    const faqItem = btn.closest('.faq-item');
     const isOpen = !answer.classList.contains('hidden');
 
     // Close all
     document.querySelectorAll('.faq-answer').forEach(a => a.classList.add('hidden'));
     document.querySelectorAll('.faq-trigger i').forEach(i => i.style.transform = '');
+    document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('is-open', 'bg-blue-50/50'));
 
     if (!isOpen) {
         answer.classList.remove('hidden');
         icon.style.transform = 'rotate(180deg)';
+        if (faqItem) {
+            faqItem.classList.add('is-open', 'bg-blue-50/50');
+        }
     }
 }
 </script>
