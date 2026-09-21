@@ -182,7 +182,10 @@ $jsStrings = [
             findNearestOffice(officesData, function(nearest) {
                 document.getElementById('loading-overlay').classList.add('hidden');
                 
-                if (!nearest) return;
+                if (!nearest) {
+                    window.location.href = '<?= getBaseUrl() ?>/offices';
+                    return;
+                }
                 
                 if (nearest.distance > 2500) {
                     showToast(i18n.farRedirect);
@@ -228,6 +231,10 @@ $jsStrings = [
                 
                 const resultBlock = document.getElementById('nearest-office-result');
                 resultBlock.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    resultBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
             });
         } else {
             document.getElementById('loading-overlay').classList.add('hidden');
