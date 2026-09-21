@@ -88,7 +88,7 @@ require_once __DIR__ . '/includes/header.php';
 
                 <!-- Activity 1: Meet the Doctor -->
                 <div class="relative overflow-hidden group flex gap-4 p-4 rounded-2xl bg-blue-50 hover:bg-[#0c2d74] hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-                    <i class="ph-fill ph-stethoscope absolute -right-2 -bottom-2 text-6xl text-white opacity-0 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500 pointer-events-none"></i>
+                    <i class="ph-fill ph-stethoscope absolute right-4 bottom-2 text-5xl text-white opacity-0 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500 pointer-events-none"></i>
                     <div class="relative z-10 flex-shrink-0 w-12 h-12 rounded-xl bg-[#0c2d74] group-hover:bg-white flex items-center justify-center transition-colors">
                         <i class="ph-fill ph-stethoscope text-2xl text-white group-hover:text-[#0c2d74]"></i>
                     </div>
@@ -106,7 +106,7 @@ require_once __DIR__ . '/includes/header.php';
 
                 <!-- Activity 2: Presentation -->
                 <div class="relative overflow-hidden group flex gap-4 p-4 rounded-2xl bg-purple-50 hover:bg-purple-700 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-                    <i class="ph-fill ph-presentation-chart absolute -right-2 -bottom-2 text-6xl text-white opacity-0 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500 pointer-events-none"></i>
+                    <i class="ph-fill ph-presentation-chart absolute right-4 bottom-2 text-5xl text-white opacity-0 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500 pointer-events-none"></i>
                     <div class="relative z-10 flex-shrink-0 w-12 h-12 rounded-xl bg-purple-700 group-hover:bg-white flex items-center justify-center transition-colors">
                         <i class="ph-fill ph-presentation-chart text-2xl text-white group-hover:text-purple-700"></i>
                     </div>
@@ -124,7 +124,7 @@ require_once __DIR__ . '/includes/header.php';
 
                 <!-- Activity 3: Exhibition -->
                 <div class="relative overflow-hidden group flex gap-4 p-4 rounded-2xl bg-emerald-50 hover:bg-emerald-700 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-                    <i class="ph-fill ph-handshake absolute -right-2 -bottom-2 text-6xl text-white opacity-0 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500 pointer-events-none"></i>
+                    <i class="ph-fill ph-handshake absolute right-4 bottom-2 text-5xl text-white opacity-0 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500 pointer-events-none"></i>
                     <div class="relative z-10 flex-shrink-0 w-12 h-12 rounded-xl bg-emerald-600 group-hover:bg-white flex items-center justify-center transition-colors">
                         <i class="ph-fill ph-handshake text-2xl text-white group-hover:text-emerald-700"></i>
                     </div>
@@ -153,9 +153,9 @@ require_once __DIR__ . '/includes/header.php';
 
                 <!-- Member 1 -->
                 <div class="relative overflow-hidden flex items-center gap-4 p-4 rounded-2xl bg-white border border-gray-100 hover:border-[#0c2d74] hover:shadow-lg transition-all duration-300 group hover:-translate-y-1">
-                    <i class="ph-fill ph-user absolute -right-4 -bottom-4 text-7xl text-gray-50 opacity-0 group-hover:opacity-100 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
+                    <i class="ph-fill ph-user absolute right-4 bottom-2 text-5xl text-gray-50 opacity-0 group-hover:opacity-100 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
                     <div class="relative z-10 flex-shrink-0 relative">
-                        <img src="<?= getBaseUrl() ?>/assets/images/team-cem-ustundag.jpg" alt="Cem Üstündağ" class="w-14 h-14 rounded-2xl object-cover object-top shadow-sm">
+                        <img src="<?= getBaseUrl() ?>/assets/images/team-cem-ustundag-sm.jpg" alt="Cem Üstündağ" class="w-14 h-14 rounded-2xl object-cover object-top shadow-sm">
                         <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 border-2 border-white rounded-full"></span>
                     </div>
                     <div class="relative z-10 flex-1 min-w-0">
@@ -182,9 +182,9 @@ require_once __DIR__ . '/includes/header.php';
 
                 <!-- Member 2 -->
                 <div class="relative overflow-hidden flex items-center gap-4 p-4 rounded-2xl bg-white border border-gray-100 hover:border-[#0c2d74] hover:shadow-lg transition-all duration-300 group hover:-translate-y-1">
-                    <i class="ph-fill ph-user absolute -right-4 -bottom-4 text-7xl text-gray-50 opacity-0 group-hover:opacity-100 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
+                    <i class="ph-fill ph-user absolute right-4 bottom-2 text-5xl text-gray-50 opacity-0 group-hover:opacity-100 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
                     <div class="relative z-10 flex-shrink-0 relative">
-                        <img src="<?= getBaseUrl() ?>/assets/images/team-erim-ekiz.jpg" alt="Erim Ekiz" class="w-14 h-14 rounded-2xl object-cover object-top shadow-sm">
+                        <img src="<?= getBaseUrl() ?>/assets/images/team-erim-ekiz-sm.jpg" alt="Erim Ekiz" class="w-14 h-14 rounded-2xl object-cover object-top shadow-sm">
                         <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 border-2 border-white rounded-full"></span>
                     </div>
                     <div class="relative z-10 flex-1 min-w-0">
@@ -212,9 +212,9 @@ require_once __DIR__ . '/includes/header.php';
 
                 <!-- Member 3 -->
                 <div class="relative overflow-hidden flex items-center gap-4 p-4 rounded-2xl bg-white border border-gray-100 hover:border-[#0c2d74] hover:shadow-lg transition-all duration-300 group hover:-translate-y-1">
-                    <i class="ph-fill ph-user absolute -right-4 -bottom-4 text-7xl text-gray-50 opacity-0 group-hover:opacity-100 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
+                    <i class="ph-fill ph-user absolute right-4 bottom-2 text-5xl text-gray-50 opacity-0 group-hover:opacity-100 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
                     <div class="relative z-10 flex-shrink-0 relative">
-                        <img src="<?= getBaseUrl() ?>/assets/images/team-ionea-ruxandra.jpg" alt="Ionea Ruxandra" class="w-14 h-14 rounded-2xl object-cover object-top shadow-sm">
+                        <img src="<?= getBaseUrl() ?>/assets/images/team-ionea-ruxandra-sm.jpg" alt="Ionea Ruxandra" class="w-14 h-14 rounded-2xl object-cover object-top shadow-sm">
                         <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-yellow-400 border-2 border-white rounded-full"></span>
                     </div>
                     <div class="relative z-10 flex-1 min-w-0">
@@ -322,7 +322,7 @@ require_once __DIR__ . '/includes/header.php';
                 <!-- Card 1: Second Opinion -->
                 <a href="https://acibademinternational.com/second-opinion/" target="_blank" rel="noopener"
                    class="relative overflow-hidden group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#0c2d74] hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white">
-                    <i class="ph-fill ph-microscope absolute -right-2 -bottom-2 text-6xl text-gray-50 opacity-50 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
+                    <i class="ph-fill ph-microscope absolute right-4 bottom-2 text-5xl text-gray-50 opacity-50 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
                     <div class="relative z-10 flex-shrink-0 w-12 h-12 bg-blue-50 text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
                         <i class="ph-fill ph-microscope text-2xl"></i>
                     </div>
@@ -338,7 +338,7 @@ require_once __DIR__ . '/includes/header.php';
                 <!-- Card 2: Online Consultation -->
                 <a href="https://acibademinternational.com/online-consultation/" target="_blank" rel="noopener"
                    class="relative overflow-hidden group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#0c2d74] hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white">
-                    <i class="ph-fill ph-video-camera absolute -right-2 -bottom-2 text-6xl text-gray-50 opacity-50 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
+                    <i class="ph-fill ph-video-camera absolute right-4 bottom-2 text-5xl text-gray-50 opacity-50 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
                     <div class="relative z-10 flex-shrink-0 w-12 h-12 bg-blue-50 text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
                         <i class="ph-fill ph-video-camera text-2xl"></i>
                     </div>
@@ -354,7 +354,7 @@ require_once __DIR__ . '/includes/header.php';
                 <!-- Card 3: Free Medical Consultation -->
                 <a href="https://acibademinternational.com/contact/" target="_blank" rel="noopener"
                    class="relative overflow-hidden group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#0c2d74] hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white">
-                    <i class="ph-fill ph-stethoscope absolute -right-2 -bottom-2 text-6xl text-gray-50 opacity-50 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
+                    <i class="ph-fill ph-stethoscope absolute right-4 bottom-2 text-5xl text-gray-50 opacity-50 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
                     <div class="relative z-10 flex-shrink-0 w-12 h-12 bg-blue-50 text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
                         <i class="ph-fill ph-stethoscope text-2xl"></i>
                     </div>
