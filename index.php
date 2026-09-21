@@ -73,73 +73,112 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 </div>
 
-<div class="bg-gray-50 py-12">
-    <div class="max-w-7xl mx-auto px-4">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div class="bg-white p-6 rounded-2xl text-center shadow-sm">
-                <i class="ph-fill ph-buildings text-3xl text-[#1a4ba0] mb-3"></i>
-                <div class="text-2xl font-bold text-gray-900"><?= count($offices) ?>+</div>
-                <div class="text-gray-500"><?= __('stat_offices') ?></div>
-            </div>
-            <div class="bg-white p-6 rounded-2xl text-center shadow-sm">
-                <i class="ph-fill ph-globe-hemisphere-west text-3xl text-[#1a4ba0] mb-3"></i>
-                <div class="text-2xl font-bold text-gray-900"><?= count(array_unique(array_column($offices, 'country'))) ?></div>
-                <div class="text-gray-500"><?= __('stat_countries') ?></div>
-            </div>
-            <div class="bg-white p-6 rounded-2xl text-center shadow-sm">
-                <i class="ph-fill ph-clock-user text-3xl text-[#1a4ba0] mb-3"></i>
-                <div class="text-2xl font-bold text-gray-900">24/7</div>
-                <div class="text-gray-500"><?= __('stat_support') ?></div>
-            </div>
-            <div class="bg-white p-6 rounded-2xl text-center shadow-sm">
-                <i class="ph-fill ph-users text-3xl text-[#1a4ba0] mb-3"></i>
-                <div class="text-2xl font-bold text-gray-900">90+</div>
-                <div class="text-gray-500"><?= __('stat_served') ?></div>
+<div class="bg-gray-50 pt-12 pb-16">
+    <!-- Modern Unified Stats Panel -->
+    <div class="max-w-7xl mx-auto px-4 -mt-20 relative z-20 mb-16">
+        <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 p-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-0 md:divide-x md:divide-gray-100">
+                <div class="text-center px-4 group">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-50 text-[#0c2d74] mb-4 group-hover:scale-110 group-hover:bg-[#0c2d74] group-hover:text-white transition-all duration-300">
+                        <i class="ph-fill ph-buildings text-2xl"></i>
+                    </div>
+                    <div class="text-3xl font-black text-gray-900 mb-1"><?= count($offices) ?>+</div>
+                    <div class="text-xs font-bold text-gray-400 uppercase tracking-wider"><?= __('stat_offices') ?></div>
+                </div>
+                <div class="text-center px-4 group">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-50 text-[#0c2d74] mb-4 group-hover:scale-110 group-hover:bg-[#0c2d74] group-hover:text-white transition-all duration-300">
+                        <i class="ph-fill ph-globe-hemisphere-west text-2xl"></i>
+                    </div>
+                    <div class="text-3xl font-black text-gray-900 mb-1"><?= count(array_unique(array_column($offices, 'country'))) ?></div>
+                    <div class="text-xs font-bold text-gray-400 uppercase tracking-wider"><?= __('stat_countries') ?></div>
+                </div>
+                <div class="text-center px-4 group">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-50 text-[#0c2d74] mb-4 group-hover:scale-110 group-hover:bg-[#0c2d74] group-hover:text-white transition-all duration-300">
+                        <i class="ph-fill ph-clock-user text-2xl"></i>
+                    </div>
+                    <div class="text-3xl font-black text-gray-900 mb-1">24/7</div>
+                    <div class="text-xs font-bold text-gray-400 uppercase tracking-wider"><?= __('stat_support') ?></div>
+                </div>
+                <div class="text-center px-4 group">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-50 text-[#0c2d74] mb-4 group-hover:scale-110 group-hover:bg-[#0c2d74] group-hover:text-white transition-all duration-300">
+                        <i class="ph-fill ph-users text-2xl"></i>
+                    </div>
+                    <div class="text-3xl font-black text-gray-900 mb-1">90+</div>
+                    <div class="text-xs font-bold text-gray-400 uppercase tracking-wider"><?= __('stat_served') ?></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="py-16">
+    <!-- Explore Section -->
     <div class="max-w-7xl mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center mb-10 text-[#0c2d74]"><?= __('explore_heading') ?></h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <a href="<?= getBaseUrl() ?>/offices" class="block group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all p-8 text-center hover:-translate-y-1">
-                <div class="w-16 h-16 bg-[#E6F0FA] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-[#0c2d74] transition-colors">
-                    <i class="ph-fill ph-list-dashes text-2xl text-[#0c2d74] group-hover:text-white transition-colors"></i>
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-black text-[#0c2d74] mb-4"><?= __('explore_heading') ?></h2>
+            <div class="w-20 h-1.5 bg-[#1a4ba0] mx-auto rounded-full opacity-80"></div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Card 1 -->
+            <a href="<?= getBaseUrl() ?>/offices" class="relative overflow-hidden block group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 p-8 text-left hover:-translate-y-1">
+                <i class="ph-fill ph-list-dashes absolute -right-4 -bottom-4 text-9xl text-gray-50 opacity-50 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500"></i>
+                <div class="relative z-10 flex flex-col h-full">
+                    <div class="w-14 h-14 bg-blue-50 text-[#0c2d74] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#0c2d74] group-hover:text-white transition-colors duration-300">
+                        <i class="ph-fill ph-list-dashes text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900 group-hover:text-[#0c2d74] transition-colors"><?= __('explore_offices_h') ?></h3>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-6 flex-1"><?= __('explore_offices_p') ?></p>
+                    <div class="inline-flex items-center text-[#0c2d74] font-bold text-sm opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                        <i class="ph ph-arrow-right text-lg"></i>
+                    </div>
                 </div>
-                <h3 class="text-xl font-bold mb-2"><?= __('explore_offices_h') ?></h3>
-                <p class="text-gray-600"><?= __('explore_offices_p') ?></p>
             </a>
             
-            <a href="<?= getBaseUrl() ?>/map" class="block group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all p-8 text-center hover:-translate-y-1">
-                <div class="w-16 h-16 bg-[#E6F0FA] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-[#0c2d74] transition-colors">
-                    <i class="ph-fill ph-map-trifold text-2xl text-[#0c2d74] group-hover:text-white transition-colors"></i>
+            <!-- Card 2 -->
+            <a href="<?= getBaseUrl() ?>/map" class="relative overflow-hidden block group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 p-8 text-left hover:-translate-y-1">
+                <i class="ph-fill ph-map-trifold absolute -right-4 -bottom-4 text-9xl text-gray-50 opacity-50 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500"></i>
+                <div class="relative z-10 flex flex-col h-full">
+                    <div class="w-14 h-14 bg-blue-50 text-[#0c2d74] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#0c2d74] group-hover:text-white transition-colors duration-300">
+                        <i class="ph-fill ph-map-trifold text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900 group-hover:text-[#0c2d74] transition-colors"><?= __('explore_map_h') ?></h3>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-6 flex-1"><?= __('explore_map_p') ?></p>
+                    <div class="inline-flex items-center text-[#0c2d74] font-bold text-sm opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                        <i class="ph ph-arrow-right text-lg"></i>
+                    </div>
                 </div>
-                <h3 class="text-xl font-bold mb-2"><?= __('explore_map_h') ?></h3>
-                <p class="text-gray-600"><?= __('explore_map_p') ?></p>
             </a>
 
-            <a href="<?= getBaseUrl() ?>/api/offices" class="block group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all p-8 text-center hover:-translate-y-1">
-                <div class="w-16 h-16 bg-[#E6F0FA] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-[#0c2d74] transition-colors">
-                    <i class="ph-fill ph-code text-2xl text-[#0c2d74] group-hover:text-white transition-colors"></i>
+            <!-- Card 3 -->
+            <a href="<?= getBaseUrl() ?>/api/offices" class="relative overflow-hidden block group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 p-8 text-left hover:-translate-y-1">
+                <i class="ph-fill ph-code absolute -right-4 -bottom-4 text-9xl text-gray-50 opacity-50 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500"></i>
+                <div class="relative z-10 flex flex-col h-full">
+                    <div class="w-14 h-14 bg-blue-50 text-[#0c2d74] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#0c2d74] group-hover:text-white transition-colors duration-300">
+                        <i class="ph-fill ph-code text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900 group-hover:text-[#0c2d74] transition-colors"><?= __('explore_api_h') ?></h3>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-6 flex-1"><?= __('explore_api_p') ?></p>
+                    <div class="inline-flex items-center text-[#0c2d74] font-bold text-sm opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                        <i class="ph ph-arrow-right text-lg"></i>
+                    </div>
                 </div>
-                <h3 class="text-xl font-bold mb-2"><?= __('explore_api_h') ?></h3>
-                <p class="text-gray-600"><?= __('explore_api_p') ?></p>
             </a>
         </div>
 
-        <div class="mt-8 bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-8 group hover:border-[#0c2d74] transition-colors">
-            <div class="flex items-center gap-6">
-                <div class="w-16 h-16 bg-[#E6F0FA] text-[#0c2d74] rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
-                    <i class="ph-fill ph-handshake text-3xl"></i>
+        <!-- Wide Dark CTA Card -->
+        <div class="mt-8 relative overflow-hidden bg-gradient-to-br from-[#0c2d74] to-[#0A1C36] rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 group shadow-2xl shadow-blue-900/20">
+            <i class="ph-fill ph-handshake absolute -right-8 -bottom-8 text-[12rem] text-white opacity-5 group-hover:scale-110 group-hover:opacity-10 transition-all duration-700 pointer-events-none"></i>
+            
+            <div class="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-6 text-center md:text-left">
+                <div class="w-16 h-16 bg-white/10 backdrop-blur text-white rounded-2xl flex items-center justify-center flex-shrink-0 border border-white/10">
+                    <i class="ph-fill ph-shield-check text-3xl"></i>
                 </div>
                 <div>
-                    <h3 class="text-2xl font-bold text-[#0c2d74] mb-2"><?= __('inst_card_h') ?></h3>
-                    <p class="text-gray-600"><?= __('inst_card_p') ?></p>
+                    <h3 class="text-2xl md:text-3xl font-bold text-white mb-3"><?= __('inst_card_h') ?></h3>
+                    <p class="text-blue-100 text-sm md:text-base max-w-2xl leading-relaxed"><?= __('inst_card_p') ?></p>
                 </div>
             </div>
-            <a href="<?= getBaseUrl() ?>/contracted-institutions" class="flex-shrink-0 w-full md:w-auto text-center bg-[#0c2d74] hover:bg-[#1a4ba0] text-white px-8 py-4 rounded-xl font-bold transition-colors shadow-sm inline-flex items-center justify-center gap-2">
+            
+            <a href="<?= getBaseUrl() ?>/contracted-institutions" class="relative z-10 flex-shrink-0 w-full md:w-auto text-center bg-white text-[#0c2d74] hover:bg-gray-50 px-8 py-4 rounded-xl font-bold transition-transform shadow-lg inline-flex items-center justify-center gap-2 group-hover:-translate-y-1">
                 <?= __('inst_card_btn') ?> <i class="ph ph-arrow-right"></i>
             </a>
         </div>
