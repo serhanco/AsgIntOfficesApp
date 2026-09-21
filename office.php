@@ -462,20 +462,27 @@ require_once __DIR__ . '/includes/header.php';
     
     <?php if (!empty($relatedOffices)): ?>
     <div class="mt-16">
-        <h3 class="text-2xl font-bold text-[#0c2d74] mb-6"><?= __('office_other_in', e($office['country'])) ?></h3>
+        <div class="flex items-center gap-3 mb-6">
+            <h3 class="text-2xl font-bold text-[#0c2d74]"><?= __('office_other_in', e($office['country'])) ?></h3>
+            <span class="text-sm font-bold bg-[#E6F0FA] text-[#0c2d74] px-3 py-1 rounded-full"><?= count($relatedOffices) ?></span>
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <?php foreach ($relatedOffices as $ro): ?>
-                <a href="<?= officeUrl($ro['slug']) ?>" class="office-card block bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow group">
-                    <div class="flex items-start gap-4">
-                        <div class="bg-gray-50 p-3 rounded-xl text-[#0c2d74] group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
+                <a href="<?= officeUrl($ro['slug']) ?>" class="relative overflow-hidden block bg-white rounded-3xl p-6 border border-gray-100 shadow-sm hover:shadow-lg hover:border-[#0c2d74] transition-all duration-300 group hover:-translate-y-1">
+                    <i class="ph-fill ph-buildings absolute right-4 -bottom-2 text-7xl text-blue-50 opacity-0 group-hover:opacity-100 group-hover:scale-110 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
+                    
+                    <div class="relative z-10 flex items-start gap-4">
+                        <div class="w-12 h-12 bg-blue-50 flex items-center justify-center rounded-xl text-[#0c2d74] flex-shrink-0 group-hover:bg-[#0c2d74] group-hover:text-white transition-colors duration-300 shadow-sm">
                             <i class="ph-fill ph-buildings text-2xl"></i>
                         </div>
-                        <div class="flex-1">
-                            <h4 class="font-bold text-gray-900 group-hover:text-[#1a4ba0] transition-colors"><?= e($ro['display_name']) ?></h4>
-                            <p class="text-sm text-gray-500 mt-1 line-clamp-2"><?= e($ro['address']) ?></p>
+                        
+                        <div class="flex-1 min-w-0 pt-0.5">
+                            <h4 class="font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors text-[1.05rem]"><?= e($ro['display_name']) ?></h4>
+                            <p class="text-xs text-gray-500 mt-1.5 line-clamp-2 leading-relaxed"><?= e($ro['address']) ?></p>
                         </div>
-                        <div class="text-gray-300 group-hover:text-[#1a4ba0] transition-colors">
-                            <i class="ph ph-arrow-right"></i>
+                        
+                        <div class="flex-shrink-0 text-gray-300 group-hover:text-[#0c2d74] transition-all duration-300 group-hover:translate-x-1 self-center">
+                            <i class="ph ph-arrow-right text-lg"></i>
                         </div>
                     </div>
                 </a>
