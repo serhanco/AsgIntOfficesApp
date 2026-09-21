@@ -391,19 +391,23 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 
     <!-- ===== Become a Partner CTA ===== -->
-    <div class="relative overflow-hidden bg-gradient-to-r from-blue-50/50 to-white rounded-3xl shadow-sm border border-blue-50 p-6 md:px-8 md:py-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 group hover:shadow-lg hover:border-blue-100 transition-all duration-300 hover:-translate-y-1">
-        <i class="ph-fill ph-handshake absolute -right-4 -bottom-4 text-8xl text-blue-100 opacity-30 group-hover:scale-110 group-hover:opacity-50 transition-all duration-500 pointer-events-none"></i>
-        <div class="relative z-10 flex items-center gap-5">
-            <div class="w-12 h-12 bg-white text-[#0c2d74] rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm group-hover:bg-[#0c2d74] group-hover:text-white transition-colors duration-300">
-                <i class="ph-fill ph-handshake text-2xl"></i>
+    <div class="relative overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl shadow-2xl shadow-slate-900/20 p-8 md:p-12 mb-8 flex flex-col md:flex-row items-center justify-between gap-8 group border border-slate-700">
+        <!-- Abstract Watermarks -->
+        <i class="ph-fill ph-globe-hemisphere-east absolute -left-16 -bottom-16 text-[16rem] text-slate-100 opacity-[0.02] group-hover:scale-110 group-hover:opacity-[0.04] transition-all duration-1000 pointer-events-none"></i>
+        <i class="ph-fill ph-handshake absolute -right-12 -top-12 text-[14rem] text-slate-100 opacity-[0.04] group-hover:scale-110 group-hover:opacity-[0.08] transition-all duration-700 pointer-events-none -rotate-12"></i>
+
+        <div class="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-6 text-center md:text-left">
+            <div class="w-16 h-16 bg-white/5 backdrop-blur text-white rounded-2xl flex items-center justify-center flex-shrink-0 border border-white/10 group-hover:bg-white/10 transition-colors duration-300">
+                <i class="ph-fill ph-handshake text-3xl"></i>
             </div>
             <div>
-                <h3 class="text-lg md:text-xl font-bold text-[#0c2d74]"><?= __('office_partner_h') ?></h3>
-                <p class="text-sm text-gray-500 mt-1"><?= __('office_partner_p') ?></p>
+                <h3 class="text-2xl md:text-3xl font-bold text-white mb-3"><?= __('office_partner_h') ?></h3>
+                <p class="text-slate-400 text-sm md:text-base max-w-2xl leading-relaxed"><?= __('office_partner_p') ?></p>
             </div>
         </div>
-        <a href="https://partner.acibademinternational.com/london/" target="_blank" rel="noopener" class="relative z-10 flex-shrink-0 w-full md:w-auto text-center bg-[#0c2d74] hover:bg-[#1a4ba0] text-white px-8 py-3 rounded-xl font-bold text-sm transition-all shadow-sm whitespace-nowrap inline-flex items-center justify-center gap-2 group-hover:shadow-md">
-            <?= __('office_partner_btn') ?> <i class="ph ph-arrow-right"></i>
+        
+        <a href="https://partner.acibademinternational.com/london/" target="_blank" rel="noopener" class="relative z-10 flex-shrink-0 w-full md:w-auto text-center bg-[#0c2d74] hover:bg-[#1a4ba0] text-white px-8 py-4 rounded-xl font-bold transition-all shadow-lg shadow-blue-900/30 inline-flex items-center justify-center gap-2 group-hover:-translate-y-1 border border-blue-800/50">
+            <?= __('office_partner_btn') ?> <i class="ph ph-arrow-right text-blue-200"></i>
         </a>
     </div>
 
