@@ -414,41 +414,47 @@ require_once __DIR__ . '/includes/header.php';
     <!-- ===== Contact Info + Map ===== -->
     <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
         <!-- Contact Details -->
-        <div>
-            <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
-                <h3 class="text-xl font-bold text-[#0c2d74] mb-6"><?= __('office_contact_info') ?></h3>
+        <!-- Contact Details -->
+        <div class="relative overflow-hidden bg-white rounded-3xl shadow-sm hover:shadow-lg border border-gray-100 hover:border-blue-100 p-8 md:p-10 transition-all duration-300 group hover:-translate-y-1">
+            <i class="ph-fill ph-map-pin absolute -right-6 -bottom-6 text-[12rem] text-gray-50 opacity-50 group-hover:scale-110 group-hover:-translate-x-4 group-hover:-translate-y-4 group-hover:text-blue-50 transition-all duration-700 pointer-events-none"></i>
+            
+            <div class="relative z-10">
+                <h3 class="text-xl md:text-2xl font-bold text-[#0c2d74] mb-8"><?= __('office_contact_info') ?></h3>
                 
-                <div class="space-y-6">
-                    <div class="flex items-start gap-4 pb-4 border-b border-gray-50">
-                        <div class="mt-1 bg-gray-50 p-2 rounded-lg text-[#1a4ba0]">
-                            <i class="ph-fill ph-map-pin text-xl"></i>
+                <div class="space-y-4">
+                    <!-- Address -->
+                    <div class="flex items-start gap-5 group/item hover:bg-gray-50/50 p-3 -mx-3 rounded-2xl transition-colors duration-300">
+                        <div class="mt-1 bg-blue-50 w-12 h-12 flex items-center justify-center rounded-xl text-[#0c2d74] group-hover/item:bg-[#0c2d74] group-hover/item:text-white transition-colors duration-300 shadow-sm flex-shrink-0">
+                            <i class="ph-fill ph-map-pin text-2xl"></i>
                         </div>
-                        <div>
-                            <div class="text-sm font-semibold text-gray-900 mb-1"><?= __('office_address') ?></div>
+                        <div class="flex-1 pt-0.5">
+                            <div class="text-sm font-bold text-gray-900 mb-1"><?= __('office_address') ?></div>
                             <div class="text-gray-600 text-sm leading-relaxed"><?= nl2br(e($office['address'])) ?></div>
                         </div>
                     </div>
 
                     <?php if (!empty($office['phone'])): ?>
-                    <div class="flex items-start gap-4 pb-4 border-b border-gray-50">
-                        <div class="mt-1 bg-gray-50 p-2 rounded-lg text-[#1a4ba0]">
-                            <i class="ph-fill ph-phone text-xl"></i>
+                    <!-- Phone -->
+                    <div class="flex items-start gap-5 group/item hover:bg-gray-50/50 p-3 -mx-3 rounded-2xl transition-colors duration-300">
+                        <div class="mt-1 bg-blue-50 w-12 h-12 flex items-center justify-center rounded-xl text-[#0c2d74] group-hover/item:bg-[#0c2d74] group-hover/item:text-white transition-colors duration-300 shadow-sm flex-shrink-0">
+                            <i class="ph-fill ph-phone text-2xl"></i>
                         </div>
-                        <div>
-                            <div class="text-sm font-semibold text-gray-900 mb-1"><?= __('office_phone') ?></div>
-                            <a href="tel:<?= preg_replace('/[^0-9+]/', '', $office['phone']) ?>" class="text-gray-600 text-sm hover:text-[#0c2d74]"><?= e($office['phone']) ?></a>
+                        <div class="flex-1 pt-0.5">
+                            <div class="text-sm font-bold text-gray-900 mb-1"><?= __('office_phone') ?></div>
+                            <a href="tel:<?= preg_replace('/[^0-9+]/', '', $office['phone']) ?>" class="text-gray-600 text-sm hover:text-[#0c2d74] transition-colors"><?= e($office['phone']) ?></a>
                         </div>
                     </div>
                     <?php endif; ?>
 
                     <?php if (!empty($office['email'])): ?>
-                    <div class="flex items-start gap-4">
-                        <div class="mt-1 bg-gray-50 p-2 rounded-lg text-[#1a4ba0]">
-                            <i class="ph-fill ph-envelope-simple text-xl"></i>
+                    <!-- Email -->
+                    <div class="flex items-start gap-5 group/item hover:bg-gray-50/50 p-3 -mx-3 rounded-2xl transition-colors duration-300">
+                        <div class="mt-1 bg-blue-50 w-12 h-12 flex items-center justify-center rounded-xl text-[#0c2d74] group-hover/item:bg-[#0c2d74] group-hover/item:text-white transition-colors duration-300 shadow-sm flex-shrink-0">
+                            <i class="ph-fill ph-envelope-simple text-2xl"></i>
                         </div>
-                        <div>
-                            <div class="text-sm font-semibold text-gray-900 mb-1"><?= __('office_email') ?></div>
-                            <a href="mailto:<?= e($office['email']) ?>" class="text-gray-600 text-sm hover:text-[#0c2d74]"><?= e($office['email']) ?></a>
+                        <div class="flex-1 pt-0.5">
+                            <div class="text-sm font-bold text-gray-900 mb-1"><?= __('office_email') ?></div>
+                            <a href="mailto:<?= e($office['email']) ?>" class="text-gray-600 text-sm hover:text-[#0c2d74] transition-colors"><?= e($office['email']) ?></a>
                         </div>
                     </div>
                     <?php endif; ?>
@@ -457,10 +463,10 @@ require_once __DIR__ . '/includes/header.php';
         </div>
 
         <!-- Mini Map -->
-        <div>
-            <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-2 h-full min-h-[300px]">
-                <div id="office-map" class="w-full h-full rounded-2xl z-0 min-h-[300px]"></div>
-            </div>
+        <div class="relative overflow-hidden bg-white rounded-3xl shadow-sm hover:shadow-lg border border-gray-100 hover:border-blue-100 transition-all duration-300 group hover:-translate-y-1 min-h-[350px]">
+            <div id="office-map" class="absolute inset-0 w-full h-full z-0"></div>
+            <!-- Optional subtle inner shadow for a premium cutout look -->
+            <div class="absolute inset-0 pointer-events-none shadow-inner rounded-3xl z-10 border border-black/5"></div>
         </div>
     </div>
     
@@ -496,8 +502,8 @@ require_once __DIR__ . '/includes/header.php';
     <?php endif; ?>
 
     <div class="mt-12 text-center">
-        <a href="<?= getBaseUrl() ?>/offices" class="inline-flex items-center gap-2 border-2 border-[#0c2d74] text-[#0c2d74] hover:bg-[#0c2d74] hover:text-white font-semibold py-3 px-8 rounded-xl transition-colors">
-            <i class="ph ph-list"></i>
+        <a href="<?= getBaseUrl() ?>/offices" class="inline-flex items-center gap-3 border-2 border-gray-200 text-gray-700 hover:border-[#0c2d74] hover:bg-[#0c2d74] hover:text-white font-bold py-4 px-10 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-900/20 group">
+            <i class="ph ph-list text-xl group-hover:scale-110 transition-transform"></i>
             <?= __('office_back') ?>
         </a>
     </div>
