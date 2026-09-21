@@ -4,10 +4,10 @@ require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/functions.php';
 
 $offices = getAllOffices();
-$pageTitle = 'Global Map';
+$pageTitle = __('map_title');
 $currentPage = 'map';
 $needsMap = true;
-$metaDescription = 'Interactive map of all Acıbadem International information offices worldwide.';
+$metaDescription = __('map_floating_p');
 
 require_once __DIR__ . '/includes/header.php';
 ?>
@@ -19,12 +19,12 @@ require_once __DIR__ . '/includes/header.php';
     <!-- Floating Header -->
     <div class="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] w-[95%] max-w-xl bg-white/95 backdrop-blur-md shadow-lg rounded-2xl p-4 flex items-center justify-between border border-gray-100">
         <div>
-            <h1 class="text-xl font-bold text-[#0c2d74]">Global Network</h1>
-            <p class="text-sm text-gray-500">Select a pin to view details</p>
+            <h1 class="text-xl font-bold text-[#0c2d74]"><?= __('map_floating_h') ?></h1>
+            <p class="text-sm text-gray-500"><?= __('map_floating_p') ?></p>
         </div>
         <a href="<?= getBaseUrl() ?>/offices" class="bg-[#0c2d74] text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-[#1a4ba0] transition-colors flex items-center gap-2">
             <i class="ph-fill ph-list-dashes"></i>
-            List View
+            <?= __('map_list_view') ?>
         </a>
     </div>
 </div>

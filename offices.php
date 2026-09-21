@@ -8,10 +8,10 @@ $countries = getCountriesWithCount();
 $totalOffices = count($offices);
 $totalCountries = count($countries);
 
-$pageTitle = 'All Offices';
+$pageTitle = __('offices_title');
 $currentPage = 'offices';
 $needsMap = false;
-$metaDescription = 'Browse all ' . $totalOffices . ' Acıbadem International information offices across ' . $totalCountries . ' countries worldwide.';
+$metaDescription = __('offices_subtitle', $totalOffices, $totalCountries);
 
 // Group by country
 $grouped = [];
@@ -27,13 +27,13 @@ require_once __DIR__ . '/includes/header.php';
     <div class="bg-white border-b border-gray-200 py-10">
         <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-                <h1 class="text-3xl md:text-4xl font-bold text-[#0c2d74] mb-2">All Offices</h1>
-                <p class="text-gray-500 text-lg"><?= $totalOffices ?> offices across <?= $totalCountries ?> countries</p>
+                <h1 class="text-3xl md:text-4xl font-bold text-[#0c2d74] mb-2"><?= __('offices_title') ?></h1>
+                <p class="text-gray-500 text-lg"><?= __('offices_subtitle', $totalOffices, $totalCountries) ?></p>
             </div>
             <div>
                 <a href="<?= getBaseUrl() ?>/map" class="bg-[#E6F0FA] text-[#0c2d74] hover:bg-[#0c2d74] hover:text-white font-semibold py-3 px-6 rounded-xl transition-colors flex items-center gap-2">
                     <i class="ph-fill ph-map-trifold"></i>
-                    View on Map
+                    <?= __('offices_view_map') ?>
                 </a>
             </div>
         </div>
@@ -44,12 +44,12 @@ require_once __DIR__ . '/includes/header.php';
         <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row gap-4">
             <div class="relative flex-1">
                 <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></i>
-                <input type="text" id="office-search" placeholder="Search by office, country, or city..." class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 focus:border-[#0c2d74] focus:ring-1 focus:ring-[#0c2d74] outline-none transition-shadow">
+                <input type="text" id="office-search" placeholder="<?= __('offices_search_ph') ?>" class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 focus:border-[#0c2d74] focus:ring-1 focus:ring-[#0c2d74] outline-none transition-shadow">
             </div>
             
             <div class="relative w-full md:w-64">
                 <select id="country-jump" onchange="scrollToCountry(this.value)" class="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-300 focus:border-[#0c2d74] focus:ring-1 focus:ring-[#0c2d74] outline-none appearance-none bg-white font-medium text-gray-700">
-                    <option value="">Jump to Country...</option>
+                    <option value=""><?= __('offices_jump_ph') ?></option>
                     <?php foreach ($countries as $c): ?>
                     <option value="<?= e(strtolower(preg_replace('/[^a-zA-Z0-9]+/', '-', $c['country']))) ?>"><?= e($c['country']) ?> (<?= $c['office_count'] ?>)</option>
                     <?php endforeach; ?>
@@ -64,8 +64,8 @@ require_once __DIR__ . '/includes/header.php';
         <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
             <i class="ph-fill ph-magnifying-glass-minus text-4xl"></i>
         </div>
-        <h3 class="text-xl font-bold text-gray-800 mb-2">No results found</h3>
-        <p class="text-gray-500">We couldn't find any offices matching your search.</p>
+        <h3 class="text-xl font-bold text-gray-800 mb-2"><?= __('offices_no_results_h') ?></h3>
+        <p class="text-gray-500"><?= __('offices_no_results_p') ?></p>
     </div>
 
     <!-- Office List -->

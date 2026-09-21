@@ -350,8 +350,8 @@ require_once __DIR__ . '/includes/header.php';
                         <i class="ph-fill ph-stethoscope text-2xl"></i>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Free Medical Consultation</p>
-                        <p class="text-xs text-gray-500 mt-0.5">Talk to our patient coordinators</p>
+                        <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors"><?= __('office_free_consult') ?></p>
+                        <p class="text-xs text-gray-500 mt-0.5"><?= __('office_free_consul_p') ?></p>
                     </div>
                     <div class="flex-shrink-0 text-gray-300 group-hover:text-[#0c2d74] transition-colors">
                         <i class="ph ph-arrow-right text-lg"></i>
@@ -369,12 +369,12 @@ require_once __DIR__ . '/includes/header.php';
                 <i class="ph-fill ph-handshake text-2xl"></i>
             </div>
             <div>
-                <h3 class="text-lg md:text-xl font-bold text-[#0c2d74]">Become a Partner</h3>
-                <p class="text-sm text-gray-500 mt-1">Join our global network of healthcare professionals and agencies.</p>
+                <h3 class="text-lg md:text-xl font-bold text-[#0c2d74]"><?= __('office_partner_h') ?></h3>
+                <p class="text-sm text-gray-500 mt-1"><?= __('office_partner_p') ?></p>
             </div>
         </div>
         <a href="https://partner.acibademinternational.com/london/" target="_blank" rel="noopener" class="flex-shrink-0 w-full md:w-auto text-center bg-[#0c2d74] hover:bg-[#1a4ba0] text-white px-8 py-3 rounded-xl font-bold text-sm transition-colors shadow-sm whitespace-nowrap inline-flex items-center justify-center gap-2">
-            Apply Now <i class="ph ph-arrow-right"></i>
+            <?= __('office_partner_btn') ?> <i class="ph ph-arrow-right"></i>
         </a>
     </div>
 
@@ -383,7 +383,7 @@ require_once __DIR__ . '/includes/header.php';
         <!-- Contact Details -->
         <div>
             <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
-                <h3 class="text-xl font-bold text-[#0c2d74] mb-6">Contact Information</h3>
+                <h3 class="text-xl font-bold text-[#0c2d74] mb-6"><?= __('office_contact_info') ?></h3>
                 
                 <div class="space-y-6">
                     <div class="flex items-start gap-4 pb-4 border-b border-gray-50">
@@ -391,7 +391,7 @@ require_once __DIR__ . '/includes/header.php';
                             <i class="ph-fill ph-map-pin text-xl"></i>
                         </div>
                         <div>
-                            <div class="text-sm font-semibold text-gray-900 mb-1">Address</div>
+                            <div class="text-sm font-semibold text-gray-900 mb-1"><?= __('office_address') ?></div>
                             <div class="text-gray-600 text-sm leading-relaxed"><?= nl2br(e($office['address'])) ?></div>
                         </div>
                     </div>
@@ -402,7 +402,7 @@ require_once __DIR__ . '/includes/header.php';
                             <i class="ph-fill ph-phone text-xl"></i>
                         </div>
                         <div>
-                            <div class="text-sm font-semibold text-gray-900 mb-1">Phone</div>
+                            <div class="text-sm font-semibold text-gray-900 mb-1"><?= __('office_phone') ?></div>
                             <a href="tel:<?= preg_replace('/[^0-9+]/', '', $office['phone']) ?>" class="text-gray-600 text-sm hover:text-[#0c2d74]"><?= e($office['phone']) ?></a>
                         </div>
                     </div>
@@ -414,7 +414,7 @@ require_once __DIR__ . '/includes/header.php';
                             <i class="ph-fill ph-envelope-simple text-xl"></i>
                         </div>
                         <div>
-                            <div class="text-sm font-semibold text-gray-900 mb-1">Email</div>
+                            <div class="text-sm font-semibold text-gray-900 mb-1"><?= __('office_email') ?></div>
                             <a href="mailto:<?= e($office['email']) ?>" class="text-gray-600 text-sm hover:text-[#0c2d74]"><?= e($office['email']) ?></a>
                         </div>
                     </div>
@@ -433,7 +433,7 @@ require_once __DIR__ . '/includes/header.php';
     
     <?php if (!empty($relatedOffices)): ?>
     <div class="mt-16">
-        <h3 class="text-2xl font-bold text-[#0c2d74] mb-6">Other offices in <?= e($office['country']) ?></h3>
+        <h3 class="text-2xl font-bold text-[#0c2d74] mb-6"><?= __('office_other_in', e($office['country'])) ?></h3>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <?php foreach ($relatedOffices as $ro): ?>
                 <a href="<?= officeUrl($ro['slug']) ?>" class="office-card block bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow group">
@@ -458,7 +458,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="mt-12 text-center">
         <a href="<?= getBaseUrl() ?>/offices" class="inline-flex items-center gap-2 border-2 border-[#0c2d74] text-[#0c2d74] hover:bg-[#0c2d74] hover:text-white font-semibold py-3 px-8 rounded-xl transition-colors">
             <i class="ph ph-list"></i>
-            View All Offices
+            <?= __('office_back') ?>
         </a>
     </div>
 </div>

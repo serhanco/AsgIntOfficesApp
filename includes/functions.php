@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/language.php';
+
 /**
  * Helper Functions
  * Acıbadem International Offices App

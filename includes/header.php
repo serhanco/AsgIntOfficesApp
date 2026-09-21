@@ -1,23 +1,34 @@
 <?php
 // Ensure variables have default values if not set
-$pageTitle = $pageTitle ?? 'Home';
-$currentPage = $currentPage ?? 'home';
-$needsMap = $needsMap ?? false;
-$metaDescription = $metaDescription ?? 'Acıbadem International Offices - Find our global healthcare network locations.';
-$ogImage = $ogImage ?? (getBaseUrl() . '/assets/images/og-logo.png');
+$pageTitle       = $pageTitle ?? __('site_name');
+$currentPage     = $currentPage ?? 'home';
+$needsMap        = $needsMap ?? false;
+$metaDescription = $metaDescription ?? __('meta_default');
+$ogImage         = $ogImage ?? (getBaseUrl() . '/assets/images/og-logo.png');
+
+// Current lang is set by language.php (already required via functions.php)
+$current_lang = $GLOBALS['current_lang'] ?? 'en';
+
+// Build lang switcher URL helper
+function langUrl(string $lang): string {
+    $params = $_GET;
+    $params['lang'] = $lang;
+    $qs = http_build_query($params);
+    return strtok($_SERVER['REQUEST_URI'], '?') . '?' . $qs;
+}
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= htmlspecialchars($current_lang) ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title><?= htmlspecialchars($pageTitle) ?> | Acıbadem International Offices</title>
+    <title><?= htmlspecialchars($pageTitle) ?> | <?= __('site_name') ?></title>
     
     <meta name="description" content="<?= htmlspecialchars($metaDescription) ?>">
     <meta name="robots" content="noindex, nofollow">
     
     <!-- Open Graph -->
-    <meta property="og:title" content="<?= htmlspecialchars($pageTitle) ?> | Acıbadem International Offices">
+    <meta property="og:title" content="<?= htmlspecialchars($pageTitle) ?> | <?= __('site_name') ?>">
     <meta property="og:description" content="<?= htmlspecialchars($metaDescription) ?>">
     <meta property="og:image" content="<?= htmlspecialchars($ogImage) ?>">
     <meta property="og:type" content="website">
@@ -81,16 +92,28 @@ $ogImage = $ogImage ?? (getBaseUrl() . '/assets/images/og-logo.png');
                 </div>
                 
                 <!-- Desktop Nav -->
-                <nav class="hidden md:flex space-x-2">
+                <nav class="hidden md:flex items-center space-x-1">
                     <a href="<?= getBaseUrl() ?>/" class="flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors <?= $currentPage === 'home' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
-                        <i class="ph ph-target text-lg mr-2"></i>Nearest Office
+                        <i class="ph ph-target text-lg mr-2"></i><?= __('nav_nearest') ?>
                     </a>
                     <a href="<?= getBaseUrl() ?>/map" class="flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors <?= $currentPage === 'map' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
-                        <i class="ph ph-globe-hemisphere-west text-lg mr-2"></i>Global Map
+                        <i class="ph ph-globe-hemisphere-west text-lg mr-2"></i><?= __('nav_map') ?>
                     </a>
                     <a href="<?= getBaseUrl() ?>/offices" class="flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors <?= $currentPage === 'offices' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
-                        <i class="ph ph-buildings text-lg mr-2"></i>All Offices
+                        <i class="ph ph-buildings text-lg mr-2"></i><?= __('nav_all_offices') ?>
                     </a>
+
+                    <!-- Language Switcher (desktop) -->
+                    <div class="flex items-center gap-1 ml-3 border-l border-white/20 pl-3">
+                        <a href="<?= htmlspecialchars(langUrl('en')) ?>"
+                           class="px-2 py-1 rounded text-xs font-bold transition-colors <?= $current_lang === 'en' ? 'bg-white text-[#0c2d74]' : 'text-gray-300 hover:text-white' ?>">
+                            EN
+                        </a>
+                        <a href="<?= htmlspecialchars(langUrl('ru')) ?>"
+                           class="px-2 py-1 rounded text-xs font-bold transition-colors <?= $current_lang === 'ru' ? 'bg-white text-[#0c2d74]' : 'text-gray-300 hover:text-white' ?>">
+                            RU
+                        </a>
+                    </div>
                 </nav>
                 
                 <!-- Mobile Nav Toggle -->
@@ -106,14 +129,26 @@ $ogImage = $ogImage ?? (getBaseUrl() . '/assets/images/og-logo.png');
         <div id="mobile-menu" class="hidden md:hidden bg-acibadem-blue border-t border-white/10">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 <a href="<?= getBaseUrl() ?>/" class="flex items-center px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'home' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
-                    <i class="ph ph-target text-xl mr-3"></i>Nearest Office
+                    <i class="ph ph-target text-xl mr-3"></i><?= __('nav_nearest') ?>
                 </a>
                 <a href="<?= getBaseUrl() ?>/map" class="flex items-center px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'map' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
-                    <i class="ph ph-globe-hemisphere-west text-xl mr-3"></i>Global Map
+                    <i class="ph ph-globe-hemisphere-west text-xl mr-3"></i><?= __('nav_map') ?>
                 </a>
                 <a href="<?= getBaseUrl() ?>/offices" class="flex items-center px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'offices' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
-                    <i class="ph ph-buildings text-xl mr-3"></i>All Offices
+                    <i class="ph ph-buildings text-xl mr-3"></i><?= __('nav_all_offices') ?>
                 </a>
+                <!-- Language Switcher (mobile) -->
+                <div class="flex items-center gap-2 px-3 py-2 border-t border-white/10 mt-1">
+                    <i class="ph ph-translate text-gray-400"></i>
+                    <a href="<?= htmlspecialchars(langUrl('en')) ?>"
+                       class="px-3 py-1 rounded text-sm font-bold transition-colors <?= $current_lang === 'en' ? 'bg-white text-[#0c2d74]' : 'text-gray-300 hover:text-white' ?>">
+                        English
+                    </a>
+                    <a href="<?= htmlspecialchars(langUrl('ru')) ?>"
+                       class="px-3 py-1 rounded text-sm font-bold transition-colors <?= $current_lang === 'ru' ? 'bg-white text-[#0c2d74]' : 'text-gray-300 hover:text-white' ?>">
+                        Русский
+                    </a>
+                </div>
             </div>
         </div>
     </header>
