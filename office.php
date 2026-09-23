@@ -84,95 +84,88 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 
     <!-- ===== Recent Activities + Our Team ===== -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+    <?php 
+    $team = getOfficeTeam($office['id']);
+    $activities = getOfficeActivities($office['id']);
+    $hasTeam = !empty($team);
+    $hasActivities = !empty($activities);
+    
+    // Determine grid layout based on available data
+    $gridCols = ($hasTeam && $hasActivities) ? 'md:grid-cols-2' : 'md:grid-cols-1';
+    
+    // Theme mapping for activities (colors and icons)
+    $actThemes = [
+        'act_tag_doctor' => ['bg' => 'bg-blue-50 hover:bg-[#0c2d74]', 'icon_bg' => 'bg-[#0c2d74] group-hover:bg-white', 'icon_color' => 'text-white group-hover:text-[#0c2d74]', 'text' => 'text-[#1a4ba0] group-hover:text-blue-200', 'icon' => 'ph-stethoscope'],
+        'act_tag_presentation' => ['bg' => 'bg-purple-50 hover:bg-purple-700', 'icon_bg' => 'bg-purple-700 group-hover:bg-white', 'icon_color' => 'text-white group-hover:text-purple-700', 'text' => 'text-purple-700 group-hover:text-purple-200', 'icon' => 'ph-presentation-chart'],
+        'act_tag_exhibition' => ['bg' => 'bg-emerald-50 hover:bg-emerald-700', 'icon_bg' => 'bg-emerald-600 group-hover:bg-white', 'icon_color' => 'text-white group-hover:text-emerald-700', 'text' => 'text-emerald-700 group-hover:text-emerald-200', 'icon' => 'ph-handshake']
+    ];
+    $defaultTheme = $actThemes['act_tag_doctor'];
+    ?>
+    
+    <?php if ($hasTeam || $hasActivities): ?>
+    <div class="grid grid-cols-1 <?= $gridCols ?> gap-8 mb-8">
 
         <!-- Recent Activities -->
+        <?php if ($hasActivities): ?>
         <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-xl font-bold text-[#0c2d74]"><?= __('office_activities_h', e($office['country'])) ?></h3>
-                <span class="text-xs font-semibold bg-[#E6F0FA] text-[#0c2d74] px-3 py-1 rounded-full">2026</span>
+                <span class="text-xs font-semibold bg-[#E6F0FA] text-[#0c2d74] px-3 py-1 rounded-full"><?= count($activities) ?></span>
             </div>
             <div class="space-y-4">
-
-                <!-- Activity 1: Meet the Doctor -->
-                <div class="relative overflow-hidden group flex gap-4 p-4 rounded-2xl bg-blue-50 hover:bg-[#0c2d74] hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-                    <i class="ph-fill ph-stethoscope absolute right-4 bottom-2 text-5xl text-white opacity-0 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500 pointer-events-none"></i>
-                    <div class="relative z-10 flex-shrink-0 w-12 h-12 rounded-xl bg-[#0c2d74] group-hover:bg-white flex items-center justify-center transition-colors">
-                        <i class="ph-fill ph-stethoscope text-2xl text-white group-hover:text-[#0c2d74]"></i>
+                <?php foreach ($activities as $act): 
+                    $theme = $actThemes[$act['tag_key']] ?? $defaultTheme;
+                ?>
+                <div class="relative overflow-hidden group flex gap-4 p-4 rounded-2xl <?= $theme['bg'] ?> hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+                    <i class="ph-fill <?= $theme['icon'] ?> absolute right-4 bottom-2 text-5xl text-white opacity-0 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500 pointer-events-none"></i>
+                    <div class="relative z-10 flex-shrink-0 w-12 h-12 rounded-xl <?= $theme['icon_bg'] ?> flex items-center justify-center transition-colors">
+                        <i class="ph-fill <?= $theme['icon'] ?> text-2xl <?= $theme['icon_color'] ?>"></i>
                     </div>
                     <div class="relative z-10 flex-1 min-w-0">
                         <div class="flex items-center gap-2 mb-1">
-                            <span class="text-xs font-bold uppercase tracking-wide text-[#1a4ba0] group-hover:text-blue-200 transition-colors"><?= __('act_tag_doctor') ?></span>
+                            <span class="text-xs font-bold uppercase tracking-wide <?= $theme['text'] ?> transition-colors"><?= __($act['tag_key']) ?></span>
                         </div>
-                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white transition-colors leading-snug"><?= __('act_doc_title') ?></p>
-                        <p class="text-xs text-gray-500 group-hover:text-blue-200 transition-colors mt-1"><?= __('act_doc_spec') ?></p>
+                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white transition-colors leading-snug"><?= e($act['title']) ?></p>
+                        <p class="text-xs text-gray-500 <?= str_replace('text-[#1a4ba0]', 'text-blue-200', $theme['text']) ?> transition-colors mt-1"><?= e($act['description']) ?></p>
                     </div>
                     <div class="relative z-10 flex-shrink-0 self-center text-gray-300 group-hover:text-white transition-colors">
                         <i class="ph ph-arrow-right text-lg"></i>
                     </div>
                 </div>
-
-                <!-- Activity 2: Presentation -->
-                <div class="relative overflow-hidden group flex gap-4 p-4 rounded-2xl bg-purple-50 hover:bg-purple-700 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-                    <i class="ph-fill ph-presentation-chart absolute right-4 bottom-2 text-5xl text-white opacity-0 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500 pointer-events-none"></i>
-                    <div class="relative z-10 flex-shrink-0 w-12 h-12 rounded-xl bg-purple-700 group-hover:bg-white flex items-center justify-center transition-colors">
-                        <i class="ph-fill ph-presentation-chart text-2xl text-white group-hover:text-purple-700"></i>
-                    </div>
-                    <div class="relative z-10 flex-1 min-w-0">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="text-xs font-bold uppercase tracking-wide text-purple-700 group-hover:text-purple-200 transition-colors"><?= __('act_tag_presentation') ?></span>
-                        </div>
-                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white transition-colors leading-snug"><?= __('act_pres_title') ?></p>
-                        <p class="text-xs text-gray-500 group-hover:text-purple-200 transition-colors mt-1"><?= __('act_pres_desc') ?></p>
-                    </div>
-                    <div class="relative z-10 flex-shrink-0 self-center text-gray-300 group-hover:text-white transition-colors">
-                        <i class="ph ph-arrow-right text-lg"></i>
-                    </div>
-                </div>
-
-                <!-- Activity 3: Exhibition -->
-                <div class="relative overflow-hidden group flex gap-4 p-4 rounded-2xl bg-emerald-50 hover:bg-emerald-700 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-                    <i class="ph-fill ph-handshake absolute right-4 bottom-2 text-5xl text-white opacity-0 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500 pointer-events-none"></i>
-                    <div class="relative z-10 flex-shrink-0 w-12 h-12 rounded-xl bg-emerald-600 group-hover:bg-white flex items-center justify-center transition-colors">
-                        <i class="ph-fill ph-handshake text-2xl text-white group-hover:text-emerald-700"></i>
-                    </div>
-                    <div class="relative z-10 flex-1 min-w-0">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="text-xs font-bold uppercase tracking-wide text-emerald-700 group-hover:text-emerald-200 transition-colors"><?= __('act_tag_exhibition') ?></span>
-                        </div>
-                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white transition-colors leading-snug"><?= __('act_exh_title') ?></p>
-                        <p class="text-xs text-gray-500 group-hover:text-emerald-200 transition-colors mt-1"><?= __('act_exh_desc') ?></p>
-                    </div>
-                    <div class="relative z-10 flex-shrink-0 self-center text-gray-300 group-hover:text-white transition-colors">
-                        <i class="ph ph-arrow-right text-lg"></i>
-                    </div>
-                </div>
-
+                <?php endforeach; ?>
             </div>
         </div>
+        <?php endif; ?>
 
         <!-- Our Team -->
+        <?php if ($hasTeam): ?>
         <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-xl font-bold text-[#0c2d74]"><?= __('office_team_h') ?></h3>
-                <span class="text-xs font-semibold bg-[#E6F0FA] text-[#0c2d74] px-3 py-1 rounded-full"><?= __('office_team_count') ?></span>
+                <span class="text-xs font-semibold bg-[#E6F0FA] text-[#0c2d74] px-3 py-1 rounded-full"><?= count($team) ?></span>
             </div>
             <div class="space-y-4">
-
-                <!-- Member 1 -->
+                <?php foreach ($team as $member): ?>
                 <div class="relative overflow-hidden flex items-center gap-4 p-4 rounded-2xl bg-white border border-gray-100 hover:border-[#0c2d74] hover:shadow-lg transition-all duration-300 group hover:-translate-y-1">
                     <i class="ph-fill ph-user absolute right-4 bottom-2 text-5xl text-gray-50 opacity-0 group-hover:opacity-100 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
                     <div class="relative z-10 flex-shrink-0 relative">
-                        <img src="<?= getBaseUrl() ?>/assets/images/team-cem-ustundag-sm.jpg" alt="Cem Üstündağ" class="w-14 h-14 rounded-2xl object-cover object-top shadow-sm">
-                        <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 border-2 border-white rounded-full"></span>
+                        <?php if ($member['image_url']): ?>
+                            <img src="<?= e($member['image_url']) ?>" alt="<?= e($member['name']) ?>" class="w-14 h-14 rounded-2xl object-cover object-top shadow-sm">
+                        <?php else: ?>
+                            <div class="w-14 h-14 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-400">
+                                <i class="ph-fill ph-user text-2xl"></i>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <?php if ($member['is_online']): ?>
+                            <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 border-2 border-white rounded-full" title="Online"></span>
+                        <?php else: ?>
+                            <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-gray-300 border-2 border-white rounded-full" title="Offline"></span>
+                        <?php endif; ?>
                     </div>
                     <div class="relative z-10 flex-1 min-w-0">
-                        <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Cem Üstündağ</p>
-                        <p class="text-xs text-gray-500 mt-0.5"><?= __('team_role_coord') ?></p>
-                        <div class="flex flex-wrap gap-1 mt-2">
-                            <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-[#0c2d74] px-2 py-0.5 rounded-full font-medium"><i class="ph-fill ph-translate text-xs"></i> Turkish</span>
-                            <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-[#0c2d74] px-2 py-0.5 rounded-full font-medium"><i class="ph-fill ph-translate text-xs"></i> English</span>
-                        </div>
+                        <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors"><?= e($member['name']) ?></p>
+                        <p class="text-xs text-gray-500 mt-0.5"><?= __($member['role_key']) ?></p>
                     </div>
                     <div class="relative z-10 flex items-center gap-3 flex-shrink-0">
                         <?php if (!empty($office['phone'])): ?>
@@ -187,70 +180,12 @@ require_once __DIR__ . '/includes/header.php';
                         <?php endif; ?>
                     </div>
                 </div>
-
-                <!-- Member 2 -->
-                <div class="relative overflow-hidden flex items-center gap-4 p-4 rounded-2xl bg-white border border-gray-100 hover:border-[#0c2d74] hover:shadow-lg transition-all duration-300 group hover:-translate-y-1">
-                    <i class="ph-fill ph-user absolute right-4 bottom-2 text-5xl text-gray-50 opacity-0 group-hover:opacity-100 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
-                    <div class="relative z-10 flex-shrink-0 relative">
-                        <img src="<?= getBaseUrl() ?>/assets/images/team-erim-ekiz-sm.jpg" alt="Erim Ekiz" class="w-14 h-14 rounded-2xl object-cover object-top shadow-sm">
-                        <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 border-2 border-white rounded-full"></span>
-                    </div>
-                    <div class="relative z-10 flex-1 min-w-0">
-                        <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Erim Ekiz</p>
-                        <p class="text-xs text-gray-500 mt-0.5"><?= __('team_role_patient') ?></p>
-                        <div class="flex flex-wrap gap-1 mt-2">
-                            <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-[#0c2d74] px-2 py-0.5 rounded-full font-medium"><i class="ph-fill ph-translate text-xs"></i> Turkish</span>
-                            <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-[#0c2d74] px-2 py-0.5 rounded-full font-medium"><i class="ph-fill ph-translate text-xs"></i> English</span>
-                            <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-[#0c2d74] px-2 py-0.5 rounded-full font-medium"><i class="ph-fill ph-translate text-xs"></i> German</span>
-                        </div>
-                    </div>
-                    <div class="relative z-10 flex items-center gap-3 flex-shrink-0">
-                        <?php if (!empty($office['phone'])): ?>
-                        <a href="tel:<?= preg_replace('/[^0-9+]/', '', $office['phone']) ?>" class="text-gray-300 hover:text-[#0c2d74] transition-colors" title="Call Office">
-                            <i class="ph-fill ph-phone text-xl"></i>
-                        </a>
-                        <?php endif; ?>
-                        <?php if (!empty($office['email'])): ?>
-                        <a href="mailto:<?= e($office['email']) ?>" class="text-gray-300 hover:text-[#0c2d74] transition-colors" title="Email Office">
-                            <i class="ph-fill ph-envelope-simple text-xl"></i>
-                        </a>
-                        <?php endif; ?>
-                    </div>
-                </div>
-
-                <!-- Member 3 -->
-                <div class="relative overflow-hidden flex items-center gap-4 p-4 rounded-2xl bg-white border border-gray-100 hover:border-[#0c2d74] hover:shadow-lg transition-all duration-300 group hover:-translate-y-1">
-                    <i class="ph-fill ph-user absolute right-4 bottom-2 text-5xl text-gray-50 opacity-0 group-hover:opacity-100 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
-                    <div class="relative z-10 flex-shrink-0 relative">
-                        <img src="<?= getBaseUrl() ?>/assets/images/team-ionea-ruxandra-sm.jpg" alt="Ionea Ruxandra" class="w-14 h-14 rounded-2xl object-cover object-top shadow-sm">
-                        <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-yellow-400 border-2 border-white rounded-full"></span>
-                    </div>
-                    <div class="relative z-10 flex-1 min-w-0">
-                        <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors">Ionea Ruxandra</p>
-                        <p class="text-xs text-gray-500 mt-0.5"><?= __('team_role_liaison') ?></p>
-                        <div class="flex flex-wrap gap-1 mt-2">
-                            <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-[#0c2d74] px-2 py-0.5 rounded-full font-medium"><i class="ph-fill ph-translate text-xs"></i> Romanian</span>
-                            <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-[#0c2d74] px-2 py-0.5 rounded-full font-medium"><i class="ph-fill ph-translate text-xs"></i> English</span>
-                            <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-[#0c2d74] px-2 py-0.5 rounded-full font-medium"><i class="ph-fill ph-translate text-xs"></i> French</span>
-                        </div>
-                    </div>
-                    <div class="relative z-10 flex items-center gap-3 flex-shrink-0">
-                        <?php if (!empty($office['phone'])): ?>
-                        <a href="tel:<?= preg_replace('/[^0-9+]/', '', $office['phone']) ?>" class="text-gray-300 hover:text-[#0c2d74] transition-colors" title="Call Office">
-                            <i class="ph-fill ph-phone text-xl"></i>
-                        </a>
-                        <?php endif; ?>
-                        <?php if (!empty($office['email'])): ?>
-                        <a href="mailto:<?= e($office['email']) ?>" class="text-gray-300 hover:text-[#0c2d74] transition-colors" title="Email Office">
-                            <i class="ph-fill ph-envelope-simple text-xl"></i>
-                        </a>
-                        <?php endif; ?>
-                    </div>
-                </div>
-
+                <?php endforeach; ?>
             </div>
         </div>
+        <?php endif; ?>
     </div>
+    <?php endif; ?>
 
     <!-- ===== Contact Info + Map (existing) ===== -->
     <!-- ===== FAQ + Quick Access ===== -->

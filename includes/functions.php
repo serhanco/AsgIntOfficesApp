@@ -120,3 +120,23 @@ function haversineDistance(float $lat1, float $lon1, float $lat2, float $lon2): 
 function officeUrl(string $slug): string {
     return getBaseUrl() . '/office/' . $slug;
 }
+
+/**
+ * Get team members for a specific office
+ */
+function getOfficeTeam(int $officeId): array {
+    $db = getDb();
+    $stmt = $db->prepare("SELECT * FROM office_teams WHERE office_id = ? ORDER BY sort_order ASC, id ASC");
+    $stmt->execute([$officeId]);
+    return $stmt->fetchAll();
+}
+
+/**
+ * Get recent activities for a specific office
+ */
+function getOfficeActivities(int $officeId): array {
+    $db = getDb();
+    $stmt = $db->prepare("SELECT * FROM office_activities WHERE office_id = ? ORDER BY sort_order ASC, id ASC");
+    $stmt->execute([$officeId]);
+    return $stmt->fetchAll();
+}
