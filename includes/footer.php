@@ -4,7 +4,7 @@
             <div class="flex flex-col md:flex-row justify-between items-center md:items-start space-y-8 md:space-y-0">
                 
                 <!-- Left: Logo & Subtitle -->
-                <div class="flex-col items-center md:items-start flex">
+                <div class="flex flex-col items-center md:items-start">
                     <div class="flex flex-col items-center">
                         <img class="h-6 w-auto mb-3" src="<?= getBaseUrl() ?>/assets/images/acibadem-white-logo.webp" alt="Acıbadem Logo">
                         <span class="text-gray-400 text-sm font-medium tracking-wide">acibadem.world</span>
@@ -58,7 +58,7 @@
         <!-- Bottom copyright bar -->
         <div class="bg-black/20 py-4">
             <div class="max-w-6xl mx-auto px-4 text-center">
-                <p class="text-gray-500 text-xs">
+                <p class="text-gray-400 text-xs">
                     <?= __('footer_copyright') ?>
                 </p>
             </div>

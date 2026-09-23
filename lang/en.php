@@ -135,4 +135,17 @@ return [
     'quick_2nd_opinion_p' => 'Send your reports & get expert review',
     'quick_online_h'      => 'Online Doctor Consultation',
     'quick_online_p'      => 'Meet a specialist via video call',
+
+    // Institutions search
+    'inst_search_ph'      => 'Search institutions...',
+
+    // 404 Page
+    '404_title'           => 'Page Not Found',
+    '404_subtitle'        => 'The office or page you\'re looking for doesn\'t exist or may have been moved.',
+    '404_btn_home'        => 'Go to Homepage',
+    '404_btn_offices'     => 'View All Offices',
+
+    // Explore — Acıbadem Online (replaces API card)
+    'explore_online_h'    => 'Acıbadem Online',
+    'explore_online_p'    => 'Access your medical records, book appointments and consult with doctors online.',
 ];

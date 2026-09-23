@@ -99,7 +99,7 @@ function langUrl(string $lang): string {
                     <a href="<?= getBaseUrl() ?>/map" class="flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors <?= $currentPage === 'map' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
                         <i class="ph ph-globe-hemisphere-west text-lg mr-2"></i><?= __('nav_map') ?>
                     </a>
-                    <a href="<?= getBaseUrl() ?>/offices" class="flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors <?= $currentPage === 'offices' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
+                    <a href="<?= getBaseUrl() ?>/offices" class="flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors <?= ($currentPage === 'offices' || $currentPage === 'office') ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
                         <i class="ph ph-buildings text-lg mr-2"></i><?= __('nav_all_offices') ?>
                     </a>
 
@@ -118,7 +118,7 @@ function langUrl(string $lang): string {
                 
                 <!-- Mobile Nav Toggle -->
                 <div class="md:hidden flex items-center">
-                    <button id="burger-btn" type="button" class="text-white hover:text-gray-200 focus:outline-none p-2" onclick="toggleMobileMenu()">
+                    <button id="burger-btn" type="button" class="text-white hover:text-gray-200 focus:outline-none p-2" onclick="toggleMobileMenu()" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu">
                         <i class="ph ph-list text-2xl"></i>
                     </button>
                 </div>
@@ -134,7 +134,7 @@ function langUrl(string $lang): string {
                 <a href="<?= getBaseUrl() ?>/map" class="flex items-center px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'map' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
                     <i class="ph ph-globe-hemisphere-west text-xl mr-3"></i><?= __('nav_map') ?>
                 </a>
-                <a href="<?= getBaseUrl() ?>/offices" class="flex items-center px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'offices' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
+                <a href="<?= getBaseUrl() ?>/offices" class="flex items-center px-3 py-2 rounded-md text-base font-medium <?= ($currentPage === 'offices' || $currentPage === 'office') ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
                     <i class="ph ph-buildings text-xl mr-3"></i><?= __('nav_all_offices') ?>
                 </a>
                 <!-- Language Switcher (mobile) -->

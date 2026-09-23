@@ -23,7 +23,7 @@ require_once __DIR__ . '/includes/header.php';
         <p class="text-xl text-blue-100 max-w-2xl mx-auto mb-10"><?= __('home_subtitle', count($offices), count(array_unique(array_column($offices, 'country')))) ?></p>
         
         <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-            <button onclick="handleNearestOfficeClick()" class="bg-white text-[#0c2d74] hover:bg-gray-50 font-semibold py-4 px-8 rounded-2xl shadow-lg transition-transform hover:scale-105 flex items-center gap-2 text-lg">
+            <button onclick="handleNearestOfficeClick()" class="cta-btn bg-white text-[#0c2d74] hover:bg-gray-50 font-semibold py-4 px-8 rounded-2xl shadow-lg transition-transform hover:scale-105 flex items-center gap-2 text-lg">
                 <i class="ph-fill ph-navigation-arrow"></i>
                 <?= __('btn_locate') ?>
             </button>
@@ -75,7 +75,7 @@ require_once __DIR__ . '/includes/header.php';
 
 <div class="bg-gray-50 pt-12 pb-16">
     <!-- Modern Unified Stats Panel -->
-    <div class="max-w-7xl mx-auto px-4 -mt-20 relative z-20 mb-16">
+    <div id="stats-panel" class="max-w-7xl mx-auto px-4 -mt-20 relative z-20 mb-16">
         <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 p-8">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-0 md:divide-x md:divide-gray-100">
                 <div class="text-center px-4 group">
@@ -148,15 +148,15 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
             </a>
 
-            <!-- Card 3 -->
-            <a href="<?= getBaseUrl() ?>/api/offices" class="relative overflow-hidden block group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 p-8 text-left hover:-translate-y-1">
-                <i class="ph-fill ph-code absolute -right-4 -bottom-4 text-9xl text-gray-50 opacity-50 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500"></i>
+            <!-- Card 3 — Acıbadem Online -->
+            <a href="https://www.acibadem.com.tr/acibademonline/#/login" target="_blank" rel="noopener noreferrer" class="relative overflow-hidden block group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 p-8 text-left hover:-translate-y-1">
+                <i class="ph-fill ph-desktop-tower absolute -right-4 -bottom-4 text-9xl text-gray-50 opacity-50 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500"></i>
                 <div class="relative z-10 flex flex-col h-full">
                     <div class="w-14 h-14 bg-blue-50 text-[#0c2d74] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#0c2d74] group-hover:text-white transition-colors duration-300">
-                        <i class="ph-fill ph-code text-2xl"></i>
+                        <i class="ph-fill ph-desktop-tower text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 text-gray-900 group-hover:text-[#0c2d74] transition-colors"><?= __('explore_api_h') ?></h3>
-                    <p class="text-gray-500 text-sm leading-relaxed mb-6 flex-1"><?= __('explore_api_p') ?></p>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900 group-hover:text-[#0c2d74] transition-colors"><?= __('explore_online_h') ?></h3>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-6 flex-1"><?= __('explore_online_p') ?></p>
                     <div class="inline-flex items-center text-[#0c2d74] font-bold text-sm opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
                         <i class="ph ph-arrow-right text-lg"></i>
                     </div>
@@ -235,7 +235,7 @@ $jsStrings = [
                 }
                 
                 document.getElementById('result-country').innerHTML = `
-                    <img src="https://flagcdn.com/24x18/${nearest.country_code.toLowerCase()}.png" alt="${nearest.country}" class="rounded shadow-sm h-[18px]">
+                    <img src="https://flagcdn.com/w40/${nearest.country_code.toLowerCase()}.png" alt="${nearest.country}" class="w-5 h-auto object-cover rounded shadow-sm">
                     <span class="text-gray-500 font-medium">${nearest.country}</span>
                 `;
                 document.getElementById('result-name').textContent = nearest.display_name;
@@ -270,6 +270,13 @@ $jsStrings = [
                 
                 const resultBlock = document.getElementById('nearest-office-result');
                 resultBlock.classList.remove('hidden');
+                
+                // Remove stats panel negative margin to prevent overlap
+                const statsPanel = document.getElementById('stats-panel');
+                if (statsPanel) {
+                    statsPanel.classList.remove('-mt-20');
+                    statsPanel.classList.add('mt-0');
+                }
                 
                 setTimeout(() => {
                     resultBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });

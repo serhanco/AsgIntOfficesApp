@@ -10,6 +10,8 @@ function toggleMobileMenu() {
   if (menu) {
     menu.classList.toggle('hidden');
     burger?.classList.toggle('is-open');
+    const isExpanded = !menu.classList.contains('hidden');
+    burger?.setAttribute('aria-expanded', isExpanded);
   }
 }
 

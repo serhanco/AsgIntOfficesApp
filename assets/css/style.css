@@ -75,8 +75,8 @@
 
 /* Search highlight */
 .country-highlight {
-  background-color: #FFF7ED;
-  box-shadow: 0 0 0 2px #FDBA74;
+  background-color: #EFF6FF;
+  box-shadow: 0 0 0 2px rgba(26, 75, 160, 0.4);
   border-radius: 16px;
 }
 

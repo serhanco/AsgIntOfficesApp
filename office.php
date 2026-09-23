@@ -379,49 +379,41 @@ require_once __DIR__ . '/includes/header.php';
 
     </div>
 
-    <!-- Contracted Institutions CTA -->
-    <div class="mb-8 relative overflow-hidden bg-gradient-to-br from-[#0c2d74] to-[#0A1C36] rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 group shadow-2xl shadow-blue-900/20">
-        <i class="ph-fill ph-handshake absolute -right-8 -bottom-8 text-[12rem] text-white opacity-5 group-hover:scale-110 group-hover:opacity-10 transition-all duration-700 pointer-events-none"></i>
-        
-        <div class="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-6 text-center md:text-left">
-            <div class="w-16 h-16 bg-white/10 backdrop-blur text-white rounded-2xl flex items-center justify-center flex-shrink-0 border border-white/10">
-                <i class="ph-fill ph-shield-check text-3xl"></i>
+    <!-- ===== Dual CTA Bento Grid ===== -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <!-- Contracted Institutions CTA -->
+        <a href="<?= getBaseUrl() ?>/contracted-institutions" class="relative overflow-hidden bg-gradient-to-br from-[#0c2d74] to-[#0A1C36] rounded-3xl p-8 flex flex-col justify-between gap-6 group shadow-xl shadow-blue-900/20 hover:-translate-y-1 transition-all duration-300">
+            <i class="ph-fill ph-shield-check absolute -right-6 -bottom-6 text-[10rem] text-white opacity-5 group-hover:scale-110 group-hover:opacity-10 transition-all duration-700 pointer-events-none"></i>
+            <div class="relative z-10">
+                <div class="w-12 h-12 bg-white/10 backdrop-blur text-white rounded-xl flex items-center justify-center mb-4 border border-white/10">
+                    <i class="ph-fill ph-shield-check text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2"><?= __('inst_card_h') ?></h3>
+                <p class="text-blue-200/70 text-sm leading-relaxed line-clamp-2"><?= __('inst_card_p') ?></p>
             </div>
-            <div>
-                <h3 class="text-2xl md:text-3xl font-bold text-white mb-3"><?= __('inst_card_h') ?></h3>
-                <p class="text-blue-100 text-sm md:text-base max-w-2xl leading-relaxed"><?= __('inst_card_p') ?></p>
+            <div class="relative z-10 inline-flex items-center text-white font-bold text-sm opacity-70 group-hover:opacity-100 transition-opacity">
+                <?= __('inst_card_btn') ?> <i class="ph ph-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
             </div>
-        </div>
-        
-        <a href="<?= getBaseUrl() ?>/contracted-institutions" class="relative z-10 flex-shrink-0 w-full md:w-auto text-center bg-white text-[#0c2d74] hover:bg-gray-50 px-8 py-4 rounded-xl font-bold transition-transform shadow-lg inline-flex items-center justify-center gap-2 group-hover:-translate-y-1">
-            <?= __('inst_card_btn') ?> <i class="ph ph-arrow-right"></i>
         </a>
-    </div>
 
-    <!-- ===== Become a Partner CTA ===== -->
-    <div class="relative overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl shadow-2xl shadow-slate-900/20 p-8 md:p-12 mb-8 flex flex-col md:flex-row items-center justify-between gap-8 group border border-slate-700">
-        <!-- Abstract Watermarks -->
-        <i class="ph-fill ph-globe-hemisphere-east absolute -left-16 -bottom-16 text-[16rem] text-slate-100 opacity-[0.02] group-hover:scale-110 group-hover:opacity-[0.04] transition-all duration-1000 pointer-events-none"></i>
-        <i class="ph-fill ph-handshake absolute -right-12 -top-12 text-[14rem] text-slate-100 opacity-[0.04] group-hover:scale-110 group-hover:opacity-[0.08] transition-all duration-700 pointer-events-none -rotate-12"></i>
-
-        <div class="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-6 text-center md:text-left">
-            <div class="w-16 h-16 bg-white/5 backdrop-blur text-white rounded-2xl flex items-center justify-center flex-shrink-0 border border-white/10 group-hover:bg-white/10 transition-colors duration-300">
-                <i class="ph-fill ph-handshake text-3xl"></i>
+        <!-- Become a Partner CTA -->
+        <a href="https://partner.acibademinternational.com/london/" target="_blank" rel="noopener" class="relative overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl p-8 flex flex-col justify-between gap-6 group shadow-xl shadow-slate-900/20 hover:-translate-y-1 transition-all duration-300 border border-slate-700">
+            <i class="ph-fill ph-handshake absolute -right-6 -bottom-6 text-[10rem] text-slate-100 opacity-[0.03] group-hover:scale-110 group-hover:opacity-[0.06] transition-all duration-700 pointer-events-none"></i>
+            <div class="relative z-10">
+                <div class="w-12 h-12 bg-white/5 backdrop-blur text-white rounded-xl flex items-center justify-center mb-4 border border-white/10 group-hover:bg-white/10 transition-colors">
+                    <i class="ph-fill ph-handshake text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2"><?= __('office_partner_h') ?></h3>
+                <p class="text-slate-400 text-sm leading-relaxed line-clamp-2"><?= __('office_partner_p') ?></p>
             </div>
-            <div>
-                <h3 class="text-2xl md:text-3xl font-bold text-white mb-3"><?= __('office_partner_h') ?></h3>
-                <p class="text-slate-400 text-sm md:text-base max-w-2xl leading-relaxed"><?= __('office_partner_p') ?></p>
+            <div class="relative z-10 inline-flex items-center text-white font-bold text-sm opacity-70 group-hover:opacity-100 transition-opacity">
+                <?= __('office_partner_btn') ?> <i class="ph ph-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
             </div>
-        </div>
-        
-        <a href="https://partner.acibademinternational.com/london/" target="_blank" rel="noopener" class="relative z-10 flex-shrink-0 w-full md:w-auto text-center bg-[#0c2d74] hover:bg-[#1a4ba0] text-white px-8 py-4 rounded-xl font-bold transition-all shadow-lg shadow-blue-900/30 inline-flex items-center justify-center gap-2 group-hover:-translate-y-1 border border-blue-800/50">
-            <?= __('office_partner_btn') ?> <i class="ph ph-arrow-right text-blue-200"></i>
         </a>
     </div>
 
     <!-- ===== Contact Info + Map ===== -->
     <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-        <!-- Contact Details -->
         <!-- Contact Details -->
         <div class="relative overflow-hidden bg-white rounded-3xl shadow-sm hover:shadow-lg border border-gray-100 hover:border-blue-100 p-8 md:p-10 transition-all duration-300 group hover:-translate-y-1">
             <i class="ph-fill ph-map-pin absolute -right-6 -bottom-6 text-[12rem] text-gray-50 opacity-50 group-hover:scale-110 group-hover:-translate-x-4 group-hover:-translate-y-4 group-hover:text-blue-50 transition-all duration-700 pointer-events-none"></i>

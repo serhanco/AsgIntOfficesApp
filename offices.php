@@ -40,7 +40,7 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 
     <!-- Search and Filter Bar -->
-    <div class="sticky top-0 z-40 bg-white/90 backdrop-blur-md shadow-sm py-4 border-b border-gray-200">
+    <div class="sticky top-16 z-40 bg-white/90 backdrop-blur-md shadow-sm py-4 border-b border-gray-200">
         <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row gap-4">
             <div class="relative flex-1">
                 <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></i>
@@ -93,7 +93,7 @@ require_once __DIR__ . '/includes/header.php';
                                     <i class="ph-fill ph-buildings text-xl"></i>
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <h3 class="font-bold text-gray-900 text-lg leading-tight mb-1 truncate"><?= e($o['display_name']) ?></h3>
+                                    <h3 class="font-bold text-gray-900 text-lg leading-tight mb-1 line-clamp-2"><?= e($o['display_name']) ?></h3>
                                     <p class="text-sm text-gray-500 line-clamp-2"><?= e($o['address']) ?></p>
                                 </div>
                                 <div class="text-gray-300 group-hover:text-[#1a4ba0] transition-colors shrink-0 mt-2">
