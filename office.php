@@ -157,15 +157,27 @@ require_once __DIR__ . '/includes/header.php';
                             </div>
                         <?php endif; ?>
                         
-                        <?php if ($member['is_online']): ?>
-                            <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 border-2 border-white rounded-full" title="Online"></span>
-                        <?php else: ?>
-                            <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-gray-300 border-2 border-white rounded-full" title="Offline"></span>
-                        <?php endif; ?>
+                        <?php 
+                            $statusColor = 'bg-gray-300'; // offline
+                            if (($member['status'] ?? 'online') === 'online') $statusColor = 'bg-green-400';
+                            if (($member['status'] ?? '') === 'away') $statusColor = 'bg-yellow-400';
+                        ?>
+                        <span class="absolute -bottom-1 -right-1 w-4 h-4 <?= $statusColor ?> border-2 border-white rounded-full" title="<?= ucfirst($member['status'] ?? 'online') ?>"></span>
                     </div>
                     <div class="relative z-10 flex-1 min-w-0">
                         <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors"><?= e($member['name']) ?></p>
                         <p class="text-xs text-gray-500 mt-0.5"><?= __($member['role_key']) ?></p>
+                        
+                        <?php if (!empty($member['languages'])): ?>
+                        <div class="flex flex-wrap gap-1 mt-2">
+                            <?php 
+                            $langs = array_map('trim', explode(',', $member['languages']));
+                            foreach ($langs as $lang): 
+                            ?>
+                            <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-[#0c2d74] px-2 py-0.5 rounded-full font-medium"><i class="ph-fill ph-translate text-xs"></i> <?= e($lang) ?></span>
+                            <?php endforeach; ?>
+                        </div>
+                        <?php endif; ?>
                     </div>
                     <div class="relative z-10 flex items-center gap-3 flex-shrink-0">
                         <?php if (!empty($office['phone'])): ?>
