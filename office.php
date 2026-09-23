@@ -87,6 +87,56 @@ require_once __DIR__ . '/includes/header.php';
     <?php 
     $team = getOfficeTeam($office['id']);
     $activities = getOfficeActivities($office['id']);
+
+    // ===== DEMO MODE OVERRIDE =====
+    // If DB is empty but '?demo' is in the URL, fill with placeholder design data
+    if (empty($team) && isset($_GET['demo'])) {
+        $team = [
+            [
+                'name' => 'Cem Üstündağ',
+                'role_key' => 'team_role_coord',
+                'languages' => 'Turkish, English',
+                'status' => 'online',
+                'image_url' => getBaseUrl() . '/assets/images/team-cem-ustundag-sm.jpg'
+            ],
+            [
+                'name' => 'Erim Ekiz',
+                'role_key' => 'team_role_patient',
+                'languages' => 'Turkish, English, German',
+                'status' => 'online',
+                'image_url' => getBaseUrl() . '/assets/images/team-erim-ekiz-sm.jpg'
+            ],
+            [
+                'name' => 'Ionea Ruxandra',
+                'role_key' => 'team_role_liaison',
+                'languages' => 'Romanian, English, French',
+                'status' => 'away',
+                'image_url' => getBaseUrl() . '/assets/images/team-ionea-ruxandra-sm.jpg'
+            ]
+        ];
+    }
+
+    if (empty($activities) && isset($_GET['demo'])) {
+        $activities = [
+            [
+                'tag_key' => 'act_tag_doctor',
+                'title' => 'Prof. Yaşar Çolak',
+                'description' => 'Gastroenterology, Endoscopy and Nutrition'
+            ],
+            [
+                'tag_key' => 'act_tag_presentation',
+                'title' => 'Robotic Single Port Surgery',
+                'description' => 'Latest techniques in minimal-invasive care'
+            ],
+            [
+                'tag_key' => 'act_tag_exhibition',
+                'title' => 'Growing B2B Network',
+                'description' => 'International healthcare partnerships fair'
+            ]
+        ];
+    }
+    // ==============================
+
     $hasTeam = !empty($team);
     $hasActivities = !empty($activities);
     
