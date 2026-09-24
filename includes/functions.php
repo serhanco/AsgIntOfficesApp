@@ -128,10 +128,10 @@ function getOfficeTeam(int $officeId): array {
     try {
         $db = getDb();
         $stmt = $db->prepare("SELECT * FROM office_teams WHERE office_id = ? ORDER BY sort_order ASC, id ASC");
+        if (!$stmt) return [];
         $stmt->execute([$officeId]);
         return $stmt->fetchAll();
-    } catch (\PDOException $e) {
-        // Table may not exist yet (patch not applied). Fail silently.
+    } catch (\Throwable $e) {
         return [];
     }
 }
@@ -143,9 +143,10 @@ function getOfficeActivities(int $officeId): array {
     try {
         $db = getDb();
         $stmt = $db->prepare("SELECT * FROM office_activities WHERE office_id = ? ORDER BY sort_order ASC, id ASC");
+        if (!$stmt) return [];
         $stmt->execute([$officeId]);
         return $stmt->fetchAll();
-    } catch (\PDOException $e) {
+    } catch (\Throwable $e) {
         // Table may not exist yet (patch not applied). Fail silently.
         return [];
     }
