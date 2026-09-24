@@ -125,18 +125,28 @@ function officeUrl(string $slug): string {
  * Get team members for a specific office
  */
 function getOfficeTeam(int $officeId): array {
-    $db = getDb();
-    $stmt = $db->prepare("SELECT * FROM office_teams WHERE office_id = ? ORDER BY sort_order ASC, id ASC");
-    $stmt->execute([$officeId]);
-    return $stmt->fetchAll();
+    try {
+        $db = getDb();
+        $stmt = $db->prepare("SELECT * FROM office_teams WHERE office_id = ? ORDER BY sort_order ASC, id ASC");
+        $stmt->execute([$officeId]);
+        return $stmt->fetchAll();
+    } catch (\PDOException $e) {
+        // Table may not exist yet (patch not applied). Fail silently.
+        return [];
+    }
 }
 
 /**
  * Get recent activities for a specific office
  */
 function getOfficeActivities(int $officeId): array {
-    $db = getDb();
-    $stmt = $db->prepare("SELECT * FROM office_activities WHERE office_id = ? ORDER BY sort_order ASC, id ASC");
-    $stmt->execute([$officeId]);
-    return $stmt->fetchAll();
+    try {
+        $db = getDb();
+        $stmt = $db->prepare("SELECT * FROM office_activities WHERE office_id = ? ORDER BY sort_order ASC, id ASC");
+        $stmt->execute([$officeId]);
+        return $stmt->fetchAll();
+    } catch (\PDOException $e) {
+        // Table may not exist yet (patch not applied). Fail silently.
+        return [];
+    }
 }
