@@ -55,31 +55,37 @@ try {
     echo "<p style='color: green;'>✅ <b>Backup created successfully:</b> /backups/db_backup_{$timestamp}.json</p>";
     
     // ==========================================
-    // 2. APPLY SQL PATCH
+    // 2. APPLY SQL PATCHES
     // ==========================================
-    $patchFile = __DIR__ . '/database/patch_teams_activities.sql';
+    $patchFiles = [
+        __DIR__ . '/database/patch_teams_activities.sql',
+        __DIR__ . '/database/patch_offices_data.sql'
+    ];
     
-    if (file_exists($patchFile)) {
-        $sql = file_get_contents($patchFile);
-        
-        // Split by semicolon because PDO might not emulate multiple queries natively on all servers
-        $statements = array_filter(array_map('trim', explode(';', $sql)));
-        
-        $successCount = 0;
-        foreach ($statements as $stmtSql) {
-            if (empty($stmtSql)) continue;
+    foreach ($patchFiles as $patchFile) {
+        if (file_exists($patchFile)) {
+            echo "<h3>Applying " . basename($patchFile) . "...</h3>";
+            $sql = file_get_contents($patchFile);
             
-            try {
-                $db->exec($stmtSql);
-                $successCount++;
-            } catch (\PDOException $e) {
-                echo "<p style='color: red;'>❌ <b>Error executing statement:</b> " . htmlspecialchars($e->getMessage()) . "</p>";
-                echo "<pre style='background:#f4f4f4; padding:10px; font-size:12px;'>" . htmlspecialchars($stmtSql) . "</pre>";
+            // Split by semicolon because PDO might not emulate multiple queries natively on all servers
+            $statements = array_filter(array_map('trim', explode(';', $sql)));
+            
+            $successCount = 0;
+            foreach ($statements as $stmtSql) {
+                if (empty($stmtSql)) continue;
+                
+                try {
+                    $db->exec($stmtSql);
+                    $successCount++;
+                } catch (\PDOException $e) {
+                    echo "<p style='color: red;'>❌ <b>Error executing statement:</b> " . htmlspecialchars($e->getMessage()) . "</p>";
+                    echo "<pre style='background:#f4f4f4; padding:10px; font-size:12px; overflow-x:auto;'>" . htmlspecialchars(substr($stmtSql, 0, 500)) . (strlen($stmtSql) > 500 ? '...' : '') . "</pre>";
+                }
             }
+            echo "<p style='color: green;'>✅ <b>Patch applied successfully!</b> ($successCount statements executed)</p>";
+        } else {
+            echo "<p style='color: orange;'>⚠️ <b>Warning:</b> Patch file not found at " . htmlspecialchars($patchFile) . "</p>";
         }
-        echo "<p style='color: green;'>✅ <b>Patch applied successfully!</b> ($successCount statements executed)</p>";
-    } else {
-        echo "<p style='color: orange;'>⚠️ <b>Warning:</b> Patch file not found at " . htmlspecialchars($patchFile) . "</p>";
     }
     
 } catch (\Throwable $e) {
