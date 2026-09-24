@@ -21,6 +21,7 @@
                         <li><a href="<?= getBaseUrl() ?>/contracted-institutions" class="text-gray-400 hover:text-white transition-colors text-sm"><?= __('inst_title') ?></a></li>
                         <li><a href="https://partner.acibademinternational.com/london/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors text-sm"><?= __('footer_partner') ?></a></li>
                         <li><a href="https://www.acibadem.com.tr/acibademonline/#/login" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors text-sm">Acıbadem Online</a></li>
+                        <li><a href="<?= getBaseUrl() ?>/api" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-1"><i class="ph-fill ph-code"></i> API (JSON)</a></li>
                     </ul>
                 </div>
                 
