@@ -394,7 +394,7 @@ require_once __DIR__ . '/includes/header.php';
         </a>
 
         <!-- Become a Partner CTA -->
-        <a href="https://partner.acibademinternational.com/london/" target="_blank" rel="noopener" class="relative overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl p-8 flex flex-col justify-between gap-6 group shadow-xl shadow-slate-900/20 hover:-translate-y-1 transition-all duration-300 border border-slate-700">
+        <a href="https://partner.acibademinternational.com/<?= htmlspecialchars($office['slug']) ?>/" target="_blank" rel="noopener" class="relative overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl p-8 flex flex-col justify-between gap-6 group shadow-xl shadow-slate-900/20 hover:-translate-y-1 transition-all duration-300 border border-slate-700">
             <i class="ph-fill ph-handshake absolute -right-6 -bottom-6 text-[10rem] text-slate-100 opacity-[0.03] group-hover:scale-110 group-hover:opacity-[0.06] transition-all duration-700 pointer-events-none"></i>
             <div class="relative z-10">
                 <div class="w-12 h-12 bg-white/5 backdrop-blur text-white rounded-xl flex items-center justify-center mb-4 border border-white/10 group-hover:bg-white/10 transition-colors">
