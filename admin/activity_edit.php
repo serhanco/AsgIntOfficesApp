@@ -105,6 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endif; ?>
 
             <form method="POST" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 max-w-2xl space-y-6">
+                    <?= csrf_field() ?>
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Bağlı Olduğu Ofis *</label>

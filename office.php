@@ -24,7 +24,7 @@ require_once __DIR__ . '/includes/header.php';
 
 <div class="w-full bg-[#0A1C36]">
     <div class="relative h-72 md:h-[45vh] lg:max-h-[500px] w-full max-w-[1920px] mx-auto overflow-hidden">
-        <img src="<?= getBaseUrl() ?>/assets/images/office-hero.webp" alt="Acibadem Office" class="absolute inset-0 w-full h-full object-cover opacity-70">
+        <img src="<?= e(imageUrl($office['image_url'] ?? '', getBaseUrl() . '/assets/images/office-hero.webp')) ?>" alt="Acibadem Office" class="absolute inset-0 w-full h-full object-cover opacity-70">
         
         <!-- Edge Fades for Ultrawide Screens -->
         <div class="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-[#0A1C36] to-transparent hidden 2xl:block pointer-events-none z-0"></div>
@@ -89,8 +89,8 @@ require_once __DIR__ . '/includes/header.php';
     $activities = getOfficeActivities($office['id']);
 
     // ===== DEMO MODE OVERRIDE =====
-    // If DB is empty but '?demo' is in the URL, fill with placeholder design data
-    if (empty($team) && isset($_GET['demo'])) {
+    // If DB is empty but '?demo' is in the URL (admins only), fill with placeholder design data
+    if (empty($team) && isset($_GET['demo']) && isAdminVisitor()) {
         $team = [
             [
                 'name' => 'Cem Üstündağ',
@@ -116,7 +116,7 @@ require_once __DIR__ . '/includes/header.php';
         ];
     }
 
-    if (empty($activities) && isset($_GET['demo'])) {
+    if (empty($activities) && isset($_GET['demo']) && isAdminVisitor()) {
         $activities = [
             [
                 'tag_key' => 'act_tag_doctor',
@@ -200,7 +200,7 @@ require_once __DIR__ . '/includes/header.php';
                     <i class="ph-fill ph-user absolute right-4 bottom-2 text-5xl text-gray-50 opacity-0 group-hover:opacity-100 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
                     <div class="relative z-10 flex-shrink-0 relative">
                         <?php if ($member['image_url']): ?>
-                            <img src="<?= e($member['image_url']) ?>" alt="<?= e($member['name']) ?>" class="w-14 h-14 rounded-2xl object-cover object-top shadow-sm">
+                            <img src="<?= e(imageUrl($member['image_url'])) ?>" alt="<?= e($member['name']) ?>" class="w-14 h-14 rounded-2xl object-cover object-top shadow-sm">
                         <?php else: ?>
                             <div class="w-14 h-14 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-400">
                                 <i class="ph-fill ph-user text-2xl"></i>
@@ -208,11 +208,12 @@ require_once __DIR__ . '/includes/header.php';
                         <?php endif; ?>
                         
                         <?php 
+                            $status = teamStatus($member);
                             $statusColor = 'bg-gray-300'; // offline
-                            if (($member['status'] ?? 'online') === 'online') $statusColor = 'bg-green-400';
-                            if (($member['status'] ?? '') === 'away') $statusColor = 'bg-yellow-400';
+                            if ($status === 'online') $statusColor = 'bg-green-400';
+                            if ($status === 'away') $statusColor = 'bg-yellow-400';
                         ?>
-                        <span class="absolute -bottom-1 -right-1 w-4 h-4 <?= $statusColor ?> border-2 border-white rounded-full" title="<?= ucfirst($member['status'] ?? 'online') ?>"></span>
+                        <span class="absolute -bottom-1 -right-1 w-4 h-4 <?= $statusColor ?> border-2 border-white rounded-full" title="<?= ucfirst($status) ?>"></span>
                     </div>
                     <div class="relative z-10 flex-1 min-w-0">
                         <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors"><?= e($member['name']) ?></p>

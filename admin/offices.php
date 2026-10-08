@@ -88,6 +88,7 @@ $msg = $_GET['msg'] ?? '';
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <form method="POST" action="offices.php" class="inline">
+                    <?= csrf_field() ?>
                                     <input type="hidden" name="action" value="toggle_active">
                                     <input type="hidden" name="id" value="<?= $office['id'] ?>">
                                     <button type="submit" class="inline-flex items-center">
@@ -111,6 +112,7 @@ $msg = $_GET['msg'] ?? '';
                                 <a href="office_edit.php?id=<?= $office['id'] ?>" class="text-indigo-600 hover:text-indigo-900 mr-4">Düzenle</a>
                                 
                                 <form method="POST" action="offices.php" class="inline" onsubmit="return confirm('Bu ofisi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.');">
+                    <?= csrf_field() ?>
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="id" value="<?= $office['id'] ?>">
                                     <button type="submit" class="text-red-600 hover:text-red-900">Sil</button>

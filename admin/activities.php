@@ -84,6 +84,7 @@ $msg = $_GET['msg'] ?? '';
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <a href="activity_edit.php?id=<?= $activity['id'] ?>" class="text-indigo-600 hover:text-indigo-900 mr-4">Düzenle</a>
                                 <form method="POST" action="activities.php" class="inline" onsubmit="return confirm('Bu etkinliği silmek istediğinize emin misiniz?');">
+                    <?= csrf_field() ?>
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="id" value="<?= $activity['id'] ?>">
                                     <button type="submit" class="text-red-600 hover:text-red-900">Sil</button>

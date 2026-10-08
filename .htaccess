@@ -8,7 +8,13 @@ RewriteRule ^contracted-institutions/?$ contracted-institutions.php [L,QSA]
 RewriteRule ^api/offices/?$ api.php [L,QSA]
 
 # Block direct access to config and private directories
-RewriteRule ^(config\.php|includes/|database/) - [F,L]
+RewriteRule ^(config\.php|includes/|database/|backups/|admin/includes/) - [F,L]
+
+# Block hidden files/dirs (.git, .env ...) except .well-known (SSL validation)
+RewriteRule (^|/)\.(?!well-known/) - [F,L]
+
+# Block source/data files that are not meant to be served
+RewriteRule \.(sql|md|py|json|log|bak|sh)$ - [F,L,NC]
 
 # Custom 404 error document
 ErrorDocument 404 /404.php

@@ -115,6 +115,40 @@ function haversineDistance(float $lat1, float $lon1, float $lat2, float $lon2): 
 }
 
 /**
+ * Resolve a stored image path to a URL.
+ * Absolute URLs and root-relative paths are returned as is; paths saved by the
+ * admin upload (e.g. "assets/images/uploads/...") are prefixed with the base URL.
+ * Returns $default when the path is empty.
+ */
+function imageUrl(?string $path, string $default = ''): string {
+    $path = trim((string)$path);
+    if ($path === '') return $default;
+    if (preg_match('#^(https?:)?//#i', $path) || $path[0] === '/') return $path;
+    return getBaseUrl() . '/' . ltrim($path, '/');
+}
+
+/**
+ * Is the current visitor a logged-in admin? Only looks at an existing session
+ * (never starts one for anonymous visitors).
+ */
+function isAdminVisitor(): bool {
+    if (session_status() === PHP_SESSION_NONE) {
+        if (empty($_COOKIE[session_name()])) return false;
+        session_start();
+    }
+    return isset($_SESSION['admin_user_id']);
+}
+
+/**
+ * Status shown for a team member. For now everyone shows as "online";
+ * define('TEAM_STATUS_LIVE', true) in config.php to show the status saved in the admin panel.
+ */
+function teamStatus(array $member): string {
+    if (!defined('TEAM_STATUS_LIVE') || !TEAM_STATUS_LIVE) return 'online';
+    return $member['status'] ?? 'online';
+}
+
+/**
  * Get office URL
  */
 function officeUrl(string $slug): string {

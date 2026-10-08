@@ -12,7 +12,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
 
-    if (admin_login($username, $password)) {
+    if (is_login_locked()) {
+        $error = 'Çok fazla hatalı deneme. Lütfen 15 dakika sonra tekrar deneyin.';
+    } elseif (admin_login($username, $password)) {
         header('Location: index.php');
         exit;
     } else {
@@ -42,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <form method="POST" action="login.php" class="space-y-6">
+                    <?= csrf_field() ?>
             <div>
                 <label for="username" class="block text-sm font-medium text-gray-700">Kullanıcı Adı</label>
                 <input type="text" id="username" name="username" required

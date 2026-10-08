@@ -6,3 +6,18 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+
+# Database backups created by apply_update.php
+backups/
+
+# Local-only notes and scripts (kept in the project folder, never committed)
+*.local.md
+*.local.php
+local/
+
+# Node (Tailwind build)
+node_modules/
+
+# Images uploaded from the admin panel live on the server only
+assets/images/uploads/*
+!assets/images/uploads/.htaccess
