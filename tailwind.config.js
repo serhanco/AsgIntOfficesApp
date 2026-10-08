@@ -17,7 +17,7 @@ module.exports = {
         }
       },
       fontFamily: {
-        sans: ['Inter', 'Inter', 'system-ui', 'sans-serif']
+        sans: ['Inter', 'Noto Sans Arabic', 'Noto Sans Georgian', 'system-ui', 'sans-serif']
       }
     }
   },

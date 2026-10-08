@@ -15,6 +15,32 @@ function toggleMobileMenu() {
   }
 }
 
+// Translated UI strings (set in includes/header.php)
+const I18N = Object.assign({
+  geoUnsupported: 'Geolocation is not supported by your browser.',
+  geoDenied: 'Location access denied. Please select an office from the list.',
+  viewDetails: 'View details'
+}, window.APP_I18N || {});
+
+// === Language Switcher Dropdown (desktop) ===
+document.addEventListener('click', function(e) {
+  const toggle = e.target.closest('[data-lang-toggle]');
+  document.querySelectorAll('[data-lang-menu]').forEach(menu => {
+    const btn = menu.querySelector('[data-lang-toggle]');
+    const panel = menu.querySelector('[data-lang-panel]');
+    const open = toggle === btn ? panel.classList.contains('hidden') : (menu.contains(e.target) && !panel.classList.contains('hidden'));
+    panel.classList.toggle('hidden', !open);
+    btn.setAttribute('aria-expanded', open);
+  });
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Escape') return;
+  document.querySelectorAll('[data-lang-menu]').forEach(menu => {
+    menu.querySelector('[data-lang-panel]').classList.add('hidden');
+    menu.querySelector('[data-lang-toggle]').setAttribute('aria-expanded', false);
+  });
+});
+
 // === Toast Notification System ===
 function showToast(message, duration = 3000) {
   // Remove existing toast
@@ -52,7 +78,7 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 // === Geolocation: Find Nearest Office ===
 function findNearestOffice(offices, callback) {
   if (!navigator.geolocation) {
-    showToast('Geolocation is not supported by your browser.');
+    showToast(I18N.geoUnsupported);
     callback(null);
     return;
   }
@@ -77,7 +103,7 @@ function findNearestOffice(offices, callback) {
     },
     (error) => {
       console.warn('Location error:', error);
-      showToast('Location access denied. Please select an office from the list.');
+      showToast(I18N.geoDenied);
       callback(null);
     },
     { enableHighAccuracy: true, timeout: 8000 }
@@ -175,7 +201,7 @@ function initMap(containerId, offices, options = {}) {
           '<div class="text-center" style="min-width:120px">' +
             '<div style="font-weight:700;font-size:14px;color:#0c2d74;margin-bottom:4px">' + office.display_name + '</div>' +
             '<div style="font-size:11px;color:#6b7280">' + office.country + '</div>' +
-            '<div style="margin-top:8px;font-size:10px;font-weight:600;color:#0c2d74;background:#E6F0FA;padding:4px 8px;border-radius:6px">View details</div>' +
+            '<div style="margin-top:8px;font-size:10px;font-weight:600;color:#0c2d74;background:#E6F0FA;padding:4px 8px;border-radius:6px">' + I18N.viewDetails + '</div>' +
           '</div>',
           { direction: 'top', offset: [0, -40], className: 'custom-tooltip' }
         );

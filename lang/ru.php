@@ -148,4 +148,11 @@ return [
     // Explore — Acıbadem Online (replaces API card)
     'explore_online_h'    => 'Acıbadem Online',
     'explore_online_p'    => 'Доступ к медицинским записям, запись на приём и онлайн-консультации.',
+
+    // Language switcher & JS messages
+    'lang_switcher_label' => 'Язык',
+    'js_geo_unsupported'  => 'Ваш браузер не поддерживает определение местоположения.',
+    'js_geo_denied'       => 'Доступ к местоположению запрещён. Пожалуйста, выберите офис из списка.',
+    'js_far_redirect'     => 'Ближайший офис находится довольно далеко. Переходим к списку всех офисов.',
+    'map_view_details'    => 'Подробнее',
 ];

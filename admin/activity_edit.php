@@ -132,12 +132,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Etkinlik Başlığı *</label>
-                    <input type="text" name="title" required value="<?= htmlspecialchars($activity['title']) ?>" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2 border">
+                    <input type="text" name="title" dir="auto" required value="<?= htmlspecialchars($activity['title']) ?>" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2 border">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Açıklama</label>
-                    <textarea name="description" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2 border"><?= htmlspecialchars($activity['description']) ?></textarea>
+                    <textarea name="description" dir="auto" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2 border"><?= htmlspecialchars($activity['description']) ?></textarea>
                 </div>
 
                 <div>

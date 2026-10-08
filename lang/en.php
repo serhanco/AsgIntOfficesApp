@@ -148,4 +148,11 @@ return [
     // Explore — Acıbadem Online (replaces API card)
     'explore_online_h'    => 'Acıbadem Online',
     'explore_online_p'    => 'Access your medical records, book appointments and consult with doctors online.',
+
+    // Language switcher & JS messages
+    'lang_switcher_label' => 'Language',
+    'js_geo_unsupported'  => 'Geolocation is not supported by your browser.',
+    'js_geo_denied'       => 'Location access denied. Please select an office from the list.',
+    'js_far_redirect'     => 'The nearest office is quite far. Redirecting to all offices.',
+    'map_view_details'    => 'View details',
 ];

@@ -94,8 +94,8 @@ $institutions = [
         <!-- Search Bar -->
         <div class="max-w-md mx-auto mb-10">
             <div class="relative">
-                <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></i>
-                <input type="text" id="inst-search" placeholder="<?= __('inst_search_ph') ?>" class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 focus:border-[#0c2d74] focus:ring-1 focus:ring-[#0c2d74] outline-none transition-shadow bg-white shadow-sm">
+                <i class="ph ph-magnifying-glass absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></i>
+                <input type="text" id="inst-search" placeholder="<?= __('inst_search_ph') ?>" class="w-full ps-12 pe-4 py-3 rounded-xl border border-gray-300 focus:border-[#0c2d74] focus:ring-1 focus:ring-[#0c2d74] outline-none transition-shadow bg-white shadow-sm">
             </div>
         </div>
 
