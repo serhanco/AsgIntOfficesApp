@@ -14,7 +14,7 @@
                 <!-- Center: Quick links -->
                 <div class="flex flex-col items-center md:items-start">
                     <h3 class="text-white text-sm font-semibold mb-4 uppercase tracking-wider"><?= __('footer_quick_links') ?></h3>
-                    <ul class="space-y-2 text-center md:text-left">
+                    <ul class="space-y-2 text-center md:text-start">
                         <li><a href="<?= getBaseUrl() ?>/" class="text-gray-400 hover:text-white transition-colors text-sm"><?= __('footer_home') ?></a></li>
                         <li><a href="<?= getBaseUrl() ?>/offices" class="text-gray-400 hover:text-white transition-colors text-sm"><?= __('nav_all_offices') ?></a></li>
                         <li><a href="<?= getBaseUrl() ?>/map" class="text-gray-400 hover:text-white transition-colors text-sm"><?= __('nav_map') ?></a></li>
@@ -33,21 +33,21 @@
                             <a href="https://wa.me/905359650466" target="_blank" rel="noopener noreferrer"
                                class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2">
                                 <i class="ph-fill ph-whatsapp-logo text-lg text-green-400"></i>
-                                +90 535 965 0466
+                                <span dir="ltr">+90 535 965 0466</span>
                             </a>
                         </li>
                         <li>
                             <a href="tel:+902164445544"
                                class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2">
                                 <i class="ph-fill ph-phone text-lg"></i>
-                                +90 216 444 5544
+                                <span dir="ltr">+90 216 444 5544</span>
                             </a>
                         </li>
                         <li>
                             <a href="mailto:international@acibadem.com"
                                class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2">
                                 <i class="ph-fill ph-envelope-simple text-lg"></i>
-                                international@acibadem.com
+                                <span dir="ltr">international@acibadem.com</span>
                             </a>
                         </li>
                     </ul>

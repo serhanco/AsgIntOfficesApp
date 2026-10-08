@@ -36,12 +36,12 @@ require_once __DIR__ . '/includes/header.php';
             <div class="max-w-5xl mx-auto px-4">
                 <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-full mb-3 border border-white/20">
                     <?= getFlagImg($office['country'], $office['country_code']) ?>
-                    <span class="text-white text-sm font-semibold"><?= e($office['country']) ?></span>
+                    <span class="text-white text-sm font-semibold"><bdi><?= e($office['country']) ?></bdi></span>
                 </div>
-                <h1 class="text-3xl md:text-5xl font-bold text-white mb-2"><?= e($office['display_name']) ?></h1>
+                <h1 class="text-3xl md:text-5xl font-bold text-white mb-2"><bdi><?= e($office['display_name']) ?></bdi></h1>
                 <p class="text-gray-300 text-sm md:text-base max-w-2xl flex items-center gap-2">
                     <i class="ph-fill ph-map-pin"></i>
-                    <?= e($office['address']) ?>
+                    <bdi><?= e($office['address']) ?></bdi>
                 </p>
             </div>
         </div>
@@ -159,27 +159,31 @@ require_once __DIR__ . '/includes/header.php';
         <?php if ($hasActivities): ?>
         <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold text-[#0c2d74]"><?= __('office_activities_h', e($office['country'])) ?></h3>
+                <h3 class="text-xl font-bold text-[#0c2d74]"><?= __('office_activities_h', '<bdi>' . e($office['country']) . '</bdi>') ?></h3>
                 <span class="text-xs font-semibold bg-[#E6F0FA] text-[#0c2d74] px-3 py-1 rounded-full"><?= count($activities) ?></span>
             </div>
             <div class="space-y-4">
                 <?php foreach ($activities as $act): 
                     $theme = $actThemes[$act['tag_key']] ?? $defaultTheme;
+                    // Events are published untranslated in the office's local language:
+                    // the card takes the direction of its own text (an Arabic event mirrors
+                    // itself on an English page, and vice versa).
+                    $actDir = textDir(($act['title'] ?? '') . ' ' . ($act['description'] ?? ''));
                 ?>
-                <div class="relative overflow-hidden group flex gap-4 p-4 rounded-2xl <?= $theme['bg'] ?> hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-                    <i class="ph-fill <?= $theme['icon'] ?> absolute right-4 bottom-2 text-5xl text-white opacity-0 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500 pointer-events-none"></i>
+                <div dir="<?= $actDir ?>" class="relative overflow-hidden group flex gap-4 p-4 rounded-2xl <?= $theme['bg'] ?> hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+                    <i class="ph-fill <?= $theme['icon'] ?> absolute end-4 bottom-2 text-5xl text-white opacity-0 group-hover:opacity-10 group-hover:scale-110 transition-all duration-500 pointer-events-none"></i>
                     <div class="relative z-10 flex-shrink-0 w-12 h-12 rounded-xl <?= $theme['icon_bg'] ?> flex items-center justify-center transition-colors">
                         <i class="ph-fill <?= $theme['icon'] ?> text-2xl <?= $theme['icon_color'] ?>"></i>
                     </div>
                     <div class="relative z-10 flex-1 min-w-0">
                         <div class="flex items-center gap-2 mb-1">
-                            <span class="text-xs font-bold uppercase tracking-wide <?= $theme['text'] ?> transition-colors"><?= __($act['tag_key']) ?></span>
+                            <span lang="<?= e(langHtml()) ?>" dir="<?= langDir() ?>" class="text-xs font-bold uppercase tracking-wide <?= $theme['text'] ?> transition-colors"><?= __($act['tag_key']) ?></span>
                         </div>
-                        <p class="text-sm font-semibold text-gray-900 group-hover:text-white transition-colors leading-snug"><?= e($act['title']) ?></p>
-                        <p class="text-xs text-gray-500 <?= str_replace('text-[#1a4ba0]', 'text-blue-200', $theme['text']) ?> transition-colors mt-1"><?= e($act['description']) ?></p>
+                        <p class="event-text text-sm font-semibold text-gray-900 group-hover:text-white transition-colors leading-snug"><?= e($act['title']) ?></p>
+                        <p class="event-text text-xs text-gray-500 <?= str_replace('text-[#1a4ba0]', 'text-blue-200', $theme['text']) ?> transition-colors mt-1"><?= e($act['description']) ?></p>
                     </div>
                     <div class="relative z-10 flex-shrink-0 self-center text-gray-300 group-hover:text-white transition-colors">
-                        <i class="ph ph-arrow-right text-lg"></i>
+                        <i class="ph <?= $actDir === 'rtl' ? 'ph-arrow-left' : 'ph-arrow-right' ?> text-lg"></i>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -197,7 +201,7 @@ require_once __DIR__ . '/includes/header.php';
             <div class="space-y-4">
                 <?php foreach ($team as $member): ?>
                 <div class="relative overflow-hidden flex items-center gap-4 p-4 rounded-2xl bg-white border border-gray-100 hover:border-[#0c2d74] hover:shadow-lg transition-all duration-300 group hover:-translate-y-1">
-                    <i class="ph-fill ph-user absolute right-4 bottom-2 text-5xl text-gray-50 opacity-0 group-hover:opacity-100 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
+                    <i class="ph-fill ph-user absolute end-4 bottom-2 text-5xl text-gray-50 opacity-0 group-hover:opacity-100 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
                     <div class="relative z-10 flex-shrink-0 relative">
                         <?php if ($member['image_url']): ?>
                             <img src="<?= e(imageUrl($member['image_url'])) ?>" alt="<?= e($member['name']) ?>" class="w-14 h-14 rounded-2xl object-cover object-top shadow-sm">
@@ -213,10 +217,10 @@ require_once __DIR__ . '/includes/header.php';
                             if ($status === 'online') $statusColor = 'bg-green-400';
                             if ($status === 'away') $statusColor = 'bg-yellow-400';
                         ?>
-                        <span class="absolute -bottom-1 -right-1 w-4 h-4 <?= $statusColor ?> border-2 border-white rounded-full" title="<?= ucfirst($status) ?>"></span>
+                        <span class="absolute -bottom-1 -end-1 w-4 h-4 <?= $statusColor ?> border-2 border-white rounded-full" title="<?= ucfirst($status) ?>"></span>
                     </div>
                     <div class="relative z-10 flex-1 min-w-0">
-                        <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors"><?= e($member['name']) ?></p>
+                        <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors"><bdi><?= e($member['name']) ?></bdi></p>
                         <p class="text-xs text-gray-500 mt-0.5"><?= __($member['role_key']) ?></p>
                         
                         <?php if (!empty($member['languages'])): ?>
@@ -232,12 +236,12 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                     <div class="relative z-10 flex items-center gap-3 flex-shrink-0">
                         <?php if (!empty($office['phone'])): ?>
-                        <a href="tel:<?= preg_replace('/[^0-9+]/', '', $office['phone']) ?>" class="text-gray-300 hover:text-[#0c2d74] transition-colors" title="Call Office">
+                        <a href="tel:<?= preg_replace('/[^0-9+]/', '', $office['phone']) ?>" class="text-gray-300 hover:text-[#0c2d74] transition-colors" title="<?= e(__('office_cta_call')) ?>">
                             <i class="ph-fill ph-phone text-xl"></i>
                         </a>
                         <?php endif; ?>
                         <?php if (!empty($office['email'])): ?>
-                        <a href="mailto:<?= e($office['email']) ?>" class="text-gray-300 hover:text-[#0c2d74] transition-colors" title="Email Office">
+                        <a href="mailto:<?= e($office['email']) ?>" class="text-gray-300 hover:text-[#0c2d74] transition-colors" title="<?= e(__('office_cta_email')) ?>">
                             <i class="ph-fill ph-envelope-simple text-xl"></i>
                         </a>
                         <?php endif; ?>
@@ -265,51 +269,51 @@ require_once __DIR__ . '/includes/header.php';
             <div class="divide-y divide-gray-100" id="faq-accordion">
 
                 <div class="faq-item py-4 transition-all duration-300 rounded-2xl px-4 -mx-4 hover:bg-blue-50/50 group">
-                    <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
+                    <button class="faq-trigger w-full flex items-center justify-between gap-4 text-start" onclick="toggleFaq(this)">
                         <span class="text-sm font-semibold text-gray-900 group-[.is-open]:text-[#0c2d74] transition-colors duration-200"><?= __('faq_q1') ?></span>
                         <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
                     </button>
-                    <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
+                    <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pe-8">
                         <?= __('faq_a1') ?>
                     </div>
                 </div>
 
                 <div class="faq-item py-4 transition-all duration-300 rounded-2xl px-4 -mx-4 hover:bg-blue-50/50 group">
-                    <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
+                    <button class="faq-trigger w-full flex items-center justify-between gap-4 text-start" onclick="toggleFaq(this)">
                         <span class="text-sm font-semibold text-gray-900 group-[.is-open]:text-[#0c2d74] transition-colors duration-200"><?= __('faq_q2') ?></span>
                         <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
                     </button>
-                    <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
+                    <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pe-8">
                         <?= __('faq_a2') ?>
                     </div>
                 </div>
 
                 <div class="faq-item py-4 transition-all duration-300 rounded-2xl px-4 -mx-4 hover:bg-blue-50/50 group">
-                    <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
+                    <button class="faq-trigger w-full flex items-center justify-between gap-4 text-start" onclick="toggleFaq(this)">
                         <span class="text-sm font-semibold text-gray-900 group-[.is-open]:text-[#0c2d74] transition-colors duration-200"><?= __('faq_q3') ?></span>
                         <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
                     </button>
-                    <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
+                    <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pe-8">
                         <?= __('faq_a3') ?>
                     </div>
                 </div>
 
                 <div class="faq-item py-4 transition-all duration-300 rounded-2xl px-4 -mx-4 hover:bg-blue-50/50 group">
-                    <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
+                    <button class="faq-trigger w-full flex items-center justify-between gap-4 text-start" onclick="toggleFaq(this)">
                         <span class="text-sm font-semibold text-gray-900 group-[.is-open]:text-[#0c2d74] transition-colors duration-200"><?= __('faq_q4') ?></span>
                         <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
                     </button>
-                    <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
+                    <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pe-8">
                         <?= __('faq_a4') ?>
                     </div>
                 </div>
 
                 <div class="faq-item py-4 transition-all duration-300 rounded-2xl px-4 -mx-4 hover:bg-blue-50/50 group">
-                    <button class="faq-trigger w-full flex items-center justify-between gap-4 text-left" onclick="toggleFaq(this)">
+                    <button class="faq-trigger w-full flex items-center justify-between gap-4 text-start" onclick="toggleFaq(this)">
                         <span class="text-sm font-semibold text-gray-900 group-[.is-open]:text-[#0c2d74] transition-colors duration-200"><?= __('faq_q5') ?></span>
                         <i class="ph ph-caret-down text-[#0c2d74] text-lg flex-shrink-0 transition-transform duration-200"></i>
                     </button>
-                    <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pr-8">
+                    <div class="faq-answer hidden mt-3 text-sm text-gray-600 leading-relaxed pe-8">
                         <?= __('faq_a5') ?>
                     </div>
                 </div>
@@ -328,7 +332,7 @@ require_once __DIR__ . '/includes/header.php';
                 <!-- Card 1: Second Opinion -->
                 <a href="https://acibademinternational.com/second-opinion/" target="_blank" rel="noopener"
                    class="relative overflow-hidden group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#0c2d74] hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white">
-                    <i class="ph-fill ph-microscope absolute right-4 bottom-2 text-5xl text-gray-50 opacity-50 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
+                    <i class="ph-fill ph-microscope absolute end-4 bottom-2 text-5xl text-gray-50 opacity-50 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
                     <div class="relative z-10 flex-shrink-0 w-12 h-12 bg-blue-50 text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
                         <i class="ph-fill ph-microscope text-2xl"></i>
                     </div>
@@ -337,14 +341,14 @@ require_once __DIR__ . '/includes/header.php';
                         <p class="text-xs text-gray-500 mt-0.5"><?= __('quick_2nd_opinion_p') ?></p>
                     </div>
                     <div class="relative z-10 flex-shrink-0 text-gray-300 group-hover:text-[#0c2d74] transition-colors">
-                        <i class="ph ph-arrow-right text-lg"></i>
+                        <i class="ph <?= arrowIcon() ?> text-lg"></i>
                     </div>
                 </a>
 
                 <!-- Card 2: Online Consultation -->
                 <a href="https://acibademinternational.com/online-consultation/" target="_blank" rel="noopener"
                    class="relative overflow-hidden group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#0c2d74] hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white">
-                    <i class="ph-fill ph-video-camera absolute right-4 bottom-2 text-5xl text-gray-50 opacity-50 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
+                    <i class="ph-fill ph-video-camera absolute end-4 bottom-2 text-5xl text-gray-50 opacity-50 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
                     <div class="relative z-10 flex-shrink-0 w-12 h-12 bg-blue-50 text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
                         <i class="ph-fill ph-video-camera text-2xl"></i>
                     </div>
@@ -353,14 +357,14 @@ require_once __DIR__ . '/includes/header.php';
                         <p class="text-xs text-gray-500 mt-0.5"><?= __('quick_online_p') ?></p>
                     </div>
                     <div class="relative z-10 flex-shrink-0 text-gray-300 group-hover:text-[#0c2d74] transition-colors">
-                        <i class="ph ph-arrow-right text-lg"></i>
+                        <i class="ph <?= arrowIcon() ?> text-lg"></i>
                     </div>
                 </a>
 
                 <!-- Card 3: Free Medical Consultation -->
                 <a href="https://acibademinternational.com/contact/" target="_blank" rel="noopener"
                    class="relative overflow-hidden group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-[#0c2d74] hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white">
-                    <i class="ph-fill ph-stethoscope absolute right-4 bottom-2 text-5xl text-gray-50 opacity-50 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
+                    <i class="ph-fill ph-stethoscope absolute end-4 bottom-2 text-5xl text-gray-50 opacity-50 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
                     <div class="relative z-10 flex-shrink-0 w-12 h-12 bg-blue-50 text-[#0c2d74] rounded-xl flex items-center justify-center group-hover:bg-[#0c2d74] group-hover:text-white transition-colors">
                         <i class="ph-fill ph-stethoscope text-2xl"></i>
                     </div>
@@ -369,7 +373,7 @@ require_once __DIR__ . '/includes/header.php';
                         <p class="text-xs text-gray-500 mt-0.5"><?= __('office_free_consul_p') ?></p>
                     </div>
                     <div class="relative z-10 flex-shrink-0 text-gray-300 group-hover:text-[#0c2d74] transition-colors">
-                        <i class="ph ph-arrow-right text-lg"></i>
+                        <i class="ph <?= arrowIcon() ?> text-lg"></i>
                     </div>
                 </a>
             </div>
@@ -381,7 +385,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <!-- Contracted Institutions CTA -->
         <a href="<?= getBaseUrl() ?>/contracted-institutions" class="relative overflow-hidden bg-gradient-to-br from-[#0c2d74] to-[#0A1C36] rounded-3xl p-8 flex flex-col justify-between gap-6 group shadow-xl shadow-blue-900/20 hover:-translate-y-1 transition-all duration-300">
-            <i class="ph-fill ph-shield-check absolute -right-6 -bottom-6 text-[10rem] text-white opacity-5 group-hover:scale-110 group-hover:opacity-10 transition-all duration-700 pointer-events-none"></i>
+            <i class="ph-fill ph-shield-check absolute -end-6 -bottom-6 text-[10rem] text-white opacity-5 group-hover:scale-110 group-hover:opacity-10 transition-all duration-700 pointer-events-none"></i>
             <div class="relative z-10">
                 <div class="w-12 h-12 bg-white/10 backdrop-blur text-white rounded-xl flex items-center justify-center mb-4 border border-white/10">
                     <i class="ph-fill ph-shield-check text-2xl"></i>
@@ -390,13 +394,13 @@ require_once __DIR__ . '/includes/header.php';
                 <p class="text-blue-200/70 text-sm leading-relaxed line-clamp-2"><?= __('inst_card_p') ?></p>
             </div>
             <div class="relative z-10 inline-flex items-center text-white font-bold text-sm opacity-70 group-hover:opacity-100 transition-opacity">
-                <?= __('inst_card_btn') ?> <i class="ph ph-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                <?= __('inst_card_btn') ?> <i class="ph <?= arrowIcon() ?> ms-2 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform"></i>
             </div>
         </a>
 
         <!-- Become a Partner CTA -->
         <a href="https://partner.acibademinternational.com/<?= htmlspecialchars($office['slug']) ?>/" target="_blank" rel="noopener" class="relative overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl p-8 flex flex-col justify-between gap-6 group shadow-xl shadow-slate-900/20 hover:-translate-y-1 transition-all duration-300 border border-slate-700">
-            <i class="ph-fill ph-handshake absolute -right-6 -bottom-6 text-[10rem] text-slate-100 opacity-[0.03] group-hover:scale-110 group-hover:opacity-[0.06] transition-all duration-700 pointer-events-none"></i>
+            <i class="ph-fill ph-handshake absolute -end-6 -bottom-6 text-[10rem] text-slate-100 opacity-[0.03] group-hover:scale-110 group-hover:opacity-[0.06] transition-all duration-700 pointer-events-none"></i>
             <div class="relative z-10">
                 <div class="w-12 h-12 bg-white/5 backdrop-blur text-white rounded-xl flex items-center justify-center mb-4 border border-white/10 group-hover:bg-white/10 transition-colors">
                     <i class="ph-fill ph-handshake text-2xl"></i>
@@ -405,7 +409,7 @@ require_once __DIR__ . '/includes/header.php';
                 <p class="text-slate-400 text-sm leading-relaxed line-clamp-2"><?= __('office_partner_p') ?></p>
             </div>
             <div class="relative z-10 inline-flex items-center text-white font-bold text-sm opacity-70 group-hover:opacity-100 transition-opacity">
-                <?= __('office_partner_btn') ?> <i class="ph ph-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                <?= __('office_partner_btn') ?> <i class="ph <?= arrowIcon() ?> ms-2 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform"></i>
             </div>
         </a>
     </div>
@@ -414,7 +418,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
         <!-- Contact Details -->
         <div class="relative overflow-hidden bg-white rounded-3xl shadow-sm hover:shadow-lg border border-gray-100 hover:border-blue-100 p-8 md:p-10 transition-all duration-300 group hover:-translate-y-1">
-            <i class="ph-fill ph-map-pin absolute -right-6 -bottom-6 text-[12rem] text-gray-50 opacity-50 group-hover:scale-110 group-hover:-translate-x-4 group-hover:-translate-y-4 group-hover:text-blue-50 transition-all duration-700 pointer-events-none"></i>
+            <i class="ph-fill ph-map-pin absolute -end-6 -bottom-6 text-[12rem] text-gray-50 opacity-50 group-hover:scale-110 group-hover:-translate-x-4 rtl:group-hover:translate-x-4 group-hover:-translate-y-4 group-hover:text-blue-50 transition-all duration-700 pointer-events-none"></i>
             
             <div class="relative z-10">
                 <h3 class="text-xl md:text-2xl font-bold text-[#0c2d74] mb-8"><?= __('office_contact_info') ?></h3>
@@ -427,7 +431,7 @@ require_once __DIR__ . '/includes/header.php';
                         </div>
                         <div class="flex-1 pt-0.5">
                             <div class="text-sm font-bold text-gray-900 mb-1"><?= __('office_address') ?></div>
-                            <div class="text-gray-600 text-sm leading-relaxed"><?= nl2br(e($office['address'])) ?></div>
+                            <div class="text-gray-600 text-sm leading-relaxed"><bdi><?= nl2br(e($office['address'])) ?></bdi></div>
                         </div>
                     </div>
 
@@ -439,7 +443,7 @@ require_once __DIR__ . '/includes/header.php';
                         </div>
                         <div class="flex-1 pt-0.5">
                             <div class="text-sm font-bold text-gray-900 mb-1"><?= __('office_phone') ?></div>
-                            <a href="tel:<?= preg_replace('/[^0-9+]/', '', $office['phone']) ?>" class="text-gray-600 text-sm hover:text-[#0c2d74] transition-colors"><?= e($office['phone']) ?></a>
+                            <a href="tel:<?= preg_replace('/[^0-9+]/', '', $office['phone']) ?>" dir="ltr" class="text-gray-600 text-sm hover:text-[#0c2d74] transition-colors"><?= e($office['phone']) ?></a>
                         </div>
                     </div>
                     <?php endif; ?>
@@ -452,7 +456,7 @@ require_once __DIR__ . '/includes/header.php';
                         </div>
                         <div class="flex-1 pt-0.5">
                             <div class="text-sm font-bold text-gray-900 mb-1"><?= __('office_email') ?></div>
-                            <a href="mailto:<?= e($office['email']) ?>" class="text-gray-600 text-sm hover:text-[#0c2d74] transition-colors"><?= e($office['email']) ?></a>
+                            <a href="mailto:<?= e($office['email']) ?>" dir="ltr" class="text-gray-600 text-sm hover:text-[#0c2d74] transition-colors"><?= e($office['email']) ?></a>
                         </div>
                     </div>
                     <?php endif; ?>
@@ -471,13 +475,13 @@ require_once __DIR__ . '/includes/header.php';
     <?php if (!empty($relatedOffices)): ?>
     <div class="mt-16">
         <div class="flex items-center gap-3 mb-6">
-            <h3 class="text-2xl font-bold text-[#0c2d74]"><?= __('office_other_in', e($office['country'])) ?></h3>
+            <h3 class="text-2xl font-bold text-[#0c2d74]"><?= __('office_other_in', '<bdi>' . e($office['country']) . '</bdi>') ?></h3>
             <span class="text-sm font-bold bg-[#E6F0FA] text-[#0c2d74] px-3 py-1 rounded-full"><?= count($relatedOffices) ?></span>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <?php foreach ($relatedOffices as $ro): ?>
                 <a href="<?= officeUrl($ro['slug']) ?>" class="relative overflow-hidden block bg-white rounded-3xl p-6 border border-gray-100 shadow-sm hover:shadow-lg hover:border-[#0c2d74] transition-all duration-300 group hover:-translate-y-1">
-                    <i class="ph-fill ph-buildings absolute right-4 -bottom-2 text-7xl text-blue-50 opacity-0 group-hover:opacity-100 group-hover:scale-110 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
+                    <i class="ph-fill ph-buildings absolute end-4 -bottom-2 text-7xl text-blue-50 opacity-0 group-hover:opacity-100 group-hover:scale-110 group-hover:-translate-x-2 rtl:group-hover:translate-x-2 group-hover:-translate-y-2 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
                     
                     <div class="relative z-10 flex items-start gap-4">
                         <div class="w-12 h-12 bg-blue-50 flex items-center justify-center rounded-xl text-[#0c2d74] flex-shrink-0 group-hover:bg-[#0c2d74] group-hover:text-white transition-colors duration-300 shadow-sm">
@@ -485,12 +489,12 @@ require_once __DIR__ . '/includes/header.php';
                         </div>
                         
                         <div class="flex-1 min-w-0 pt-0.5">
-                            <h4 class="font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors text-[1.05rem]"><?= e($ro['display_name']) ?></h4>
-                            <p class="text-xs text-gray-500 mt-1.5 line-clamp-2 leading-relaxed"><?= e($ro['address']) ?></p>
+                            <h4 class="font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors text-[1.05rem]"><bdi><?= e($ro['display_name']) ?></bdi></h4>
+                            <p class="text-xs text-gray-500 mt-1.5 line-clamp-2 leading-relaxed"><bdi><?= e($ro['address']) ?></bdi></p>
                         </div>
                         
-                        <div class="flex-shrink-0 text-gray-300 group-hover:text-[#0c2d74] transition-all duration-300 group-hover:translate-x-1 self-center">
-                            <i class="ph ph-arrow-right text-lg"></i>
+                        <div class="flex-shrink-0 text-gray-300 group-hover:text-[#0c2d74] transition-all duration-300 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 self-center">
+                            <i class="ph <?= arrowIcon() ?> text-lg"></i>
                         </div>
                     </div>
                 </a>

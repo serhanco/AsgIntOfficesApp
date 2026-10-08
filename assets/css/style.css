@@ -31,12 +31,12 @@
   border: none !important;
   border-radius: 16px !important;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12) !important;
-  font-family: 'Inter', sans-serif !important;
+  font-family: 'Inter', 'Noto Sans Arabic', 'Noto Sans Georgian', sans-serif !important;
   padding: 12px 16px !important;
   color: #0c2d74;
 }
 .custom-tooltip::before { display: none !important; }
-.leaflet-container { font-family: 'Inter', sans-serif; }
+.leaflet-container { font-family: 'Inter', 'Noto Sans Arabic', 'Noto Sans Georgian', sans-serif; direction: ltr; }
 
 /* Card hover effects */
 .office-card {
@@ -102,3 +102,17 @@
 /* Line clamp utilities */
 .line-clamp-1 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; }
 .line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+
+/* === Languages & mixed-direction content === */
+
+/* Arabic/Persian letters join; letter-spacing breaks them apart */
+.tracking-wide:lang(ar), .tracking-wider:lang(ar), .tracking-widest:lang(ar),
+.tracking-wide:lang(fa), .tracking-wider:lang(fa), .tracking-widest:lang(fa) {
+  letter-spacing: normal;
+}
+/* Georgian has no lowercase/uppercase pairs in running text */
+.uppercase:lang(ka) { text-transform: none; }
+
+/* Local-language event text (any script, any length) never overflows its card */
+.event-text { overflow-wrap: anywhere; }
+bdi { unicode-bidi: isolate; }

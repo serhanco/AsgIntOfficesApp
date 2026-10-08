@@ -43,18 +43,18 @@ require_once __DIR__ . '/includes/header.php';
     <div class="sticky top-16 z-40 bg-white/90 backdrop-blur-md shadow-sm py-4 border-b border-gray-200">
         <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row gap-4">
             <div class="relative flex-1">
-                <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></i>
-                <input type="text" id="office-search" placeholder="<?= __('offices_search_ph') ?>" class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 focus:border-[#0c2d74] focus:ring-1 focus:ring-[#0c2d74] outline-none transition-shadow">
+                <i class="ph ph-magnifying-glass absolute start-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></i>
+                <input type="text" id="office-search" placeholder="<?= __('offices_search_ph') ?>" class="w-full ps-12 pe-4 py-3 rounded-xl border border-gray-300 focus:border-[#0c2d74] focus:ring-1 focus:ring-[#0c2d74] outline-none transition-shadow">
             </div>
             
             <div class="relative w-full md:w-64">
-                <select id="country-jump" onchange="scrollToCountry(this.value)" class="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-300 focus:border-[#0c2d74] focus:ring-1 focus:ring-[#0c2d74] outline-none appearance-none bg-white font-medium text-gray-700">
+                <select id="country-jump" onchange="scrollToCountry(this.value)" class="w-full ps-4 pe-10 py-3 rounded-xl border border-gray-300 focus:border-[#0c2d74] focus:ring-1 focus:ring-[#0c2d74] outline-none appearance-none bg-white font-medium text-gray-700">
                     <option value=""><?= __('offices_jump_ph') ?></option>
                     <?php foreach ($countries as $c): ?>
                     <option value="<?= e(strtolower(preg_replace('/[^a-zA-Z0-9]+/', '-', $c['country']))) ?>"><?= e($c['country']) ?> (<?= $c['office_count'] ?>)</option>
                     <?php endforeach; ?>
                 </select>
-                <i class="ph ph-caret-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"></i>
+                <i class="ph ph-caret-down absolute end-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"></i>
             </div>
         </div>
     </div>
@@ -77,7 +77,7 @@ require_once __DIR__ . '/includes/header.php';
             <div id="country-<?= e($cSlug) ?>" class="country-group mb-12">
                 <div class="flex items-center gap-3 mb-6 border-b border-gray-200 pb-2">
                     <?= getFlagImg($countryName, $cCode) ?>
-                    <h2 class="text-2xl font-bold text-[#0A1C36]"><?= e($countryName) ?></h2>
+                    <h2 class="text-2xl font-bold text-[#0A1C36]"><bdi><?= e($countryName) ?></bdi></h2>
                     <span class="bg-[#E6F0FA] text-[#0c2d74] text-sm font-bold px-2 py-0.5 rounded-full"><?= count($countryOffices) ?></span>
                 </div>
                 
@@ -93,11 +93,11 @@ require_once __DIR__ . '/includes/header.php';
                                     <i class="ph-fill ph-buildings text-xl"></i>
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <h3 class="font-bold text-gray-900 text-lg leading-tight mb-1 line-clamp-2"><?= e($o['display_name']) ?></h3>
-                                    <p class="text-sm text-gray-500 line-clamp-2"><?= e($o['address']) ?></p>
+                                    <h3 class="font-bold text-gray-900 text-lg leading-tight mb-1 line-clamp-2"><bdi><?= e($o['display_name']) ?></bdi></h3>
+                                    <p class="text-sm text-gray-500 line-clamp-2"><bdi><?= e($o['address']) ?></bdi></p>
                                 </div>
                                 <div class="text-gray-300 group-hover:text-[#1a4ba0] transition-colors shrink-0 mt-2">
-                                    <i class="ph ph-arrow-right"></i>
+                                    <i class="ph <?= arrowIcon() ?>"></i>
                                 </div>
                             </div>
                         </a>
