@@ -14,3 +14,10 @@ backups/
 *.local.md
 *.local.php
 local/
+
+# Node (Tailwind build)
+node_modules/
+
+# Images uploaded from the admin panel live on the server only
+assets/images/uploads/*
+!assets/images/uploads/.htaccess

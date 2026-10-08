@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/upload.php';
 require_admin_login();
 
 $db = getDb();
@@ -41,10 +42,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $office['latitude'] = (float)($_POST['latitude'] ?? 0);
     $office['longitude'] = (float)($_POST['longitude'] ?? 0);
     $office['image_url'] = trim($_POST['image_url'] ?? '');
+    try {
+        $uploaded = handle_image_upload('image_file', 'offices', 1600);
+        if ($uploaded !== null) $office['image_url'] = $uploaded;
+    } catch (RuntimeException $e) {
+        $error = $e->getMessage();
+    }
     $office['is_active'] = isset($_POST['is_active']) ? 1 : 0;
     $office['sort_order'] = (int)($_POST['sort_order'] ?? 0);
 
-    if (empty($office['name']) || empty($office['display_name']) || empty($office['slug']) || empty($office['country'])) {
+    if ($error) {
+        // Upload error: keep the form as is
+    } elseif (empty($office['name']) || empty($office['display_name']) || empty($office['slug']) || empty($office['country'])) {
         $error = "Lütfen zorunlu alanları doldurun (İsim, Görünen İsim, Slug, Ülke).";
     } else {
         try {
@@ -117,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg"><?= htmlspecialchars($success) ?></div>
             <?php endif; ?>
 
-            <form method="POST" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-6">
+            <form method="POST" enctype="multipart/form-data" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-6">
                     <?= csrf_field() ?>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -201,6 +210,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Görsel URL (İsteğe bağlı)</label>
                                 <input type="text" name="image_url" value="<?= htmlspecialchars($office['image_url']) ?>" placeholder="/assets/images/offices/london.jpg" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2 border">
+                                <input type="file" name="image_file" accept="image/jpeg,image/png,image/webp" class="mt-2 block w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                <p class="mt-1 text-xs text-gray-500">Dosya seçerseniz yukarıdaki yol otomatik dolar (JPG, PNG, WEBP; en fazla 8 MB). Boş bırakılırsa varsayılan ofis görseli kullanılır. Önerilen: yatay, en az 1600px genişlik.</p>
+                                <?php if (!empty($office['image_url'])): ?>
+                                    <img src="<?= htmlspecialchars(admin_image_src($office['image_url'])) ?>" alt="" class="mt-2 h-20 rounded-md border border-gray-200 object-cover">
+                                <?php endif; ?>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Sıralama (Küçük olan önce çıkar)</label>

@@ -24,7 +24,7 @@ require_once __DIR__ . '/includes/header.php';
 
 <div class="w-full bg-[#0A1C36]">
     <div class="relative h-72 md:h-[45vh] lg:max-h-[500px] w-full max-w-[1920px] mx-auto overflow-hidden">
-        <img src="<?= getBaseUrl() ?>/assets/images/office-hero.webp" alt="Acibadem Office" class="absolute inset-0 w-full h-full object-cover opacity-70">
+        <img src="<?= e(imageUrl($office['image_url'] ?? '', getBaseUrl() . '/assets/images/office-hero.webp')) ?>" alt="Acibadem Office" class="absolute inset-0 w-full h-full object-cover opacity-70">
         
         <!-- Edge Fades for Ultrawide Screens -->
         <div class="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-[#0A1C36] to-transparent hidden 2xl:block pointer-events-none z-0"></div>
@@ -200,7 +200,7 @@ require_once __DIR__ . '/includes/header.php';
                     <i class="ph-fill ph-user absolute right-4 bottom-2 text-5xl text-gray-50 opacity-0 group-hover:opacity-100 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500 pointer-events-none"></i>
                     <div class="relative z-10 flex-shrink-0 relative">
                         <?php if ($member['image_url']): ?>
-                            <img src="<?= e($member['image_url']) ?>" alt="<?= e($member['name']) ?>" class="w-14 h-14 rounded-2xl object-cover object-top shadow-sm">
+                            <img src="<?= e(imageUrl($member['image_url'])) ?>" alt="<?= e($member['name']) ?>" class="w-14 h-14 rounded-2xl object-cover object-top shadow-sm">
                         <?php else: ?>
                             <div class="w-14 h-14 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-400">
                                 <i class="ph-fill ph-user text-2xl"></i>

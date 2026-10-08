@@ -1,0 +1,12 @@
+{
+  "name": "asg-int-offices-app",
+  "private": true,
+  "description": "Builds the frontend Tailwind CSS (assets/css/tailwind.css). Run `npm install` once, then `npm run build:css` after changing classes in PHP/JS files.",
+  "scripts": {
+    "build:css": "tailwindcss -c tailwind.config.js -i assets/css/tailwind.src.css -o assets/css/tailwind.css --minify",
+    "watch:css": "tailwindcss -c tailwind.config.js -i assets/css/tailwind.src.css -o assets/css/tailwind.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.19"
+  }
+}

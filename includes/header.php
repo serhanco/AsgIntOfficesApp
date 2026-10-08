@@ -42,30 +42,11 @@ function langUrl(string $lang): string {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        acibadem: {
-                            blue: '#0c2d74',
-                            light: '#E6F0FA',
-                            dark: '#0A1C36',
-                            accent: '#1a4ba0'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'Inter', 'system-ui', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Tailwind CSS (prebuilt: run `npm run build:css` after changing classes) -->
+    <link rel="stylesheet" href="<?= getBaseUrl() ?>/assets/css/tailwind.css?v=<?= @filemtime(__DIR__ . '/../assets/css/tailwind.css') ?>">
     
     <!-- Phosphor Icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.2"></script>
     
     <?php if ($needsMap): ?>
     <!-- Leaflet CSS & JS -->
