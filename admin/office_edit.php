@@ -118,6 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endif; ?>
 
             <form method="POST" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-6">
+                    <?= csrf_field() ?>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Temel Bilgiler -->

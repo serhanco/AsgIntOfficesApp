@@ -6,3 +6,11 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+
+# Database backups created by apply_update.php
+backups/
+
+# Local-only notes and scripts (kept in the project folder, never committed)
+*.local.md
+*.local.php
+local/

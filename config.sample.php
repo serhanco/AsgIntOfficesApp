@@ -8,3 +8,6 @@ define('DB_PASS', '');
 define('APP_SECRET', 'change-this-to-random-string');
 define('APP_INSTALLED', false);
 define('APP_URL', ''); // e.g. https://offices.example.com (no trailing slash)
+// Optional: lets apply_update.php run via ?key=... without logging in to the admin panel.
+// Leave empty to allow only admin login or the command line.
+define('UPDATE_KEY', '');
