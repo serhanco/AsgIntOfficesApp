@@ -37,6 +37,18 @@ function langUrl(string $lang): string {
     <link rel="icon" type="image/png" href="<?= getBaseUrl() ?>/assets/images/favicon.png">
     <link rel="icon" type="image/x-icon" href="<?= getBaseUrl() ?>/assets/images/favicon.ico">
     
+    <?php $ga4Id = defined('GA4_ID') ? GA4_ID : 'G-QN9G5K8F63'; ?>
+    <?php if ($ga4Id !== '' && !isAdminVisitor()): ?>
+    <!-- Google tag (gtag.js) — set define('GA4_ID', '') in config.php to turn off -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=<?= e($ga4Id) ?>"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '<?= e($ga4Id) ?>');
+    </script>
+    <?php endif; ?>
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

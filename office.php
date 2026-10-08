@@ -89,8 +89,8 @@ require_once __DIR__ . '/includes/header.php';
     $activities = getOfficeActivities($office['id']);
 
     // ===== DEMO MODE OVERRIDE =====
-    // If DB is empty but '?demo' is in the URL, fill with placeholder design data
-    if (empty($team) && isset($_GET['demo'])) {
+    // If DB is empty but '?demo' is in the URL (admins only), fill with placeholder design data
+    if (empty($team) && isset($_GET['demo']) && isAdminVisitor()) {
         $team = [
             [
                 'name' => 'Cem Üstündağ',
@@ -116,7 +116,7 @@ require_once __DIR__ . '/includes/header.php';
         ];
     }
 
-    if (empty($activities) && isset($_GET['demo'])) {
+    if (empty($activities) && isset($_GET['demo']) && isAdminVisitor()) {
         $activities = [
             [
                 'tag_key' => 'act_tag_doctor',
@@ -208,11 +208,12 @@ require_once __DIR__ . '/includes/header.php';
                         <?php endif; ?>
                         
                         <?php 
+                            $status = teamStatus($member);
                             $statusColor = 'bg-gray-300'; // offline
-                            if (($member['status'] ?? 'online') === 'online') $statusColor = 'bg-green-400';
-                            if (($member['status'] ?? '') === 'away') $statusColor = 'bg-yellow-400';
+                            if ($status === 'online') $statusColor = 'bg-green-400';
+                            if ($status === 'away') $statusColor = 'bg-yellow-400';
                         ?>
-                        <span class="absolute -bottom-1 -right-1 w-4 h-4 <?= $statusColor ?> border-2 border-white rounded-full" title="<?= ucfirst($member['status'] ?? 'online') ?>"></span>
+                        <span class="absolute -bottom-1 -right-1 w-4 h-4 <?= $statusColor ?> border-2 border-white rounded-full" title="<?= ucfirst($status) ?>"></span>
                     </div>
                     <div class="relative z-10 flex-1 min-w-0">
                         <p class="text-sm font-bold text-gray-900 group-hover:text-[#0c2d74] transition-colors"><?= e($member['name']) ?></p>
