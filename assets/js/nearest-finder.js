@@ -120,7 +120,7 @@
   // ---------- rendering ----------
   function actionsHtml(o) {
     const tel = o.phone ? `tel:${o.phone.replace(/[^0-9+]/g, '')}` : '';
-    const wa = (o.whatsapp || o.phone) ? `https://wa.me/${(o.whatsapp || o.phone).replace(/[^0-9]/g, '')}` : '';
+    const wa = o.whatsapp ? `https://wa.me/${o.whatsapp.replace(/[^0-9]/g, '')}` : '';
     const mail = o.email ? `mailto:${o.email}` : '';
     const route = o.lat != null
       ? `https://www.google.com/maps/dir/?api=1&destination=${o.lat},${o.lon}`

@@ -114,7 +114,7 @@ function getEvents(bool $publishedOnly = true): array {
                 'end_time'     => $s['end_time'] ? substr($s['end_time'], 0, 5) : null,
                 'phone'        => $phone,
                 'email'        => $office['email'] ?? '',
-                'whatsapp'     => $phone !== '' ? preg_replace('/[^0-9]/', '', $phone) : '',
+                'whatsapp'     => $office ? officeWhatsapp($office) : '',
                 'maps_url'     => ($s['is_online'] || $mapsQuery === '') ? '' : 'https://www.google.com/maps/dir/?api=1&destination=' . rawurlencode($mapsQuery),
             ];
             $locations[] = $loc;

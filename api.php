@@ -42,6 +42,7 @@ try {
             'country_code' => $o['country_code'],
             'address' => $o['address'],
             'phone' => $o['phone'],
+            'whatsapp' => array_key_exists('whatsapp', $o) ? $o['whatsapp'] : $o['phone'],
             'email' => $o['email'],
             'latitude' => (float)$o['latitude'],
             'longitude' => (float)$o['longitude']
