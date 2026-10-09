@@ -4,6 +4,9 @@ RewriteEngine On
 RewriteRule ^office/([a-z0-9-]+)/?$ office.php?slug=$1 [L,QSA]
 RewriteRule ^offices/?$ offices.php [L,QSA]
 RewriteRule ^map/?$ map.php [L,QSA]
+RewriteRule ^events/?$ events.php [L,QSA]
+RewriteRule ^event/([a-z0-9-]+)\.ics$ event.php?slug=$1&ics=1 [L,QSA]
+RewriteRule ^event/([a-z0-9-]+)/?$ event.php?slug=$1 [L,QSA]
 # The finder test page became the home page
 RewriteRule ^nearest-beta/?$ / [R=301,L]
 RewriteRule ^contracted-institutions/?$ contracted-institutions.php [L,QSA]

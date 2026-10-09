@@ -22,6 +22,7 @@
                     <li><a href="<?= getBaseUrl() ?>/"><?= __('footer_home') ?></a></li>
                     <li><a href="<?= getBaseUrl() ?>/offices"><?= __('nav_all_offices') ?></a></li>
                     <li><a href="<?= getBaseUrl() ?>/map"><?= __('nav_map') ?></a></li>
+                    <li><a href="<?= getBaseUrl() ?>/events"><?= __('nav_events') ?></a></li>
                     <li><a href="<?= getBaseUrl() ?>/contracted-institutions"><?= __('inst_title') ?></a></li>
                     <li><a href="https://partner.acibademinternational.com/london/" target="_blank" rel="noopener noreferrer"><?= __('footer_partner') ?></a></li>
                     <li><a href="https://www.acibadem.com.tr/acibademonline/#/login" target="_blank" rel="noopener noreferrer">Acıbadem Online</a></li>

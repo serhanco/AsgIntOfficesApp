@@ -68,6 +68,39 @@ require __DIR__ . '/../header.php';
     </div>
 </section>
 
+<?php
+// Upcoming events: the visitor's country first (same guess as the finder: test param, then Cloudflare)
+require_once __DIR__ . '/../events-ui.php';
+$homeCc = $testCountry ?: $serverCountry;
+$homeEvents = array_values(array_filter(sortEvents(getEvents()), fn($e) => $e['status'] === 'upcoming'));
+$nearCount = 0;
+if ($homeCc !== '') {
+    $near = array_values(array_filter($homeEvents, fn($e) => in_array($homeCc, $e['countries'], true)));
+    $nearCount = count($near);
+    $homeEvents = array_merge($near, array_values(array_filter($homeEvents, fn($e) => !in_array($homeCc, $e['countries'], true))));
+}
+$homeEvents = array_slice($homeEvents, 0, 3);
+?>
+<?php if ($homeEvents): ?>
+<!-- Upcoming events -->
+<section class="pt-16 sm:pt-20 lg:pt-24">
+    <div class="wrap">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 reveal">
+            <div>
+                <p class="eyebrow"><?= __('nav_events') ?></p>
+                <h2 class="mt-3 text-3xl sm:text-4xl font-extrabold text-navy"><?= $nearCount ? __('events_near_h') : __('events_upcoming') ?></h2>
+            </div>
+            <a href="<?= getBaseUrl() ?>/events" class="btn btn--line self-start sm:self-auto"><?= __('events_see_all') ?><i class="ph ph-arrow-right arrow" aria-hidden="true"></i></a>
+        </div>
+        <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
+            <?php foreach ($homeEvents as $i => $ev): ?>
+            <div class="reveal" style="--d:<?= $i * 0.06 ?>s"><?= v2EventCard($ev, 'h-full') ?></div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
 <!-- Explore -->
 <section class="py-16 sm:py-20 lg:py-24">
     <div class="wrap">

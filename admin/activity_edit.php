@@ -1,6 +1,13 @@
 <?php
 require_once __DIR__ . '/includes/auth.php';
 require_admin_login();
+require_once __DIR__ . '/../includes/functions.php';
+
+// Events moved to the multi-stop model (admin/events.php) once the patch is applied
+if (eventsReady() && !isset($_GET['legacy'])) {
+    header('Location: events.php');
+    exit;
+}
 
 $db = getDb();
 $error = '';

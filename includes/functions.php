@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/language.php';
 require_once __DIR__ . '/design.php';
+require_once __DIR__ . '/events.php';
 
 /**
  * Helper Functions
@@ -175,6 +176,17 @@ function getOfficeTeam(int $officeId): array {
  * Get recent activities for a specific office
  */
 function getOfficeActivities(int $officeId): array {
+    // Events moved to events + event_locations (one event, several offices/venues)
+    if (eventsReady()) {
+        $rows = [];
+        foreach (getEventsForOffice($officeId) as $ev) {
+            $rows[] = ['id' => $ev['id'], 'tag_key' => $ev['tag_key'], 'title' => $ev['title'], 'description' => $ev['description'],
+                       'activity_date' => $ev['start'], 'sort_order' => $ev['sort_order'],
+                       'url' => $ev['url'], 'start' => $ev['start'], 'end' => $ev['end'], 'status' => $ev['status']];
+        }
+        usort($rows, fn($a, $b) => [$a['sort_order'], $a['id']] <=> [$b['sort_order'], $b['id']]);
+        return $rows;
+    }
     try {
         $db = getDb();
         $stmt = $db->prepare("SELECT * FROM office_activities WHERE office_id = ? ORDER BY sort_order ASC, id ASC");

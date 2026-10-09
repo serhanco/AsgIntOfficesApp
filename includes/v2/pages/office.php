@@ -3,6 +3,7 @@
 $heroImg = imageUrl($office['image_url'] ?? '', getBaseUrl() . '/assets/images/office-hero.webp');
 $extraHead = '<link rel="preload" as="image" href="' . e($heroImg) . '" fetchpriority="high">';
 require __DIR__ . '/../header.php';
+require_once __DIR__ . '/../events-ui.php';
 
 $tel   = !empty($office['phone']) ? 'tel:' . preg_replace('/[^0-9+]/', '', $office['phone']) : '';
 $wa    = !empty($office['phone']) ? 'https://wa.me/' . preg_replace('/[^0-9]/', '', $office['phone']) : '';
@@ -21,6 +22,7 @@ $tagStyle = [
     'act_tag_doctor'       => ['icon' => 'ph-stethoscope',        'chip' => 'from-aqua to-navy',          'text' => 'text-azure'],
     'act_tag_presentation' => ['icon' => 'ph-presentation-chart', 'chip' => 'from-violet-400 to-violet-700', 'text' => 'text-violet-700'],
     'act_tag_exhibition'   => ['icon' => 'ph-handshake',          'chip' => 'from-emerald-400 to-emerald-700', 'text' => 'text-emerald-700'],
+    'act_tag_webinar'      => ['icon' => 'ph-video-camera',       'chip' => 'from-coral-light to-coral-ink', 'text' => 'text-coral-ink'],
 ];
 ?>
 
@@ -56,31 +58,55 @@ $tagStyle = [
     <div class="grid gap-6 sm:gap-8 <?= $gridCols ?>">
         <?php if ($hasActivities): ?>
         <section class="card p-6 sm:p-8 reveal">
+            <?php
+            // With the events model: upcoming first and linked to the event page; past ones only when nothing is coming up
+            $shownActs = $activities;
+            if (isset($activities[0]['url'])) {
+                $shownActs = array_values(array_filter(array_map(fn($ev) => [
+                    'tag_key' => $ev['tag_key'], 'title' => $ev['title'], 'description' => $ev['description'],
+                    'url' => $ev['url'], 'start' => $ev['start'], 'end' => $ev['end'], 'status' => $ev['status'],
+                ], getEventsForOffice((int)$office['id']))));
+                $upcomingActs = array_values(array_filter($shownActs, fn($a) => $a['status'] === 'upcoming'));
+                $shownActs = $upcomingActs ?: array_slice($shownActs, 0, 3);
+            }
+            ?>
             <div class="flex items-center justify-between gap-4 mb-6">
                 <h2 class="text-xl font-extrabold text-navy"><?= __('office_activities_h', '<bdi>' . e($office['country']) . '</bdi>') ?></h2>
-                <span class="count-pill"><?= count($activities) ?></span>
+                <span class="count-pill"><?= count($shownActs) ?></span>
             </div>
             <div class="space-y-3">
-                <?php foreach ($activities as $act):
+                <?php foreach ($shownActs as $act):
                     $st = $tagStyle[$act['tag_key']] ?? $tagStyle['act_tag_doctor'];
                     // Events are published untranslated in the office's local language:
                     // the card takes the direction of its own text.
                     $actDir = textDir(($act['title'] ?? '') . ' ' . ($act['description'] ?? ''));
+                    $actUrl = $act['url'] ?? '';
+                    $tagName = $actUrl ? 'a' : 'div';
                 ?>
-                <div dir="<?= $actDir ?>" class="group flex gap-4 p-4 rounded-2xl border border-line bg-white hover:border-transparent hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-300">
+                <<?= $tagName ?><?= $actUrl ? ' href="' . e($actUrl) . '"' : '' ?> dir="<?= $actDir ?>" class="group flex gap-4 p-4 rounded-2xl border border-line bg-white hover:border-transparent hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-300<?= ($act['status'] ?? '') === 'past' ? ' opacity-70' : '' ?>">
+                    <?php if ($actUrl): ?>
+                    <?= v2DateBadge($act['start'], $act['end'], $act['status'] === 'past') ?>
+                    <?php else: ?>
                     <span class="w-12 h-12 rounded-xl bg-gradient-to-br <?= $st['chip'] ?> text-white flex items-center justify-center flex-shrink-0 shadow-md transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-6">
                         <i class="ph-fill <?= $st['icon'] ?> text-2xl" aria-hidden="true"></i>
                     </span>
+                    <?php endif; ?>
                     <div class="flex-1 min-w-0">
                         <span lang="<?= e(langHtml()) ?>" dir="<?= langDir() ?>" class="text-[0.7rem] font-bold uppercase tracking-wider <?= $st['text'] ?>"><?= __($act['tag_key']) ?></span>
-                        <p class="event-text mt-0.5 text-[0.95rem] font-bold text-ink leading-snug"><?= e($act['title']) ?></p>
-                        <?php if (!empty($act['description'])): ?>
-                        <p class="event-text mt-1 text-sm text-muted"><?= e($act['description']) ?></p>
+                        <p class="event-text mt-0.5 text-[0.95rem] font-bold text-ink leading-snug group-hover:text-navy transition-colors"><?= e($act['title']) ?></p>
+                        <?php if ($actUrl && $act['start']): ?>
+                        <p class="mt-1 text-sm text-azure font-semibold" lang="<?= e(langHtml()) ?>" dir="<?= langDir() ?>"><?= v2DateText($act['start'], $act['end']) ?></p>
+                        <?php elseif (!empty($act['description'])): ?>
+                        <p class="event-text mt-1 text-sm text-muted line-clamp-2"><?= e($act['description']) ?></p>
                         <?php endif; ?>
                     </div>
-                </div>
+                    <?php if ($actUrl): ?><i class="ph ph-arrow-right arrow self-center text-muted-2 group-hover:text-aqua" aria-hidden="true"></i><?php endif; ?>
+                </<?= $tagName ?>>
                 <?php endforeach; ?>
             </div>
+            <?php if (isset($activities[0]['url'])): ?>
+            <a href="<?= getBaseUrl() ?>/events" class="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-azure hover:text-navy"><?= __('events_see_all') ?><i class="ph ph-arrow-right arrow" aria-hidden="true"></i></a>
+            <?php endif; ?>
         </section>
         <?php endif; ?>
 

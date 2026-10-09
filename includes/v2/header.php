@@ -49,6 +49,7 @@ $navItems = [
     ['url' => getBaseUrl() . '/?find=1', 'icon' => 'ph-target',                'label' => __('nav_nearest'),     'active' => $currentPage === 'home'],
     ['url' => getBaseUrl() . '/map',     'icon' => 'ph-globe-hemisphere-west', 'label' => __('nav_map'),         'active' => $currentPage === 'map'],
     ['url' => getBaseUrl() . '/offices', 'icon' => 'ph-buildings',             'label' => __('nav_all_offices'), 'active' => in_array($currentPage, ['offices', 'office'], true)],
+    ['url' => getBaseUrl() . '/events',  'icon' => 'ph-calendar-star',         'label' => __('nav_events'),      'active' => $currentPage === 'events'],
 ];
 ?>
 <!DOCTYPE html>

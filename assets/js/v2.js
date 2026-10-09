@@ -85,5 +85,48 @@
         dock.classList.toggle('is-visible', !en.isIntersecting && en.boundingClientRect.top < 0);
       }).observe(anchor);
     }
+    // Event dates: printed as numbers by PHP, written out here in the page language
+    const dateEls = document.querySelectorAll('[data-date], [data-month]');
+    if (dateEls.length && window.Intl && Intl.DateTimeFormat) {
+      const lang = root.lang || 'en';
+      const toDate = (s) => { const p = s.split('-'); return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])); };
+      const thisYear = new Date().getFullYear();
+      try {
+        dateEls.forEach((el) => {
+          if (el.dataset.month) {
+            const m = new Intl.DateTimeFormat(lang, { month: 'short', timeZone: 'UTC' }).format(toDate(el.dataset.month));
+            el.textContent = m.replace(/\.$/, '');
+            return;
+          }
+          const a = toDate(el.dataset.date);
+          const b = el.dataset.dateEnd ? toDate(el.dataset.dateEnd) : null;
+          const opts = { day: 'numeric', month: 'long', timeZone: 'UTC' };
+          if (a.getUTCFullYear() !== thisYear || (b && b.getUTCFullYear() !== thisYear)) opts.year = 'numeric';
+          if (!b) opts.weekday = 'short';
+          const fmt = new Intl.DateTimeFormat(lang, opts);
+          el.textContent = b ? (fmt.formatRange ? fmt.formatRange(a, b) : fmt.format(a) + ' – ' + fmt.format(b)) : fmt.format(a);
+        });
+      } catch (e) { /* keep the numeric dates */ }
+    }
+
+    // Share: native share sheet on phones, copy the link elsewhere
+    document.querySelectorAll('[data-share]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const url = btn.dataset.url || location.href;
+        if (navigator.share) {
+          navigator.share({ title: btn.dataset.title || document.title, url }).catch(() => {});
+          return;
+        }
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(url).then(() => {
+            const label = btn.querySelector('span');
+            if (!label) return;
+            const old = label.textContent;
+            label.textContent = btn.dataset.copied || 'OK';
+            setTimeout(() => { label.textContent = old; }, 2000);
+          }).catch(() => {});
+        }
+      });
+    });
   });
 })();

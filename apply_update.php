@@ -128,7 +128,7 @@ try {
     $backupFile = $backupDir . '/db_backup_' . $timestamp . '_' . bin2hex(random_bytes(4)) . '.json';
 
     $backupData = [];
-    foreach (['offices', 'office_teams', 'office_activities'] as $table) {
+    foreach (['offices', 'office_teams', 'office_activities', 'events', 'event_locations'] as $table) {
         try {
             $backupData[$table] = $db->query("SELECT * FROM `$table`")->fetchAll(PDO::FETCH_ASSOC);
         } catch (\Throwable $e) {} // Ignore if table doesn't exist yet
