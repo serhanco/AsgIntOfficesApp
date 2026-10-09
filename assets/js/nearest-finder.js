@@ -275,6 +275,18 @@
     if (C.testAt === 'deny') { setTimeout(onLocationError, 700); return; }
     if (Array.isArray(C.testAt)) { setTimeout(() => onPosition(C.testAt[0], C.testAt[1]), 900); return; }
     if (!navigator.geolocation) { onLocationError(); return; }
+    // Permission already refused: don't ask again, go straight to the fallback
+    if (navigator.permissions && navigator.permissions.query) {
+      navigator.permissions.query({ name: 'geolocation' }).then(
+        (st) => (st.state === 'denied' ? onLocationError() : requestPosition()),
+        requestPosition
+      );
+      return;
+    }
+    requestPosition();
+  }
+
+  function requestPosition() {
     navigator.geolocation.getCurrentPosition(
       (p) => onPosition(p.coords.latitude, p.coords.longitude),
       onLocationError,
