@@ -160,4 +160,22 @@ return [
     'event_ended'             => 'انتهت هذه الفعالية.',
     'event_other'             => 'فعاليات قادمة أخرى',
     'act_tag_webinar'         => 'ندوة عبر الإنترنت',
+
+    // Events hub: views, request, home sections
+    'home_offices_h'          => 'المكاتب',
+    'home_offices_p'          => 'أقرب مكتب وبيانات التواصل والاتجاهات.',
+    'home_events_p'           => 'زيارات الأطباء والعروض التقديمية والمعارض.',
+    'events_view_list'        => 'قائمة',
+    'events_view_calendar'    => 'تقويم',
+    'events_view_map'         => 'خريطة',
+    'events_search_ph'        => 'ابحث عن فعالية أو مدينة…',
+    'events_cal_prev'         => 'الشهر السابق',
+    'events_cal_next'         => 'الشهر التالي',
+    'events_cal_none'         => 'لا توجد فعاليات.',
+    'events_req_btn'          => 'اطلب فعالية',
+    'events_req_h'            => 'هل تريد فعالية في مدينتك؟',
+    'events_req_p'            => 'أخبرنا بما تفكر فيه وسيتواصل معك فريقنا.',
+    'events_req_type'         => 'نوع الفعالية',
+    'events_req_where'        => 'المدينة أو الدولة',
+    'events_req_msg'          => 'مرحبًا، أود طلب فعالية (%s) في %s.',
 ];

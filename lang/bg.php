@@ -160,4 +160,22 @@ return [
     'event_ended'             => 'Това събитие приключи.',
     'event_other'             => 'Други предстоящи събития',
     'act_tag_webinar'         => 'Уебинар',
+
+    // Events hub: views, request, home sections
+    'home_offices_h'          => 'Офиси',
+    'home_offices_p'          => 'Най-близкият офис, контакти и маршрут.',
+    'home_events_p'           => 'Посещения на лекари, презентации и изложения.',
+    'events_view_list'        => 'Списък',
+    'events_view_calendar'    => 'Календар',
+    'events_view_map'         => 'Карта',
+    'events_search_ph'        => 'Търсене на събитие или град…',
+    'events_cal_prev'         => 'Предишен месец',
+    'events_cal_next'         => 'Следващ месец',
+    'events_cal_none'         => 'Няма събития.',
+    'events_req_btn'          => 'Заявка за събитие',
+    'events_req_h'            => 'Искате събитие във вашия град?',
+    'events_req_p'            => 'Кажете ни какво имате предвид и екипът ни ще се свърже с вас.',
+    'events_req_type'         => 'Вид събитие',
+    'events_req_where'        => 'Град или държава',
+    'events_req_msg'          => 'Здравейте, искам да заявя събитие (%s) в %s.',
 ];

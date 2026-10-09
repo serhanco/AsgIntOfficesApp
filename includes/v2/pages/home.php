@@ -25,14 +25,25 @@ require __DIR__ . '/../header.php';
                 <p class="hero__lead rise mt-5 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed" style="--d:.16s">
                     <?= __('home_subtitle', count($offices), $countryCount) ?>
                 </p>
-                <div class="rise mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-3 justify-center lg:justify-start" style="--d:.24s">
-                    <button type="button" data-nf-locate class="btn btn--primary btn--lg nf-locate-btn sm:whitespace-nowrap">
-                        <span class="nf-radar" aria-hidden="true"><i class="ph-fill ph-navigation-arrow"></i></span>
-                        <span data-nf-locate-label><?= __('btn_locate') ?></span>
-                    </button>
-                    <a href="<?= getBaseUrl() ?>/map" class="btn btn--ghost btn--lg sm:whitespace-nowrap">
-                        <i class="ph-fill ph-globe-hemisphere-west" aria-hidden="true"></i><?= __('btn_map') ?>
-                    </a>
+                <!-- The two main sections of the portal -->
+                <div class="rise mt-8 grid sm:grid-cols-2 gap-3 text-start" style="--d:.24s">
+                    <div class="pillar">
+                        <span class="pillar__icon"><i class="ph-fill ph-buildings" aria-hidden="true"></i></span>
+                        <h2 class="pillar__h"><?= __('home_offices_h') ?></h2>
+                        <p class="pillar__p"><?= __('home_offices_p') ?></p>
+                        <button type="button" data-nf-locate class="btn btn--primary nf-locate-btn w-full mt-auto">
+                            <span class="nf-radar" aria-hidden="true"><i class="ph-fill ph-navigation-arrow"></i></span>
+                            <span data-nf-locate-label><?= __('btn_locate') ?></span>
+                        </button>
+                        <a href="<?= getBaseUrl() ?>/map" class="pillar__link"><i class="ph-fill ph-globe-hemisphere-west" aria-hidden="true"></i><?= __('btn_map') ?><i class="ph ph-arrow-right arrow ms-auto" aria-hidden="true"></i></a>
+                    </div>
+                    <div class="pillar">
+                        <span class="pillar__icon"><i class="ph-fill ph-calendar-star" aria-hidden="true"></i></span>
+                        <h2 class="pillar__h"><?= __('nav_events') ?></h2>
+                        <p class="pillar__p"><?= __('home_events_p') ?></p>
+                        <a href="<?= getBaseUrl() ?>/events" class="btn btn--white w-full mt-auto"><i class="ph-fill ph-calendar-star" aria-hidden="true"></i><?= __('events_see_all') ?></a>
+                        <a href="<?= getBaseUrl() ?>/events?view=calendar" class="pillar__link"><i class="ph-fill ph-calendar-blank" aria-hidden="true"></i><?= __('events_view_calendar') ?><i class="ph ph-arrow-right arrow ms-auto" aria-hidden="true"></i></a>
+                    </div>
                 </div>
             </div>
 

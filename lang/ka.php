@@ -160,4 +160,22 @@ return [
     'event_ended'             => 'ეს ღონისძიება დასრულდა.',
     'event_other'             => 'სხვა მომავალი ღონისძიებები',
     'act_tag_webinar'         => 'ვებინარი',
+
+    // Events hub: views, request, home sections
+    'home_offices_h'          => 'ოფისები',
+    'home_offices_p'          => 'უახლოესი ოფისი, კონტაქტები და მარშრუტი.',
+    'home_events_p'           => 'ექიმების ვიზიტები, პრეზენტაციები და გამოფენები.',
+    'events_view_list'        => 'სია',
+    'events_view_calendar'    => 'კალენდარი',
+    'events_view_map'         => 'რუკა',
+    'events_search_ph'        => 'მოძებნეთ ღონისძიება ან ქალაქი…',
+    'events_cal_prev'         => 'წინა თვე',
+    'events_cal_next'         => 'შემდეგი თვე',
+    'events_cal_none'         => 'ღონისძიებები არ არის.',
+    'events_req_btn'          => 'ღონისძიების მოთხოვნა',
+    'events_req_h'            => 'გსურთ ღონისძიება თქვენს ქალაქში?',
+    'events_req_p'            => 'მოგვწერეთ, რა გაქვთ მხედველობაში და ჩვენი გუნდი დაგიკავშირდებათ.',
+    'events_req_type'         => 'ღონისძიების ტიპი',
+    'events_req_where'        => 'ქალაქი ან ქვეყანა',
+    'events_req_msg'          => 'გამარჯობა, მინდა მოვითხოვო ღონისძიება (%s): %s.',
 ];

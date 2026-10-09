@@ -160,4 +160,22 @@ return [
     'event_ended'             => 'Bu tədbir başa çatıb.',
     'event_other'             => 'Digər qarşıdakı tədbirlər',
     'act_tag_webinar'         => 'Vebinar',
+
+    // Events hub: views, request, home sections
+    'home_offices_h'          => 'Ofislər',
+    'home_offices_p'          => 'Ən yaxın ofis, əlaqə və marşrut.',
+    'home_events_p'           => 'Həkim görüşləri, təqdimatlar və sərgilər.',
+    'events_view_list'        => 'Siyahı',
+    'events_view_calendar'    => 'Təqvim',
+    'events_view_map'         => 'Xəritə',
+    'events_search_ph'        => 'Tədbir və ya şəhər axtar…',
+    'events_cal_prev'         => 'Əvvəlki ay',
+    'events_cal_next'         => 'Növbəti ay',
+    'events_cal_none'         => 'Tədbir yoxdur.',
+    'events_req_btn'          => 'Tədbir sorğusu',
+    'events_req_h'            => 'Şəhərinizdə tədbir istəyirsiniz?',
+    'events_req_p'            => 'Ağlınızdakını yazın, komandamız sizinlə əlaqə saxlasın.',
+    'events_req_type'         => 'Tədbirin növü',
+    'events_req_where'        => 'Şəhər və ya ölkə',
+    'events_req_msg'          => 'Salam, %2$s üçün tədbir (%1$s) sorğusu göndərmək istəyirəm.',
 ];

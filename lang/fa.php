@@ -160,4 +160,22 @@ return [
     'event_ended'             => 'این رویداد به پایان رسیده است.',
     'event_other'             => 'دیگر رویدادهای پیش رو',
     'act_tag_webinar'         => 'وبینار',
+
+    // Events hub: views, request, home sections
+    'home_offices_h'          => 'دفاتر',
+    'home_offices_p'          => 'نزدیک‌ترین دفتر، راه‌های ارتباطی و مسیریابی.',
+    'home_events_p'           => 'ویزیت پزشکان، ارائه‌ها و نمایشگاه‌ها.',
+    'events_view_list'        => 'فهرست',
+    'events_view_calendar'    => 'تقویم',
+    'events_view_map'         => 'نقشه',
+    'events_search_ph'        => 'جستجوی رویداد یا شهر…',
+    'events_cal_prev'         => 'ماه قبل',
+    'events_cal_next'         => 'ماه بعد',
+    'events_cal_none'         => 'رویدادی نیست.',
+    'events_req_btn'          => 'درخواست رویداد',
+    'events_req_h'            => 'رویدادی در شهر خود می‌خواهید؟',
+    'events_req_p'            => 'آنچه در ذهن دارید را برای ما بنویسید تا تیم ما با شما تماس بگیرد.',
+    'events_req_type'         => 'نوع رویداد',
+    'events_req_where'        => 'شهر یا کشور',
+    'events_req_msg'          => 'سلام، می‌خواهم یک رویداد (%s) در %s درخواست کنم.',
 ];

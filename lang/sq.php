@@ -160,4 +160,22 @@ return [
     'event_ended'             => 'Ky event ka përfunduar.',
     'event_other'             => 'Evente të tjera të ardhshme',
     'act_tag_webinar'         => 'Webinar',
+
+    // Events hub: views, request, home sections
+    'home_offices_h'          => 'Zyrat',
+    'home_offices_p'          => 'Zyra më e afërt, kontakti dhe udhëzimet.',
+    'home_events_p'           => 'Vizita mjekësh, prezantime dhe panaire.',
+    'events_view_list'        => 'Listë',
+    'events_view_calendar'    => 'Kalendar',
+    'events_view_map'         => 'Hartë',
+    'events_search_ph'        => 'Kërko event ose qytet…',
+    'events_cal_prev'         => 'Muaji i kaluar',
+    'events_cal_next'         => 'Muaji tjetër',
+    'events_cal_none'         => 'Asnjë event.',
+    'events_req_btn'          => 'Kërko një event',
+    'events_req_h'            => 'Dëshironi një event në qytetin tuaj?',
+    'events_req_p'            => 'Na shkruani çfarë keni në mendje dhe ekipi ynë do t\'ju kontaktojë.',
+    'events_req_type'         => 'Lloji i eventit',
+    'events_req_where'        => 'Qyteti ose vendi',
+    'events_req_msg'          => 'Përshëndetje, dua të kërkoj një event (%s) në %s.',
 ];

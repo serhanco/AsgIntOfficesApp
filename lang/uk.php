@@ -160,4 +160,22 @@ return [
     'event_ended'             => 'Цей захід завершився.',
     'event_other'             => 'Інші найближчі заходи',
     'act_tag_webinar'         => 'Вебінар',
+
+    // Events hub: views, request, home sections
+    'home_offices_h'          => 'Офіси',
+    'home_offices_p'          => 'Найближчий офіс, контакти та маршрут.',
+    'home_events_p'           => 'Візити лікарів, презентації та виставки.',
+    'events_view_list'        => 'Список',
+    'events_view_calendar'    => 'Календар',
+    'events_view_map'         => 'Мапа',
+    'events_search_ph'        => 'Пошук заходу або міста…',
+    'events_cal_prev'         => 'Попередній місяць',
+    'events_cal_next'         => 'Наступний місяць',
+    'events_cal_none'         => 'Немає заходів.',
+    'events_req_btn'          => 'Запросити захід',
+    'events_req_h'            => 'Хочете захід у вашому місті?',
+    'events_req_p'            => 'Напишіть, що ви задумали, і наша команда зв\'яжеться з вами.',
+    'events_req_type'         => 'Тип заходу',
+    'events_req_where'        => 'Місто або країна',
+    'events_req_msg'          => 'Вітаю, я хочу запросити захід (%s) у %s.',
 ];

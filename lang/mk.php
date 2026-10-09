@@ -160,4 +160,22 @@ return [
     'event_ended'             => 'Овој настан заврши.',
     'event_other'             => 'Други претстојни настани',
     'act_tag_webinar'         => 'Вебинар',
+
+    // Events hub: views, request, home sections
+    'home_offices_h'          => 'Канцеларии',
+    'home_offices_p'          => 'Најблиска канцеларија, контакт и насоки.',
+    'home_events_p'           => 'Посети на лекари, презентации и саеми.',
+    'events_view_list'        => 'Листа',
+    'events_view_calendar'    => 'Календар',
+    'events_view_map'         => 'Мапа',
+    'events_search_ph'        => 'Пребарај настан или град…',
+    'events_cal_prev'         => 'Претходен месец',
+    'events_cal_next'         => 'Следен месец',
+    'events_cal_none'         => 'Нема настани.',
+    'events_req_btn'          => 'Побарај настан',
+    'events_req_h'            => 'Сакате настан во вашиот град?',
+    'events_req_p'            => 'Кажете ни што имате на ум, а нашиот тим ќе ви се јави.',
+    'events_req_type'         => 'Вид на настан',
+    'events_req_where'        => 'Град или земја',
+    'events_req_msg'          => 'Здраво, сакам да побарам настан (%s) во %s.',
 ];

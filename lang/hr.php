@@ -160,4 +160,22 @@ return [
     'event_ended'             => 'Ovo događanje je završilo.',
     'event_other'             => 'Ostala nadolazeća događanja',
     'act_tag_webinar'         => 'Webinar',
+
+    // Events hub: views, request, home sections
+    'home_offices_h'          => 'Uredi',
+    'home_offices_p'          => 'Najbliži ured, kontakt i smjer.',
+    'home_events_p'           => 'Posjeti liječnika, prezentacije i sajmovi.',
+    'events_view_list'        => 'Popis',
+    'events_view_calendar'    => 'Kalendar',
+    'events_view_map'         => 'Karta',
+    'events_search_ph'        => 'Pretraži događanje ili grad…',
+    'events_cal_prev'         => 'Prethodni mjesec',
+    'events_cal_next'         => 'Sljedeći mjesec',
+    'events_cal_none'         => 'Nema događanja.',
+    'events_req_btn'          => 'Zatraži događanje',
+    'events_req_h'            => 'Želite događanje u svom gradu?',
+    'events_req_p'            => 'Recite nam što imate na umu, a naš tim će vam se javiti.',
+    'events_req_type'         => 'Vrsta događanja',
+    'events_req_where'        => 'Grad ili država',
+    'events_req_msg'          => 'Pozdrav, želim zatražiti događanje (%s) u mjestu %s.',
 ];

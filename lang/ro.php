@@ -160,4 +160,22 @@ return [
     'event_ended'             => 'Acest eveniment s-a încheiat.',
     'event_other'             => 'Alte evenimente viitoare',
     'act_tag_webinar'         => 'Webinar',
+
+    // Events hub: views, request, home sections
+    'home_offices_h'          => 'Birouri',
+    'home_offices_p'          => 'Cel mai apropiat birou, contact și indicații.',
+    'home_events_p'           => 'Vizite ale medicilor, prezentări și târguri.',
+    'events_view_list'        => 'Listă',
+    'events_view_calendar'    => 'Calendar',
+    'events_view_map'         => 'Hartă',
+    'events_search_ph'        => 'Caută eveniment sau oraș…',
+    'events_cal_prev'         => 'Luna anterioară',
+    'events_cal_next'         => 'Luna următoare',
+    'events_cal_none'         => 'Niciun eveniment.',
+    'events_req_btn'          => 'Solicită un eveniment',
+    'events_req_h'            => 'Vreți un eveniment în orașul dvs.?',
+    'events_req_p'            => 'Spuneți-ne ce aveți în minte, iar echipa noastră vă va răspunde.',
+    'events_req_type'         => 'Tipul evenimentului',
+    'events_req_where'        => 'Oraș sau țară',
+    'events_req_msg'          => 'Bună ziua, aș dori să solicit un eveniment (%s) în %s.',
 ];

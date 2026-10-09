@@ -158,4 +158,22 @@ return [
     'event_ended'             => 'Bu etkinlik sona erdi.',
     'event_other'             => 'Diğer yaklaşan etkinlikler',
     'act_tag_webinar'         => 'Webinar',
+
+    // Events hub: views, request, home sections
+    'home_offices_h'          => 'Ofisler',
+    'home_offices_p'          => 'En yakın ofis, iletişim ve yol tarifi.',
+    'home_events_p'           => 'Doktor ziyaretleri, sunumlar ve fuarlar.',
+    'events_view_list'        => 'Liste',
+    'events_view_calendar'    => 'Takvim',
+    'events_view_map'         => 'Harita',
+    'events_search_ph'        => 'Etkinlik veya şehir ara…',
+    'events_cal_prev'         => 'Önceki ay',
+    'events_cal_next'         => 'Sonraki ay',
+    'events_cal_none'         => 'Etkinlik yok.',
+    'events_req_btn'          => 'Etkinlik talep et',
+    'events_req_h'            => 'Şehrinizde bir etkinlik ister misiniz?',
+    'events_req_p'            => 'Aklınızdakini bize yazın, ekibimiz size dönsün.',
+    'events_req_type'         => 'Etkinlik türü',
+    'events_req_where'        => 'Şehir veya ülke',
+    'events_req_msg'          => 'Merhaba, %2$s için bir etkinlik (%1$s) talep etmek istiyorum.',
 ];

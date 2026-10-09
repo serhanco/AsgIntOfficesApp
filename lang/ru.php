@@ -210,4 +210,22 @@ return [
     'event_ended'             => 'Это мероприятие завершилось.',
     'event_other'             => 'Другие предстоящие мероприятия',
     'act_tag_webinar'         => 'Вебинар',
+
+    // Events hub: views, request, home sections
+    'home_offices_h'          => 'Офисы',
+    'home_offices_p'          => 'Ближайший офис, контакты и маршрут.',
+    'home_events_p'           => 'Визиты врачей, презентации и выставки.',
+    'events_view_list'        => 'Список',
+    'events_view_calendar'    => 'Календарь',
+    'events_view_map'         => 'Карта',
+    'events_search_ph'        => 'Поиск мероприятия или города…',
+    'events_cal_prev'         => 'Предыдущий месяц',
+    'events_cal_next'         => 'Следующий месяц',
+    'events_cal_none'         => 'Нет мероприятий.',
+    'events_req_btn'          => 'Запросить мероприятие',
+    'events_req_h'            => 'Хотите мероприятие в вашем городе?',
+    'events_req_p'            => 'Напишите, что вы задумали, и наша команда свяжется с вами.',
+    'events_req_type'         => 'Тип мероприятия',
+    'events_req_where'        => 'Город или страна',
+    'events_req_msg'          => 'Здравствуйте, я хочу запросить мероприятие (%s) в %s.',
 ];

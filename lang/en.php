@@ -210,4 +210,22 @@ return [
     'event_ended'             => 'This event has ended.',
     'event_other'             => 'Other upcoming events',
     'act_tag_webinar'         => 'Webinar',
+
+    // Events hub: views, request, home sections
+    'home_offices_h'          => 'Offices',
+    'home_offices_p'          => 'Nearest office, contacts and directions.',
+    'home_events_p'           => 'Doctor visits, presentations and fairs.',
+    'events_view_list'        => 'List',
+    'events_view_calendar'    => 'Calendar',
+    'events_view_map'         => 'Map',
+    'events_search_ph'        => 'Search events or cities…',
+    'events_cal_prev'         => 'Previous month',
+    'events_cal_next'         => 'Next month',
+    'events_cal_none'         => 'No events.',
+    'events_req_btn'          => 'Request an event',
+    'events_req_h'            => 'Want an event in your city?',
+    'events_req_p'            => 'Tell us what you have in mind and our team will get back to you.',
+    'events_req_type'         => 'Event type',
+    'events_req_where'        => 'City or country',
+    'events_req_msg'          => 'Hello, I would like to request an event (%s) in %s.',
 ];

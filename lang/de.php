@@ -158,4 +158,22 @@ return [
     'event_ended'             => 'Diese Veranstaltung ist beendet.',
     'event_other'             => 'Weitere kommende Veranstaltungen',
     'act_tag_webinar'         => 'Webinar',
+
+    // Events hub: views, request, home sections
+    'home_offices_h'          => 'Büros',
+    'home_offices_p'          => 'Nächstes Büro, Kontakt und Anfahrt.',
+    'home_events_p'           => 'Arztbesuche, Vorträge und Messen.',
+    'events_view_list'        => 'Liste',
+    'events_view_calendar'    => 'Kalender',
+    'events_view_map'         => 'Karte',
+    'events_search_ph'        => 'Veranstaltung oder Stadt suchen…',
+    'events_cal_prev'         => 'Vorheriger Monat',
+    'events_cal_next'         => 'Nächster Monat',
+    'events_cal_none'         => 'Keine Veranstaltungen.',
+    'events_req_btn'          => 'Veranstaltung anfragen',
+    'events_req_h'            => 'Eine Veranstaltung in Ihrer Stadt?',
+    'events_req_p'            => 'Schreiben Sie uns, was Sie sich vorstellen, unser Team meldet sich bei Ihnen.',
+    'events_req_type'         => 'Art der Veranstaltung',
+    'events_req_where'        => 'Stadt oder Land',
+    'events_req_msg'          => 'Guten Tag, ich möchte eine Veranstaltung (%s) in %s anfragen.',
 ];
