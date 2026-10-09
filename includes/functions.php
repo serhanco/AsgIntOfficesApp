@@ -41,6 +41,15 @@ function getAllOffices(bool $activeOnly = true): array {
 }
 
 /**
+ * WhatsApp number of an office, digits only ('' = none, the button is hidden).
+ * Before the whatsapp column exists (patch not applied yet) the phone number is used, as before.
+ */
+function officeWhatsapp(array $office): string {
+    $value = array_key_exists('whatsapp', $office) ? (string)$office['whatsapp'] : (string)($office['phone'] ?? '');
+    return preg_replace('/[^0-9]/', '', $value);
+}
+
+/**
  * Get single office by slug
  */
 function getOfficeBySlug(string $slug): ?array {

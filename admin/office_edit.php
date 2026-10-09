@@ -7,13 +7,16 @@ $db = getDb();
 $error = '';
 $success = '';
 
+// The whatsapp column exists once database/patch_20261010_office_whatsapp.sql is applied
+$hasWhatsapp = (bool)$db->query("SHOW COLUMNS FROM offices LIKE 'whatsapp'")->fetchColumn();
+
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $is_edit = $id > 0;
 
 // Default values for new office
 $office = [
     'name' => '', 'display_name' => '', 'slug' => '', 'country' => '', 'country_code' => '',
-    'address' => '', 'phone' => '', 'email' => '', 'latitude' => '0.0000000', 'longitude' => '0.0000000',
+    'address' => '', 'phone' => '', 'whatsapp' => '', 'email' => '', 'latitude' => '0.0000000', 'longitude' => '0.0000000',
     'image_url' => '', 'is_active' => 1, 'sort_order' => 0
 ];
 
@@ -38,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $office['country_code'] = trim($_POST['country_code'] ?? '');
     $office['address'] = trim($_POST['address'] ?? '');
     $office['phone'] = trim($_POST['phone'] ?? '');
+    $office['whatsapp'] = trim($_POST['whatsapp'] ?? '');
     $office['email'] = trim($_POST['email'] ?? '');
     $office['latitude'] = (float)($_POST['latitude'] ?? 0);
     $office['longitude'] = (float)($_POST['longitude'] ?? 0);
@@ -60,26 +64,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($is_edit) {
                 $stmt = $db->prepare("UPDATE offices SET 
                     name=?, display_name=?, slug=?, country=?, country_code=?, address=?, 
-                    phone=?, email=?, latitude=?, longitude=?, image_url=?, is_active=?, sort_order=? 
+                    phone=?, " . ($hasWhatsapp ? "whatsapp=?, " : "") . "email=?, latitude=?, longitude=?, image_url=?, is_active=?, sort_order=? 
                     WHERE id=?");
-                $stmt->execute([
+                $stmt->execute(array_merge([
                     $office['name'], $office['display_name'], $office['slug'], $office['country'],
-                    $office['country_code'], $office['address'], $office['phone'], $office['email'],
+                    $office['country_code'], $office['address'], $office['phone']],
+                    $hasWhatsapp ? [$office['whatsapp'] !== '' ? $office['whatsapp'] : null] : [],
+                    [$office['email'],
                     $office['latitude'], $office['longitude'], $office['image_url'], $office['is_active'],
-                    $office['sort_order'], $id
-                ]);
+                    $office['sort_order'], $id]
+                ));
                 $success = "Ofis başarıyla güncellendi.";
             } else {
                 $stmt = $db->prepare("INSERT INTO offices (
                     name, display_name, slug, country, country_code, address, 
-                    phone, email, latitude, longitude, image_url, is_active, sort_order
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([
+                    phone, " . ($hasWhatsapp ? "whatsapp, " : "") . "email, latitude, longitude, image_url, is_active, sort_order
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, " . ($hasWhatsapp ? "?, " : "") . "?, ?, ?, ?, ?, ?)");
+                $stmt->execute(array_merge([
                     $office['name'], $office['display_name'], $office['slug'], $office['country'],
-                    $office['country_code'], $office['address'], $office['phone'], $office['email'],
+                    $office['country_code'], $office['address'], $office['phone']],
+                    $hasWhatsapp ? [$office['whatsapp'] !== '' ? $office['whatsapp'] : null] : [],
+                    [$office['email'],
                     $office['latitude'], $office['longitude'], $office['image_url'], $office['is_active'],
-                    $office['sort_order']
-                ]);
+                    $office['sort_order']]
+                ));
                 $id = $db->lastInsertId();
                 $is_edit = true;
                 $success = "Ofis başarıyla eklendi.";
@@ -180,6 +188,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <input type="text" name="phone" value="<?= htmlspecialchars($office['phone']) ?>" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2 border">
                             </div>
                             
+                            <?php if ($hasWhatsapp): ?>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">WhatsApp numarası</label>
+                                <input type="text" name="whatsapp" value="<?= htmlspecialchars((string)($office['whatsapp'] ?? '')) ?>" placeholder="+90 535 000 00 00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2 border">
+                                <p class="mt-1 text-xs text-gray-500">Boş bırakılırsa sitede bu ofis için WhatsApp düğmesi görünmez. Ülke koduyla yazın.</p>
+                            </div>
+                            <?php endif; ?>
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">E-posta</label>
                                 <input type="email" name="email" value="<?= htmlspecialchars($office['email']) ?>" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2 border">

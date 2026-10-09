@@ -129,7 +129,9 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
                 <span class="block text-sm font-bold text-gray-800"><?= __('office_cta_call') ?></span>
             </a>
-            <a href="https://wa.me/<?= preg_replace('/[^0-9]/', '', $office['phone']) ?>" target="_blank" class="cta-btn bg-white rounded-2xl shadow-lg p-4 text-center transform transition hover:-translate-y-1 hover:shadow-xl group border border-gray-100">
+        <?php endif; ?>
+        <?php if (officeWhatsapp($office) !== ''): ?>
+            <a href="https://wa.me/<?= officeWhatsapp($office) ?>" target="_blank" class="cta-btn bg-white rounded-2xl shadow-lg p-4 text-center transform transition hover:-translate-y-1 hover:shadow-xl group border border-gray-100">
                 <div class="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-2 group-hover:bg-green-600 group-hover:text-white transition-colors">
                     <i class="ph-fill ph-whatsapp-logo text-2xl"></i>
                 </div>

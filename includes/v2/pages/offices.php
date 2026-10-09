@@ -17,7 +17,7 @@ require __DIR__ . '/../header.php';
 </section>
 
 <!-- Search + country jump, sticks under the header -->
-<div class="sticky z-40 top-[var(--header-h)] bg-surface/85 backdrop-blur-xl border-b border-line" style="-webkit-backdrop-filter: blur(20px)">
+<div data-sticky-bar class="sticky z-40 top-[var(--header-h)] bg-surface/85 backdrop-blur-xl border-b border-line" style="-webkit-backdrop-filter: blur(20px)">
     <div class="wrap py-3 sm:py-4 flex flex-col md:flex-row gap-3">
         <div class="relative flex-1">
             <i class="ph ph-magnifying-glass absolute start-5 top-1/2 -translate-y-1/2 text-muted text-xl pointer-events-none" aria-hidden="true"></i>

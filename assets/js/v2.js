@@ -27,6 +27,16 @@
       window.addEventListener('scroll', onScroll, { passive: true });
     }
 
+    // Sticky search bar under the header: its height is added to the scroll offset of in-page jumps
+    // (country list), so the card title stays visible below both bars
+    const bar = document.querySelector('[data-sticky-bar]');
+    if (bar) {
+      const setBar = () => root.style.setProperty('--bar-h', bar.offsetHeight + 'px');
+      setBar();
+      window.addEventListener('resize', setBar);
+      if ('ResizeObserver' in window) new ResizeObserver(setBar).observe(bar);
+    }
+
     // Mobile menu
     const burger = document.querySelector('[data-burger]');
     const drawer = document.querySelector('[data-drawer]');

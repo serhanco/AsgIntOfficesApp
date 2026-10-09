@@ -52,6 +52,7 @@ $finderConfig = [
         'cc'           => strtolower((string)$o['country_code']),
         'address'      => $o['address'],
         'phone'        => $o['phone'],
+        'whatsapp'     => officeWhatsapp($o),
         'email'        => $o['email'],
         'url'          => officeUrl($o['slug']),
     ], $offices),

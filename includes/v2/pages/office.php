@@ -6,7 +6,7 @@ require __DIR__ . '/../header.php';
 require_once __DIR__ . '/../events-ui.php';
 
 $tel   = !empty($office['phone']) ? 'tel:' . preg_replace('/[^0-9+]/', '', $office['phone']) : '';
-$wa    = !empty($office['phone']) ? 'https://wa.me/' . preg_replace('/[^0-9]/', '', $office['phone']) : '';
+$wa    = officeWhatsapp($office) !== '' ? 'https://wa.me/' . officeWhatsapp($office) : '';
 $mail  = !empty($office['email']) ? 'mailto:' . $office['email'] : '';
 $route = 'https://www.google.com/maps/dir/?api=1&destination=' . $office['latitude'] . ',' . $office['longitude'];
 
