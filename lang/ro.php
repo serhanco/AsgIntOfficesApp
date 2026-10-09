@@ -133,5 +133,4 @@ return [
     'nf_denied_p'              => 'Vă ducem la harta Lumii Acıbadem în %s secunde.',
     'nf_stay'                  => 'Rămân aici',
     'nf_go_now'                => 'Mergi acum',
-    'nf_team_speaks'           => 'Consilieri care vorbesc limba dvs.',
 ];

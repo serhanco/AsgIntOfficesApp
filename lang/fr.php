@@ -131,5 +131,4 @@ return [
     'nf_denied_p'              => 'Redirection vers la carte du monde Acıbadem dans %s secondes.',
     'nf_stay'                  => 'Rester ici',
     'nf_go_now'                => 'Y aller',
-    'nf_team_speaks'           => 'Conseillers qui parlent votre langue',
 ];

@@ -131,5 +131,4 @@ return [
     'nf_denied_p'              => 'Wir bringen Sie in %s Sekunden zur Acıbadem-Weltkarte.',
     'nf_stay'                  => 'Hier bleiben',
     'nf_go_now'                => 'Jetzt öffnen',
-    'nf_team_speaks'           => 'Berater, die Ihre Sprache sprechen',
 ];

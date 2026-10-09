@@ -183,5 +183,4 @@ return [
     'nf_denied_p'              => 'Taking you to the Acıbadem World map in %s seconds.',
     'nf_stay'                  => 'Stay here',
     'nf_go_now'                => 'Go now',
-    'nf_team_speaks'           => 'Advisors who speak your language',
 ];

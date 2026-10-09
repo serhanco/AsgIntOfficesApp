@@ -133,5 +133,4 @@ return [
     'nf_denied_p'              => '%s saniyə sonra sizi Acıbadem Dünyası xəritəsinə aparırıq.',
     'nf_stay'                  => 'Burada qal',
     'nf_go_now'                => 'İndi keç',
-    'nf_team_speaks'           => 'Dilinizdə danışan məsləhətçilərimiz',
 ];

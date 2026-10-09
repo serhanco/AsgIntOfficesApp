@@ -94,28 +94,6 @@
     return {};
   }
 
-  // Names and codes advisors' language fields may use for each site language
-  const LANG_NAMES = {
-    en: ['english', 'en'], tr: ['turkish', 'türkçe', 'turkce', 'tr'], de: ['german', 'deutsch', 'de'], fr: ['french', 'français', 'francais', 'fr'],
-    ru: ['russian', 'русский', 'ru'], uk: ['ukrainian', 'українська', 'uk'], ar: ['arabic', 'العربية', 'ar'], fa: ['persian', 'farsi', 'فارسی', 'fa'],
-    az: ['azerbaijani', 'azeri', 'azərbaycan', 'az'], ka: ['georgian', 'ქართული', 'ka'], ro: ['romanian', 'română', 'romana', 'ro'], bg: ['bulgarian', 'български', 'bg'],
-    sq: ['albanian', 'shqip', 'sq'], sr: ['serbian', 'srpski', 'sr'], bs: ['bosnian', 'bosanski', 'bs'], hr: ['croatian', 'hrvatski', 'hr'], mk: ['macedonian', 'македонски', 'mk'],
-  };
-  function advisorsFor(o) {
-    const names = LANG_NAMES[C.langCode];
-    if (!names || !o.team) return [];
-    return o.team.filter((m) => m.langs.split(/[,;/]/).some((l) => names.includes(l.trim().toLowerCase())));
-  }
-  function advisorsHtml(o) {
-    const list = advisorsFor(o);
-    if (!list.length) return '';
-    const avatars = list.slice(0, 4).map((m) => m.img
-      ? `<img src="${esc(m.img)}" alt="" class="nf-adv__img" loading="lazy" width="32" height="32">`
-      : '<span class="nf-adv__img nf-adv__img--none"><i class="ph-fill ph-user"></i></span>').join('');
-    return `<div class="nf-adv"><span class="nf-adv__imgs">${avatars}</span>
-      <p class="nf-adv__text"><i class="ph-fill ph-translate"></i> ${esc(T.teamSpeaks)}: <b><bdi>${list.map((m) => esc(m.name)).join('</bdi>, <bdi>')}</bdi></b></p></div>`;
-  }
-
   // ---------- rendering ----------
   function actionsHtml(o) {
     const tel = o.phone ? `tel:${o.phone.replace(/[^0-9+]/g, '')}` : '';
@@ -166,7 +144,6 @@
         </div>
         ${actionsHtml(main)}
       </div>
-      ${advisorsHtml(main)}
       ${chips}
       <div class="nf-footer">
         ${refineBtn()}

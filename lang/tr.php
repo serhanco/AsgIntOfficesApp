@@ -131,5 +131,4 @@ return [
     'nf_denied_p'              => 'Sizi %s saniye içinde Acıbadem Dünyası haritasına götürüyoruz.',
     'nf_stay'                  => 'Burada kal',
     'nf_go_now'                => 'Hemen git',
-    'nf_team_speaks'           => 'Dilinizi konuşan danışmanlarımız',
 ];
