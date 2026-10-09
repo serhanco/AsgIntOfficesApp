@@ -40,7 +40,7 @@ $msg = $_GET['msg'] ?? '';
             <a href="index.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">Dashboard</a>
             <a href="offices.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">Ofisler</a>
             <a href="teams.php" class="block px-4 py-2 rounded-md bg-gray-800 text-white">Ekipler</a>
-            <a href="activities.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">Etkinlikler</a>
+            <a href="events.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">Etkinlikler</a>
         </nav>
     </aside>
 

@@ -20,6 +20,11 @@ foreach ($offices as $o) {
 }
 ksort($grouped);
 
+if (designV2()) {
+    require __DIR__ . '/includes/v2/pages/offices.php';
+    return;
+}
+
 require_once __DIR__ . '/includes/header.php';
 ?>
 

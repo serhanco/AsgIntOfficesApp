@@ -9,6 +9,11 @@ $currentPage = 'map';
 $needsMap = true;
 $metaDescription = __('map_floating_p');
 
+if (designV2()) {
+    require __DIR__ . '/includes/v2/pages/map.php';
+    return;
+}
+
 require_once __DIR__ . '/includes/header.php';
 ?>
 

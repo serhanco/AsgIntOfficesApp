@@ -19,6 +19,77 @@ $currentPage = 'office';
 $needsMap = true;
 $metaDescription = 'Acıbadem Information Office in ' . $office['display_name'] . ', ' . $office['country'] . '. Contact: ' . $office['phone'] . ' | ' . $office['email'];
 
+$team = getOfficeTeam($office['id']);
+$activities = getOfficeActivities($office['id']);
+
+// ===== DEMO MODE OVERRIDE =====
+// If DB is empty but '?demo' is in the URL (admins only), fill with placeholder design data
+if (empty($team) && isset($_GET['demo']) && isAdminVisitor()) {
+    $team = [
+        [
+            'name' => 'Cem Üstündağ',
+            'role_key' => 'team_role_coord',
+            'languages' => 'Turkish, English',
+            'status' => 'online',
+            'image_url' => getBaseUrl() . '/assets/images/team-cem-ustundag-sm.jpg'
+        ],
+        [
+            'name' => 'Erim Ekiz',
+            'role_key' => 'team_role_patient',
+            'languages' => 'Turkish, English, German',
+            'status' => 'online',
+            'image_url' => getBaseUrl() . '/assets/images/team-erim-ekiz-sm.jpg'
+        ],
+        [
+            'name' => 'Ionea Ruxandra',
+            'role_key' => 'team_role_liaison',
+            'languages' => 'Romanian, English, French',
+            'status' => 'away',
+            'image_url' => getBaseUrl() . '/assets/images/team-ionea-ruxandra-sm.jpg'
+        ]
+    ];
+}
+
+if (empty($activities) && isset($_GET['demo']) && isAdminVisitor()) {
+    $activities = [
+        [
+            'tag_key' => 'act_tag_doctor',
+            'title' => 'Prof. Yaşar Çolak',
+            'description' => 'Gastroenterology, Endoscopy and Nutrition'
+        ],
+        [
+            'tag_key' => 'act_tag_presentation',
+            'title' => 'Robotic Single Port Surgery',
+            'description' => 'Latest techniques in minimal-invasive care'
+        ],
+        [
+            'tag_key' => 'act_tag_exhibition',
+            'title' => 'Growing B2B Network',
+            'description' => 'International healthcare partnerships fair'
+        ]
+    ];
+}
+// ==============================
+
+$hasTeam = !empty($team);
+$hasActivities = !empty($activities);
+
+// Determine grid layout based on available data
+$gridCols = ($hasTeam && $hasActivities) ? 'md:grid-cols-2' : 'md:grid-cols-1';
+
+// Theme mapping for activities (colors and icons)
+$actThemes = [
+    'act_tag_doctor' => ['bg' => 'bg-blue-50 hover:bg-[#0c2d74]', 'icon_bg' => 'bg-[#0c2d74] group-hover:bg-white', 'icon_color' => 'text-white group-hover:text-[#0c2d74]', 'text' => 'text-[#1a4ba0] group-hover:text-blue-200', 'icon' => 'ph-stethoscope'],
+    'act_tag_presentation' => ['bg' => 'bg-purple-50 hover:bg-purple-700', 'icon_bg' => 'bg-purple-700 group-hover:bg-white', 'icon_color' => 'text-white group-hover:text-purple-700', 'text' => 'text-purple-700 group-hover:text-purple-200', 'icon' => 'ph-presentation-chart'],
+    'act_tag_exhibition' => ['bg' => 'bg-emerald-50 hover:bg-emerald-700', 'icon_bg' => 'bg-emerald-600 group-hover:bg-white', 'icon_color' => 'text-white group-hover:text-emerald-700', 'text' => 'text-emerald-700 group-hover:text-emerald-200', 'icon' => 'ph-handshake']
+];
+$defaultTheme = $actThemes['act_tag_doctor'];
+
+if (designV2()) {
+    require __DIR__ . '/includes/v2/pages/office.php';
+    return;
+}
+
 require_once __DIR__ . '/includes/header.php';
 ?>
 
@@ -84,73 +155,6 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 
     <!-- ===== Recent Activities + Our Team ===== -->
-    <?php 
-    $team = getOfficeTeam($office['id']);
-    $activities = getOfficeActivities($office['id']);
-
-    // ===== DEMO MODE OVERRIDE =====
-    // If DB is empty but '?demo' is in the URL (admins only), fill with placeholder design data
-    if (empty($team) && isset($_GET['demo']) && isAdminVisitor()) {
-        $team = [
-            [
-                'name' => 'Cem Üstündağ',
-                'role_key' => 'team_role_coord',
-                'languages' => 'Turkish, English',
-                'status' => 'online',
-                'image_url' => getBaseUrl() . '/assets/images/team-cem-ustundag-sm.jpg'
-            ],
-            [
-                'name' => 'Erim Ekiz',
-                'role_key' => 'team_role_patient',
-                'languages' => 'Turkish, English, German',
-                'status' => 'online',
-                'image_url' => getBaseUrl() . '/assets/images/team-erim-ekiz-sm.jpg'
-            ],
-            [
-                'name' => 'Ionea Ruxandra',
-                'role_key' => 'team_role_liaison',
-                'languages' => 'Romanian, English, French',
-                'status' => 'away',
-                'image_url' => getBaseUrl() . '/assets/images/team-ionea-ruxandra-sm.jpg'
-            ]
-        ];
-    }
-
-    if (empty($activities) && isset($_GET['demo']) && isAdminVisitor()) {
-        $activities = [
-            [
-                'tag_key' => 'act_tag_doctor',
-                'title' => 'Prof. Yaşar Çolak',
-                'description' => 'Gastroenterology, Endoscopy and Nutrition'
-            ],
-            [
-                'tag_key' => 'act_tag_presentation',
-                'title' => 'Robotic Single Port Surgery',
-                'description' => 'Latest techniques in minimal-invasive care'
-            ],
-            [
-                'tag_key' => 'act_tag_exhibition',
-                'title' => 'Growing B2B Network',
-                'description' => 'International healthcare partnerships fair'
-            ]
-        ];
-    }
-    // ==============================
-
-    $hasTeam = !empty($team);
-    $hasActivities = !empty($activities);
-    
-    // Determine grid layout based on available data
-    $gridCols = ($hasTeam && $hasActivities) ? 'md:grid-cols-2' : 'md:grid-cols-1';
-    
-    // Theme mapping for activities (colors and icons)
-    $actThemes = [
-        'act_tag_doctor' => ['bg' => 'bg-blue-50 hover:bg-[#0c2d74]', 'icon_bg' => 'bg-[#0c2d74] group-hover:bg-white', 'icon_color' => 'text-white group-hover:text-[#0c2d74]', 'text' => 'text-[#1a4ba0] group-hover:text-blue-200', 'icon' => 'ph-stethoscope'],
-        'act_tag_presentation' => ['bg' => 'bg-purple-50 hover:bg-purple-700', 'icon_bg' => 'bg-purple-700 group-hover:bg-white', 'icon_color' => 'text-white group-hover:text-purple-700', 'text' => 'text-purple-700 group-hover:text-purple-200', 'icon' => 'ph-presentation-chart'],
-        'act_tag_exhibition' => ['bg' => 'bg-emerald-50 hover:bg-emerald-700', 'icon_bg' => 'bg-emerald-600 group-hover:bg-white', 'icon_color' => 'text-white group-hover:text-emerald-700', 'text' => 'text-emerald-700 group-hover:text-emerald-200', 'icon' => 'ph-handshake']
-    ];
-    $defaultTheme = $actThemes['act_tag_doctor'];
-    ?>
     
     <?php if ($hasTeam || $hasActivities): ?>
     <div class="grid grid-cols-1 <?= $gridCols ?> gap-8 mb-8">

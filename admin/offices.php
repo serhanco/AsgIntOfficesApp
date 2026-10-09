@@ -46,7 +46,7 @@ $msg = $_GET['msg'] ?? '';
             <a href="index.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">Dashboard</a>
             <a href="offices.php" class="block px-4 py-2 rounded-md bg-gray-800 text-white">Ofisler</a>
             <a href="teams.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">Ekipler</a>
-            <a href="activities.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">Etkinlikler</a>
+            <a href="events.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">Etkinlikler</a>
         </nav>
         <div class="p-4 border-t border-gray-800">
             <div class="text-sm text-gray-400 mb-2">Giriş yapan: <?= htmlspecialchars($_SESSION['admin_username']) ?></div>
