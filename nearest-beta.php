@@ -214,6 +214,7 @@ $finderConfig = [
     'testCountry'   => $testCountry,
     'testAt'        => $testAt,
     'mapUrl'        => getBaseUrl() . '/map',
+    'intlUrl'       => 'https://acibademinternational.com/',
     'listUrl'       => getBaseUrl() . '/offices',
     'hq'            => $hq,
     'offices'       => array_map(fn($o) => [

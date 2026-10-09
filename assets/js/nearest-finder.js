@@ -168,7 +168,7 @@
         ${actionsHtml(hq)}
       </div>
       <div class="nf-footer">
-        <a href="${esc(C.mapUrl)}" class="nf-details">${esc(T.seeWorld)} <i class="ph ph-arrow-right nf-arrow"></i></a>
+        <a href="${esc(C.intlUrl)}" class="nf-details" target="_blank" rel="noopener"><span dir="ltr">${esc(C.intlUrl.replace(/^https?:\/\//, '').replace(/\/$/, ''))}</span> <i class="ph ph-arrow-up-right"></i></a>
       </div>`;
   }
 
