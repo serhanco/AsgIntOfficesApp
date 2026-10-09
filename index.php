@@ -38,7 +38,7 @@ $hq = [
 
 require_once __DIR__ . '/includes/header.php';
 ?>
-<link rel="stylesheet" href="<?= getBaseUrl() ?>/assets/css/finder.css?v=1">
+<link rel="stylesheet" href="<?= getBaseUrl() ?>/assets/css/finder.css?v=2">
 
 <div class="relative bg-[#0A1C36] overflow-hidden">
     <!-- Background Image -->
@@ -204,7 +204,6 @@ $finderConfig = [
     'testCountry'   => $testCountry,
     'testAt'        => $testAt,
     'mapUrl'        => getBaseUrl() . '/map',
-    'intlUrl'       => 'https://acibademinternational.com/',
     'listUrl'       => getBaseUrl() . '/offices',
     'hq'            => $hq,
     'offices'       => array_map(fn($o) => [
@@ -253,7 +252,7 @@ $finderConfig = [
 ];
 ?>
 <script>window.NF_CONFIG = <?= json_encode($finderConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) ?>;</script>
-<script src="<?= getBaseUrl() ?>/assets/js/tz-countries.js?v=1" defer></script>
-<script src="<?= getBaseUrl() ?>/assets/js/nearest-finder.js?v=1" defer></script>
+<script src="<?= getBaseUrl() ?>/assets/js/tz-countries.js?v=2" defer></script>
+<script src="<?= getBaseUrl() ?>/assets/js/nearest-finder.js?v=2" defer></script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>
