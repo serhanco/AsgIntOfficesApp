@@ -218,7 +218,6 @@
         <h2 class="nf-empty__h">${h}</h2>
         <p class="nf-empty__p">${esc(T.noOfficeP)}</p>
       </div>
-      ${physical}
       <div class="nf-hq">
         <div class="nf-hq__info">
           <p class="nf-hq__name">${flag(hq.cc)} ${esc(hq.name)}</p>
@@ -226,6 +225,7 @@
         </div>
         ${actionsHtml(hq)}
       </div>
+      ${physical}
       <div class="nf-links">
         <a href="${esc(C.mapUrl)}" class="nf-link nf-link--primary"><i class="ph-fill ph-globe-hemisphere-west"></i>${esc(T.seeWorld)}</a>
         <a href="${esc(C.listUrl)}" class="nf-link"><i class="ph-fill ph-list-dashes"></i>${esc(T.seeList)}</a>

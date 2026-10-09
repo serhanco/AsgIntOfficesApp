@@ -206,5 +206,6 @@
 
 /* Nearest office inside the "no office in your country" card */
 .nf-near { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #f3f4f6; }
+.nf-near + .nf-links { margin-top: 1.5rem; }
 .nf-name--sm { font-size: 1.5rem; line-height: 2rem; }
 .nf-near .nf-footer { margin-top: 1rem; padding-top: 0; border-top: 0; }
