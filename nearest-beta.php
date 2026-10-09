@@ -37,6 +37,18 @@ if ($at === 'deny') {
     $testAt = [(float)$m[1], (float)$m[2]];
 }
 
+// Advisors per office, for "advisors who speak your language" (empty when none are entered in the admin)
+$teamByOffice = [];
+try {
+    foreach (getDb()->query('SELECT office_id, name, languages, image_url FROM office_teams WHERE languages IS NOT NULL AND languages <> "" ORDER BY sort_order ASC, id ASC') as $m) {
+        $teamByOffice[(int)$m['office_id']][] = [
+            'name'  => $m['name'],
+            'langs' => $m['languages'],
+            'img'   => $m['image_url'] ? imageUrl($m['image_url']) : '',
+        ];
+    }
+} catch (\Throwable $e) { /* table missing: no team row */ }
+
 // Head office: shown when there is no office in the visitor's country (and for Türkiye)
 $hq = [
     'phone'    => '+90 216 444 5544',
@@ -210,6 +222,7 @@ require_once __DIR__ . '/includes/header.php';
 <?php
 $finderConfig = [
     'lang'          => LANGUAGES[$GLOBALS['current_lang']]['html'] ?? 'en',
+    'langCode'      => $GLOBALS['current_lang'],
     'serverCountry' => $serverCountry,
     'testCountry'   => $testCountry,
     'testAt'        => $testAt,
@@ -226,12 +239,14 @@ $finderConfig = [
         'phone'        => $o['phone'],
         'email'        => $o['email'],
         'url'          => officeUrl($o['slug']),
+        'team'         => $teamByOffice[(int)$o['id']] ?? [],
     ], $offices),
     't' => [
         'locate'         => __('btn_locate'),
         'locating'       => __('nf_locating'),
         'seemsIn'        => __('nf_seems_in'),
         'byLocation'     => __('nf_by_location'),
+        'teamSpeaks'     => __('nf_team_speaks'),
         'nearestLabel'   => __('nf_nearest_label'),
         'selectedLabel'  => __('nf_selected_label'),
         'regionLabel'    => __('nf_region_label'),

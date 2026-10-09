@@ -133,4 +133,5 @@ return [
     'nf_denied_p'              => 'Po ju çojmë te harta e Botës Acıbadem pas %s sekondash.',
     'nf_stay'                  => 'Qëndro këtu',
     'nf_go_now'                => 'Shko tani',
+    'nf_team_speaks'           => 'Këshilltarë që flasin gjuhën tuaj',
 ];

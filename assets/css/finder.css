@@ -56,6 +56,16 @@
 .nf-action span { font-size: .75rem; font-weight: 600; text-align: center; }
 .nf-action--wa { color: #16a34a; }
 
+/* Advisors who speak the visitor's language */
+.nf-adv { margin-top: 1.25rem; display: flex; align-items: center; gap: .75rem; background: #f8fafd; border: 1px solid #e8eef8; border-radius: 1rem; padding: .75rem 1rem; }
+.nf-adv__imgs { display: inline-flex; flex-shrink: 0; }
+.nf-adv__img { width: 2rem; height: 2rem; border-radius: 50%; object-fit: cover; object-position: top; border: 2px solid #fff; box-shadow: 0 1px 2px rgba(0,0,0,.15); }
+.nf-adv__img + .nf-adv__img { margin-inline-start: -.5rem; }
+.nf-adv__img--none { display: inline-flex; align-items: center; justify-content: center; background: #E6F0FA; color: #1a4ba0; }
+.nf-adv__text { margin: 0; font-size: .875rem; color: #374151; }
+.nf-adv__text i { color: #1a4ba0; vertical-align: -2px; }
+.nf-adv__text b { color: #0c2d74; }
+
 /* Other offices in the same country */
 .nf-others { margin-top: 1.5rem; }
 .nf-others__h { font-size: .8rem; font-weight: 600; color: #6b7280; margin: 0 0 .5rem; }

@@ -133,4 +133,5 @@ return [
     'nf_denied_p'              => 'Za %s sekundi vodimo vas na mapu sveta Acıbadem.',
     'nf_stay'                  => 'Ostani ovde',
     'nf_go_now'                => 'Idi sada',
+    'nf_team_speaks'           => 'Savetnici koji govore vaš jezik',
 ];
