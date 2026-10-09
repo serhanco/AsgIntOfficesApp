@@ -386,4 +386,5 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 
 /* Offices list: rows inside country cards (style.css lifts .office-card in the old design) */
 .v2 .office-card:hover { transform: none; box-shadow: none; }
+.v2 .country-group { scroll-margin-top: calc(var(--header-h) + var(--bar-h, 0px) + 16px); }
 .v2 .country-highlight { box-shadow: 0 0 0 3px rgba(37,170,225,.55), var(--shadow); border-radius: 24px; background: #fff; }
