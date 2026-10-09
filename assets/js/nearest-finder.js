@@ -68,6 +68,29 @@
       .sort((a, b) => a.distance - b.distance);
   }
 
+  // Rough position of a visitor whose country is only guessed: the time zone's city when
+  // the zone belongs to that country, else the country's approximate centre
+  function approxPoint() {
+    if (!state.country) return null;
+    let tz = '';
+    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { /* ignore */ }
+    const zone = (window.TZ_COORDS || {})[tz];
+    if (zone && (window.TZ_COUNTRIES || {})[tz] === state.country) return { lat: zone[0], lon: zone[1] };
+    const c = (window.CC_CENTRES || {})[state.country];
+    return c ? { lat: c[0], lon: c[1] } : null;
+  }
+  function nearestOffice() {
+    const pt = state.position || approxPoint();
+    if (!pt) return null;
+    let best = null;
+    offices.forEach((o) => {
+      const d = distanceKm(pt.lat, pt.lon, o.lat, o.lon);
+      if (!best || d < best.distance) best = { ...o, distance: d };
+    });
+    if (best) best.approx = !state.position;
+    return best;
+  }
+
   // ---------- country guess ----------
   function guessCountry() {
     const known = (cc) => cc && /^[a-z]{2}$/.test(cc);
@@ -168,24 +191,34 @@
         ${actionsHtml(hq)}
       </div>
       <div class="nf-footer">
-        <a href="${esc(C.intlUrl)}" class="nf-details" target="_blank" rel="noopener"><span dir="ltr">${esc(C.intlUrl.replace(/^https?:\/\//, '').replace(/\/$/, ''))}</span> <i class="ph ph-arrow-up-right"></i></a>
+        <a href="${esc(C.mapUrl)}" class="nf-details"><i class="ph-fill ph-globe-hemisphere-west"></i> ${esc(T.seeWorld)} <i class="ph ph-arrow-right nf-arrow"></i></a>
       </div>`;
   }
 
   function noOfficeCard() {
     const hq = hqOffice();
     const h = state.country ? fill(T.noOfficeH, `<span class="nf-nowrap">${esc(countryName(state.country))}</span>`) : esc(T.noOfficeRegionH);
-    let physical = '';
-    if (state.position) {
-      const near = byDistance(offices)[0];
-      if (near) physical = `<p class="nf-physical"><i class="ph-fill ph-buildings"></i>${fmt(T.nearestPhysical, near.name)} · <a href="${esc(near.url)}">${flag(near.cc)} ${esc(countryName(near.cc))}, ${esc(kmText(near.distance))}</a></p>`;
-    }
+    const near = nearestOffice();
+    const physical = near ? `<div class="nf-near">
+        <p class="nf-label">${esc(T.nearestLabel)}</p>
+        <div class="nf-main">
+          <div class="nf-main__info">
+            <p class="nf-country">${flag(near.cc)}<span>${esc(countryName(near.cc))}</span></p>
+            <h3 class="nf-name nf-name--sm">${esc(near.name)}</h3>
+            <p class="nf-address"><i class="ph-fill ph-map-pin"></i><span dir="auto">${esc(near.address)}</span></p>
+            <span class="nf-distance">${near.approx ? '≈ ' : ''}${esc(kmText(near.distance))}</span>
+          </div>
+          ${actionsHtml(near)}
+        </div>
+        <div class="nf-footer"><a href="${esc(near.url)}" class="nf-details">${esc(T.details)} <i class="ph ph-arrow-right nf-arrow"></i></a></div>
+      </div>` : '';
     return `${contextLine()}
       <div class="nf-empty">
         <div class="nf-empty__icon" aria-hidden="true"><i class="ph-fill ph-globe-hemisphere-east"></i></div>
         <h2 class="nf-empty__h">${h}</h2>
         <p class="nf-empty__p">${esc(T.noOfficeP)}</p>
       </div>
+      ${physical}
       <div class="nf-hq">
         <div class="nf-hq__info">
           <p class="nf-hq__name">${flag(hq.cc)} ${esc(hq.name)}</p>
@@ -193,7 +226,6 @@
         </div>
         ${actionsHtml(hq)}
       </div>
-      ${physical}
       <div class="nf-links">
         <a href="${esc(C.mapUrl)}" class="nf-link nf-link--primary"><i class="ph-fill ph-globe-hemisphere-west"></i>${esc(T.seeWorld)}</a>
         <a href="${esc(C.listUrl)}" class="nf-link"><i class="ph-fill ph-list-dashes"></i>${esc(T.seeList)}</a>
