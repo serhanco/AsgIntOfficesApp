@@ -9,23 +9,51 @@ $currentPage = 'home';
 $needsMap = false;
 $metaDescription = __('site_name') . ' - ' . __('meta_default');
 
+// Test parameters: ?cc=az (pretend country), ?at=40.4,49.8 (pretend location), ?at=deny (pretend refused)
+// Country from the CDN, when the site runs behind Cloudflare (header absent otherwise)
+$serverCountry = strtolower($_SERVER['HTTP_CF_IPCOUNTRY'] ?? '');
+if (!preg_match('/^[a-z]{2}$/', $serverCountry) || $serverCountry === 'xx' || $serverCountry === 't1') {
+    $serverCountry = '';
+}
+
+$testCountry = strtolower($_GET['cc'] ?? '');
+if (!preg_match('/^[a-z]{2}$/', $testCountry)) $testCountry = '';
+
+$testAt = null;
+$at = $_GET['at'] ?? '';
+if ($at === 'deny') {
+    $testAt = 'deny';
+} elseif (preg_match('/^(-?\d{1,2}(?:\.\d+)?),(-?\d{1,3}(?:\.\d+)?)$/', $at, $m)) {
+    $testAt = [(float)$m[1], (float)$m[2]];
+}
+
+// Head office: shown when there is no office in the visitor's country (and for Türkiye)
+$hq = [
+    'phone'    => '+90 216 444 5544',
+    'whatsapp' => '+90 535 965 0466',
+    'email'    => 'international@acibadem.com',
+    'address'  => 'Atatürk Mah. Feza Sok. No:3 Ataşehir / İstanbul',
+    'country_code' => 'tr',
+];
+
 require_once __DIR__ . '/includes/header.php';
 ?>
+<link rel="stylesheet" href="<?= getBaseUrl() ?>/assets/css/finder.css?v=1">
 
 <div class="relative bg-[#0A1C36] overflow-hidden">
     <!-- Background Image -->
     <img src="<?= getBaseUrl() ?>/assets/images/home-hero.webp" alt="Acıbadem Global Offices" class="absolute inset-0 w-full h-full object-cover opacity-70">
     <!-- Gradient Overlay -->
     <div class="absolute inset-0 bg-gradient-to-t from-[#0A1C36] via-[#0A1C36]/50 to-transparent"></div>
-    
+
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 text-center">
         <h1 class="text-4xl md:text-5xl font-bold text-white mb-4"><?= __('home_title') ?></h1>
         <p class="text-xl text-blue-100 max-w-2xl mx-auto mb-10"><?= __('home_subtitle', count($offices), count(array_unique(array_column($offices, 'country')))) ?></p>
-        
+
         <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-            <button onclick="handleNearestOfficeClick()" class="cta-btn bg-white text-[#0c2d74] hover:bg-gray-50 font-semibold py-4 px-8 rounded-2xl shadow-lg transition-transform hover:scale-105 flex items-center gap-2 text-lg">
-                <i class="ph-fill ph-navigation-arrow"></i>
-                <?= __('btn_locate') ?>
+            <button type="button" data-nf-locate class="nf-locate-btn cta-btn bg-white text-[#0c2d74] hover:bg-gray-50 font-semibold py-4 px-8 rounded-2xl shadow-lg transition-transform hover:scale-105 flex items-center gap-2 text-lg">
+                <span class="nf-radar" aria-hidden="true"><i class="ph-fill ph-navigation-arrow"></i></span>
+                <span data-nf-locate-label><?= __('btn_locate') ?></span>
             </button>
             <a href="<?= getBaseUrl() ?>/map" class="border-2 border-white/30 text-white hover:bg-white/10 font-semibold py-4 px-8 rounded-2xl transition-colors text-lg flex items-center gap-2">
                 <i class="ph-fill ph-globe-hemisphere-west"></i>
@@ -35,47 +63,30 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 </div>
 
-<!-- Loading overlay -->
-<div id="loading-overlay" class="hidden fixed inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center">
-    <div class="text-center">
-        <div class="spinner w-12 h-12 border-4 border-[#0c2d74] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <p class="text-xl font-semibold text-[#0c2d74]"><?= __('loading_nearest') ?></p>
+<!-- Nearest office finder card (filled in by assets/js/nearest-finder.js). ?find=1 starts the location search on load. -->
+<div class="max-w-4xl mx-auto px-4 -mt-10 relative z-20 pb-12">
+    <section id="nf-card" class="nf-card" aria-live="polite">
+        <div class="nf-skeleton">
+            <span class="nf-radar nf-radar--dark" aria-hidden="true"><i class="ph-fill ph-navigation-arrow"></i></span>
+            <span><?= __('nf_detecting') ?></span>
+        </div>
+    </section>
+
+    <div class="nf-search" id="nf-search">
+        <label for="nf-search-input" class="nf-search__label"><?= __('nf_search_label') ?></label>
+        <div class="nf-search__box">
+            <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+            <input type="search" id="nf-search-input" autocomplete="off" spellcheck="false"
+                   placeholder="<?= e(__('nf_search_ph')) ?>"
+                   role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="nf-search-list">
+        </div>
+        <ul id="nf-search-list" class="nf-search__list" role="listbox" hidden></ul>
     </div>
 </div>
 
-<!-- Nearest Office Result -->
-<div id="nearest-office-result" class="hidden max-w-4xl mx-auto px-4 -mt-10 relative z-10 fade-in pb-16">
-    <div class="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div>
-                <div class="flex items-center gap-2 mb-2" id="result-country">
-                    <!-- Flag + Country -->
-                </div>
-                <h2 class="text-3xl font-bold text-[#0c2d74] mb-2" id="result-name"></h2>
-                <p class="text-gray-600 flex items-start gap-2 mb-4" id="result-address">
-                    <i class="ph-fill ph-map-pin text-[#1a4ba0] mt-1"></i>
-                    <span></span>
-                </p>
-                <div class="inline-block bg-[#E6F0FA] text-[#0c2d74] px-4 py-2 rounded-full font-semibold text-sm" id="result-distance">
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 w-full md:w-auto" id="result-actions">
-                <!-- CTA Buttons injected via JS -->
-            </div>
-        </div>
-        <div class="mt-8 pt-6 border-t border-gray-100 text-center">
-            <a href="#" id="result-link" class="text-[#1a4ba0] hover:text-[#0c2d74] font-semibold inline-flex items-center gap-1 group">
-                <?= __('result_view_details') ?>
-                <i class="ph <?= arrowIcon() ?> group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform"></i>
-            </a>
-        </div>
-    </div>
-</div>
-
-<div class="bg-gray-50 pt-12 pb-16">
+<div class="bg-gray-50 pt-4 pb-16">
     <!-- Modern Unified Stats Panel -->
-    <div id="stats-panel" class="max-w-7xl mx-auto px-4 -mt-20 relative z-20 mb-16">
+    <div id="stats-panel" class="max-w-7xl mx-auto px-4 relative z-10 mb-16">
         <div class="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 p-8">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-0 md:divide-x rtl:md:divide-x-reverse md:divide-gray-100">
                 <div class="text-center px-4 group">
@@ -116,7 +127,7 @@ require_once __DIR__ . '/includes/header.php';
             <h2 class="text-3xl md:text-4xl font-black text-[#0c2d74] mb-4"><?= __('explore_heading') ?></h2>
             <div class="w-20 h-1.5 bg-[#1a4ba0] mx-auto rounded-full opacity-80"></div>
         </div>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Card 1 -->
             <a href="<?= getBaseUrl() ?>/offices" class="relative overflow-hidden block group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 p-8 text-start hover:-translate-y-1">
@@ -132,7 +143,7 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                 </div>
             </a>
-            
+
             <!-- Card 2 -->
             <a href="<?= getBaseUrl() ?>/map" class="relative overflow-hidden block group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 p-8 text-start hover:-translate-y-1">
                 <i class="ph-fill ph-map-trifold absolute -end-4 -bottom-4 text-9xl text-gray-50 opacity-50 group-hover:scale-110 group-hover:text-blue-50 transition-all duration-500"></i>
@@ -167,7 +178,7 @@ require_once __DIR__ . '/includes/header.php';
         <!-- Wide Dark CTA Card -->
         <div class="mt-8 relative overflow-hidden bg-gradient-to-br from-[#0c2d74] to-[#0A1C36] rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 group shadow-2xl shadow-blue-900/20">
             <i class="ph-fill ph-handshake absolute -end-8 -bottom-8 text-[12rem] text-white opacity-5 group-hover:scale-110 group-hover:opacity-10 transition-all duration-700 pointer-events-none"></i>
-            
+
             <div class="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-6 text-center md:text-start">
                 <div class="w-16 h-16 bg-white/10 backdrop-blur text-white rounded-2xl flex items-center justify-center flex-shrink-0 border border-white/10">
                     <i class="ph-fill ph-shield-check text-3xl"></i>
@@ -177,7 +188,7 @@ require_once __DIR__ . '/includes/header.php';
                     <p class="text-blue-100 text-sm md:text-base max-w-2xl leading-relaxed"><?= __('inst_card_p') ?></p>
                 </div>
             </div>
-            
+
             <a href="<?= getBaseUrl() ?>/contracted-institutions" class="relative z-10 flex-shrink-0 w-full md:w-auto text-center bg-white text-[#0c2d74] hover:bg-gray-50 px-8 py-4 rounded-xl font-bold transition-transform shadow-lg inline-flex items-center justify-center gap-2 group-hover:-translate-y-1">
                 <?= __('inst_card_btn') ?> <i class="ph <?= arrowIcon() ?>"></i>
             </a>
@@ -187,106 +198,62 @@ require_once __DIR__ . '/includes/header.php';
 </div>
 
 <?php
-// Pass translated JS strings server-side to avoid PHP inside JS strings
-$jsStrings = [
-    'kmAway'      => __('result_km_away'),
-    'call'        => __('js_call'),
-    'whatsapp'    => __('js_whatsapp'),
-    'email'       => __('js_email'),
-    'route'       => __('js_route'),
-    'farRedirect' => __('js_far_redirect'),
+$finderConfig = [
+    'lang'          => LANGUAGES[$GLOBALS['current_lang']]['html'] ?? 'en',
+    'serverCountry' => $serverCountry,
+    'testCountry'   => $testCountry,
+    'testAt'        => $testAt,
+    'mapUrl'        => getBaseUrl() . '/map',
+    'intlUrl'       => 'https://acibademinternational.com/',
+    'listUrl'       => getBaseUrl() . '/offices',
+    'hq'            => $hq,
+    'offices'       => array_map(fn($o) => [
+        'lat'          => (float)$o['latitude'],
+        'lon'          => (float)$o['longitude'],
+        'name'         => $o['display_name'],
+        'country'      => $o['country'],
+        'cc'           => strtolower((string)$o['country_code']),
+        'address'      => $o['address'],
+        'phone'        => $o['phone'],
+        'email'        => $o['email'],
+        'url'          => officeUrl($o['slug']),
+    ], $offices),
+    't' => [
+        'locate'         => __('btn_locate'),
+        'locating'       => __('nf_locating'),
+        'seemsIn'        => __('nf_seems_in'),
+        'byLocation'     => __('nf_by_location'),
+        'nearestLabel'   => __('nf_nearest_label'),
+        'selectedLabel'  => __('nf_selected_label'),
+        'regionLabel'    => __('nf_region_label'),
+        'otherInCountry' => __('nf_other_in_country'),
+        'noOfficeH'      => __('nf_no_office_h'),
+        'noOfficeRegionH'=> __('nf_no_office_region_h'),
+        'noOfficeP'      => __('nf_no_office_p'),
+        'hqName'         => __('nf_hq_name'),
+        'hqLabel'        => __('nf_hq_label'),
+        'nearestPhysical'=> __('nf_nearest_physical'),
+        'seeWorld'       => __('nf_see_world'),
+        'seeList'        => __('nf_see_list'),
+        'refine'         => __('nf_refine'),
+        'unknownH'       => __('nf_unknown_h'),
+        'unknownP'       => __('nf_unknown_p'),
+        'searchNone'     => __('nf_search_none'),
+        'deniedH'        => __('nf_denied_h'),
+        'deniedP'        => __('nf_denied_p'),
+        'stay'           => __('nf_stay'),
+        'goNow'          => __('nf_go_now'),
+        'kmAway'         => __('result_km_away'),
+        'details'        => __('result_view_details'),
+        'call'           => __('js_call'),
+        'whatsapp'       => __('js_whatsapp'),
+        'email'          => __('js_email'),
+        'route'          => __('js_route'),
+    ],
 ];
 ?>
-<script>
-    const officesData = <?= json_encode(array_map(function($o) {
-        return [
-            'lat'          => (float)$o['latitude'],
-            'lon'          => (float)$o['longitude'],
-            'slug'         => $o['slug'],
-            'display_name' => $o['display_name'],
-            'country'      => $o['country'],
-            'country_code' => $o['country_code'],
-            'address'      => $o['address'],
-            'phone'        => $o['phone'],
-            'email'        => $o['email']
-        ];
-    }, $offices)) ?>;
-
-    const i18n = <?= json_encode($jsStrings, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) ?>;
-
-    function handleNearestOfficeClick() {
-        document.getElementById('loading-overlay').classList.remove('hidden');
-        
-        if (typeof findNearestOffice === 'function') {
-            findNearestOffice(officesData, function(nearest) {
-                document.getElementById('loading-overlay').classList.add('hidden');
-                
-                if (!nearest) {
-                    window.location.href = '<?= getBaseUrl() ?>/offices';
-                    return;
-                }
-                
-                if (nearest.distance > 2500) {
-                    showToast(i18n.farRedirect);
-                    setTimeout(() => {
-                        window.location.href = '<?= getBaseUrl() ?>/offices';
-                    }, 2000);
-                    return;
-                }
-                
-                document.getElementById('result-country').innerHTML = `
-                    <img src="https://flagcdn.com/w40/${nearest.country_code.toLowerCase()}.png" alt="${nearest.country}" class="w-5 h-auto object-cover rounded shadow-sm">
-                    <span class="text-gray-500 font-medium">${nearest.country}</span>
-                `;
-                document.getElementById('result-name').textContent = nearest.display_name;
-                document.getElementById('result-address').querySelector('span').textContent = nearest.address;
-                document.getElementById('result-distance').textContent = i18n.kmAway.replace('%.0f', Math.round(nearest.distance));
-                
-                let callUrl  = nearest.phone ? `tel:${nearest.phone.replace(/[^0-9+]/g, '')}` : '#';
-                let waUrl    = nearest.phone ? `https://wa.me/${nearest.phone.replace(/[^0-9]/g, '')}` : '#';
-                let mailUrl  = nearest.email ? `mailto:${nearest.email}` : '#';
-                let routeUrl = `https://www.google.com/maps/dir/?api=1&destination=${nearest.lat},${nearest.lon}`;
-                
-                document.getElementById('result-actions').innerHTML = `
-                    <a href="${callUrl}" class="flex flex-col items-center justify-center bg-white p-3 rounded-xl shadow border border-gray-100 text-[#0c2d74] hover:bg-gray-50 transition-colors">
-                        <i class="ph-fill ph-phone text-2xl mb-1"></i>
-                        <span class="text-xs font-semibold">${i18n.call}</span>
-                    </a>
-                    <a href="${waUrl}" class="flex flex-col items-center justify-center bg-white p-3 rounded-xl shadow border border-gray-100 text-green-600 hover:bg-gray-50 transition-colors">
-                        <i class="ph-fill ph-whatsapp-logo text-2xl mb-1"></i>
-                        <span class="text-xs font-semibold">${i18n.whatsapp}</span>
-                    </a>
-                    <a href="${mailUrl}" class="flex flex-col items-center justify-center bg-white p-3 rounded-xl shadow border border-gray-100 text-[#0c2d74] hover:bg-gray-50 transition-colors">
-                        <i class="ph-fill ph-envelope-simple text-2xl mb-1"></i>
-                        <span class="text-xs font-semibold">${i18n.email}</span>
-                    </a>
-                    <a href="${routeUrl}" target="_blank" class="flex flex-col items-center justify-center bg-white p-3 rounded-xl shadow border border-gray-100 text-[#0c2d74] hover:bg-gray-50 transition-colors">
-                        <i class="ph-fill ph-navigation-arrow text-2xl mb-1"></i>
-                        <span class="text-xs font-semibold">${i18n.route}</span>
-                    </a>
-                `;
-                
-                document.getElementById('result-link').href = '<?= getBaseUrl() ?>/office/' + nearest.slug;
-                
-                const resultBlock = document.getElementById('nearest-office-result');
-                resultBlock.classList.remove('hidden');
-                
-                // Remove stats panel negative margin to prevent overlap
-                const statsPanel = document.getElementById('stats-panel');
-                if (statsPanel) {
-                    statsPanel.classList.remove('-mt-20');
-                    statsPanel.classList.add('mt-0');
-                }
-                
-                setTimeout(() => {
-                    resultBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 100);
-            });
-        } else {
-            document.getElementById('loading-overlay').classList.add('hidden');
-            console.error('findNearestOffice function not found in app.js');
-        }
-    }
-</script>
+<script>window.NF_CONFIG = <?= json_encode($finderConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) ?>;</script>
+<script src="<?= getBaseUrl() ?>/assets/js/tz-countries.js?v=1" defer></script>
+<script src="<?= getBaseUrl() ?>/assets/js/nearest-finder.js?v=1" defer></script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

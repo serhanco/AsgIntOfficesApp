@@ -4,6 +4,8 @@ This document contains ideas, planned features, and improvements for future iter
 
 ## 1. Smart Geolocation & Global Assistance Fallback
 
+**Status: done (2026-10-09).** The home page now guesses the visitor's country (Cloudflare country header, then time zone, then browser language), prefers offices in that country, and shows a "no official office in your country" card with head office contacts. Reverse geocoding was not needed. The text below is the original proposal.
+
 **Context:** 
 Currently, the "Find Nearest Office" feature on the homepage relies purely on Haversine distance (bird's-eye view). This can lead to awkward suggestions, such as suggesting an office in a neighboring country (e.g., suggesting Burgas, Bulgaria for a user in Istanbul) which is technically closer but impractical due to international borders and travel requirements.
 
