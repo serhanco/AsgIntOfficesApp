@@ -8,47 +8,56 @@ $extraHead = '<link rel="preload" as="image" href="' . getBaseUrl() . '/assets/i
 require __DIR__ . '/../header.php';
 ?>
 
+<?php
+// Upcoming events for the Events panel: the visitor's country first (test param or Cloudflare; the browser refines it later)
+require_once __DIR__ . '/../events-ui.php';
+$homeCc = $testCountry ?: $serverCountry;
+$homeEvents = array_values(array_filter(sortEvents(getEvents()), fn($e) => $e['status'] === 'upcoming'));
+$upcomingCount = count($homeEvents);
+$nearCount = 0;
+if ($homeCc !== '') {
+    $near = array_values(array_filter($homeEvents, fn($e) => in_array($homeCc, $e['countries'], true)));
+    $nearCount = count($near);
+    $homeEvents = array_merge($near, array_values(array_filter($homeEvents, fn($e) => !in_array($homeCc, $e['countries'], true))));
+}
+$homeEvents = array_slice($homeEvents, 0, 6);
+?>
 <section class="hero">
     <img src="<?= getBaseUrl() ?>/assets/images/home-hero.webp" alt="" class="hero__img" fetchpriority="high" decoding="async">
     <div class="hero__shade"></div>
     <div class="hero__grid"></div>
     <div class="hero__glow -top-40 end-[-10rem]"></div>
 
-    <div class="wrap relative pt-10 pb-16 sm:pt-14 lg:pt-20 lg:pb-28">
-        <div class="grid gap-8 lg:gap-x-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,480px)] xl:grid-cols-[minmax(0,1fr)_minmax(0,540px)] lg:items-center">
-            <!-- Intro -->
-            <div class="text-center lg:text-start lg:col-start-1 lg:row-start-1">
-                <p class="eyebrow eyebrow--light rise justify-center lg:justify-start"><?= __('site_name') ?></p>
-                <h1 class="rise mt-4 text-[2.15rem] leading-[1.08] sm:text-5xl xl:text-[3.6rem]" style="--d:.08s">
-                    <span class="text-gradient"><?= __('home_title') ?></span>
-                </h1>
-                <p class="hero__lead rise mt-5 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed" style="--d:.16s">
-                    <?= __('home_subtitle', count($offices), $countryCount) ?>
-                </p>
-                <!-- The two main sections of the portal -->
-                <div class="rise mt-8 grid sm:grid-cols-2 gap-3 text-start" style="--d:.24s">
-                    <div class="pillar">
-                        <span class="pillar__icon"><i class="ph-fill ph-buildings" aria-hidden="true"></i></span>
-                        <h2 class="pillar__h"><?= __('home_offices_h') ?></h2>
-                        <p class="pillar__p"><?= __('home_offices_p') ?></p>
-                        <button type="button" data-nf-locate class="btn btn--primary nf-locate-btn w-full mt-auto">
-                            <span class="nf-radar" aria-hidden="true"><i class="ph-fill ph-navigation-arrow"></i></span>
-                            <span data-nf-locate-label><?= __('btn_locate') ?></span>
-                        </button>
-                        <a href="<?= getBaseUrl() ?>/map" class="pillar__link"><i class="ph-fill ph-globe-hemisphere-west" aria-hidden="true"></i><?= __('btn_map') ?><i class="ph ph-arrow-right arrow ms-auto" aria-hidden="true"></i></a>
-                    </div>
-                    <div class="pillar">
-                        <span class="pillar__icon"><i class="ph-fill ph-calendar-star" aria-hidden="true"></i></span>
-                        <h2 class="pillar__h"><?= __('nav_events') ?></h2>
-                        <p class="pillar__p"><?= __('home_events_p') ?></p>
-                        <a href="<?= getBaseUrl() ?>/events" class="btn btn--white w-full mt-auto"><i class="ph-fill ph-calendar-star" aria-hidden="true"></i><?= __('events_see_all') ?></a>
-                        <a href="<?= getBaseUrl() ?>/events?view=calendar" class="pillar__link"><i class="ph-fill ph-calendar-blank" aria-hidden="true"></i><?= __('events_view_calendar') ?><i class="ph ph-arrow-right arrow ms-auto" aria-hidden="true"></i></a>
-                    </div>
-                </div>
+    <div class="wrap relative pt-10 pb-14 sm:pt-14 lg:pt-16 lg:pb-24">
+        <!-- Intro -->
+        <div class="text-center max-w-3xl mx-auto">
+            <p class="eyebrow eyebrow--light rise justify-center"><?= __('site_name') ?></p>
+            <h1 class="rise mt-4 text-[2.15rem] leading-[1.08] sm:text-5xl xl:text-[3.4rem]" style="--d:.08s">
+                <span class="text-gradient"><?= __('home_title') ?></span>
+            </h1>
+            <p class="hero__lead rise mt-4 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed" style="--d:.16s">
+                <?= __('home_subtitle', count($offices), $countryCount) ?>
+            </p>
+            <!-- Phones: jump to either section -->
+            <div class="rise mt-6 grid grid-cols-2 gap-2 lg:hidden" style="--d:.2s">
+                <a href="#panel-offices" class="btn btn--ghost btn--sm"><i class="ph-fill ph-buildings" aria-hidden="true"></i><?= __('home_offices_h') ?></a>
+                <a href="#panel-events" class="btn btn--ghost btn--sm"><i class="ph-fill ph-calendar-star" aria-hidden="true"></i><?= __('nav_events') ?></a>
             </div>
+        </div>
 
-            <!-- Finder card (filled in by assets/js/nearest-finder.js). ?find=1 starts the location search on load. -->
-            <div class="rise lg:col-start-2 lg:row-start-1 lg:row-span-2" style="--d:.3s">
+        <!-- The two main sections, side by side -->
+        <div class="mt-9 lg:mt-12 grid gap-8 lg:gap-6 xl:gap-8 lg:grid-cols-2 lg:items-start">
+
+            <!-- Offices: filled in by assets/js/nearest-finder.js. ?find=1 starts the location search on load. -->
+            <div id="panel-offices" class="rise scroll-mt-28" style="--d:.24s">
+                <div class="panel-head">
+                    <span class="panel-head__icon"><i class="ph-fill ph-buildings" aria-hidden="true"></i></span>
+                    <div class="min-w-0 flex-1">
+                        <h2><?= __('home_offices_h') ?></h2>
+                        <p><?= __('home_offices_p') ?></p>
+                    </div>
+                    <a href="<?= getBaseUrl() ?>/map" class="panel-head__link"><?= __('nav_map') ?><i class="ph ph-arrow-right arrow" aria-hidden="true"></i></a>
+                </div>
                 <section id="nf-card" class="nf-card" aria-live="polite">
                     <div class="nf-skeleton">
                         <span class="nf-radar nf-radar--dark" aria-hidden="true"><i class="ph-fill ph-navigation-arrow"></i></span>
@@ -68,49 +77,70 @@ require __DIR__ . '/../header.php';
                 </div>
             </div>
 
-            <!-- Stats -->
-            <dl class="rise grid grid-cols-2 sm:grid-cols-4 gap-3 lg:col-start-1 lg:row-start-2 lg:self-start" style="--d:.36s">
-                <div class="stat-tile"><dt class="sr-only"><?= __('stat_offices') ?></dt><dd><span class="stat-tile__n block" data-count="<?= count($offices) ?>" data-suffix="+"><?= count($offices) ?>+</span><span class="stat-tile__l block" aria-hidden="true"><?= __('stat_offices') ?></span></dd></div>
-                <div class="stat-tile"><dt class="sr-only"><?= __('stat_countries') ?></dt><dd><span class="stat-tile__n block" data-count="<?= $countryCount ?>"><?= $countryCount ?></span><span class="stat-tile__l block" aria-hidden="true"><?= __('stat_countries') ?></span></dd></div>
-                <div class="stat-tile"><dt class="sr-only"><?= __('stat_support') ?></dt><dd><span class="stat-tile__n block">24/7</span><span class="stat-tile__l block" aria-hidden="true"><?= __('stat_support') ?></span></dd></div>
-                <div class="stat-tile"><dt class="sr-only"><?= __('stat_served') ?></dt><dd><span class="stat-tile__n block" data-count="90" data-suffix="+">90+</span><span class="stat-tile__l block" aria-hidden="true"><?= __('stat_served') ?></span></dd></div>
-            </dl>
+            <!-- Events -->
+            <div id="panel-events" class="rise scroll-mt-28" style="--d:.3s">
+                <div class="panel-head">
+                    <span class="panel-head__icon"><i class="ph-fill ph-calendar-star" aria-hidden="true"></i></span>
+                    <div class="min-w-0 flex-1">
+                        <h2><?= __('nav_events') ?></h2>
+                        <p><?= __('home_events_p') ?></p>
+                    </div>
+                    <a href="<?= getBaseUrl() ?>/events" class="panel-head__link"><?= __('events_see_all') ?><i class="ph ph-arrow-right arrow" aria-hidden="true"></i></a>
+                </div>
+                <section class="nf-card ev-panel" data-ev-panel data-near="<?= e(__('events_near_h')) ?>" data-all="<?= e(__('events_upcoming')) ?>">
+                    <?php if ($homeEvents): ?>
+                    <p class="nf-label" data-ev-title><?= $nearCount ? __('events_near_h') : __('events_upcoming') ?></p>
+                    <ul class="mt-4 space-y-2.5" data-ev-list>
+                        <?php foreach ($homeEvents as $i => $ev) echo v2EventRow($ev, $i >= 3); ?>
+                    </ul>
+                    <div class="mt-5 pt-5 border-t border-line grid grid-cols-2 gap-2.5">
+                        <a href="<?= getBaseUrl() ?>/events" class="btn btn--navy btn--sm"><i class="ph-fill ph-list-bullets" aria-hidden="true"></i><?= __('events_view_list') ?></a>
+                        <a href="<?= getBaseUrl() ?>/events?view=calendar" class="btn btn--line btn--sm"><i class="ph-fill ph-calendar-blank" aria-hidden="true"></i><?= __('events_view_calendar') ?></a>
+                    </div>
+                    <?php else: ?>
+                    <div class="text-center py-6">
+                        <span class="icon-chip mx-auto w-16 h-16 rounded-2xl text-3xl"><i class="ph-fill ph-calendar-star" aria-hidden="true"></i></span>
+                        <h3 class="mt-4 text-xl font-extrabold text-navy"><?= __('events_none_h') ?></h3>
+                        <p class="mt-2 text-sm text-muted"><?= __('events_none_p') ?></p>
+                    </div>
+                    <?php endif; ?>
+                </section>
+
+                <a href="<?= getBaseUrl() ?>/events#request" class="ev-request">
+                    <span class="ev-request__icon"><i class="ph-fill ph-paper-plane-tilt" aria-hidden="true"></i></span>
+                    <span class="min-w-0 flex-1">
+                        <span class="block font-bold text-white"><?= __('events_req_h') ?></span>
+                        <span class="block text-sm text-[#cfdcef]"><?= __('events_req_btn') ?></span>
+                    </span>
+                    <i class="ph ph-arrow-right arrow text-white/70" aria-hidden="true"></i>
+                </a>
+            </div>
         </div>
+
+        <!-- Stats -->
+        <dl class="rise mt-10 lg:mt-14 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto" style="--d:.36s">
+            <div class="stat-tile"><dt class="sr-only"><?= __('stat_offices') ?></dt><dd><span class="stat-tile__n block" data-count="<?= count($offices) ?>" data-suffix="+"><?= count($offices) ?>+</span><span class="stat-tile__l block" aria-hidden="true"><?= __('stat_offices') ?></span></dd></div>
+            <div class="stat-tile"><dt class="sr-only"><?= __('stat_countries') ?></dt><dd><span class="stat-tile__n block" data-count="<?= $countryCount ?>"><?= $countryCount ?></span><span class="stat-tile__l block" aria-hidden="true"><?= __('stat_countries') ?></span></dd></div>
+            <div class="stat-tile"><dt class="sr-only"><?= __('stat_support') ?></dt><dd><span class="stat-tile__n block">24/7</span><span class="stat-tile__l block" aria-hidden="true"><?= __('stat_support') ?></span></dd></div>
+            <div class="stat-tile"><dt class="sr-only"><?= __('stat_served') ?></dt><dd><span class="stat-tile__n block" data-count="90" data-suffix="+">90+</span><span class="stat-tile__l block" aria-hidden="true"><?= __('stat_served') ?></span></dd></div>
+        </dl>
     </div>
 </section>
 
-<?php
-// Upcoming events: the visitor's country first (same guess as the finder: test param, then Cloudflare)
-require_once __DIR__ . '/../events-ui.php';
-$homeCc = $testCountry ?: $serverCountry;
-$homeEvents = array_values(array_filter(sortEvents(getEvents()), fn($e) => $e['status'] === 'upcoming'));
-$nearCount = 0;
-if ($homeCc !== '') {
-    $near = array_values(array_filter($homeEvents, fn($e) => in_array($homeCc, $e['countries'], true)));
-    $nearCount = count($near);
-    $homeEvents = array_merge($near, array_values(array_filter($homeEvents, fn($e) => !in_array($homeCc, $e['countries'], true))));
-}
-$homeEvents = array_slice($homeEvents, 0, 3);
-?>
-<?php if ($homeEvents): ?>
-<!-- Upcoming events -->
-<section class="pt-16 sm:pt-20 lg:pt-24">
-    <div class="wrap">
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 reveal">
-            <div>
-                <p class="eyebrow"><?= __('nav_events') ?></p>
-                <h2 class="mt-3 text-3xl sm:text-4xl font-extrabold text-navy"><?= $nearCount ? __('events_near_h') : __('events_upcoming') ?></h2>
-            </div>
-            <a href="<?= getBaseUrl() ?>/events" class="btn btn--line self-start sm:self-auto"><?= __('events_see_all') ?><i class="ph ph-arrow-right arrow" aria-hidden="true"></i></a>
-        </div>
-        <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
-            <?php foreach ($homeEvents as $i => $ev): ?>
-            <div class="reveal" style="--d:<?= $i * 0.06 ?>s"><?= v2EventCard($ev, 'h-full') ?></div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-</section>
-<?php endif; ?>
+<script>
+// Events panel: put events in the visitor's country first once the finder has worked out where they are
+document.addEventListener('nf:country', function (e) {
+    var panel = document.querySelector('[data-ev-panel]'), list = panel && panel.querySelector('[data-ev-list]');
+    var cc = e.detail && e.detail.country;
+    if (!list || !cc) return;
+    var rows = Array.prototype.slice.call(list.children);
+    var hit = function (r) { return (' ' + r.dataset.cc + ' ').indexOf(' ' + cc + ' ') !== -1; };
+    var sorted = rows.filter(hit).concat(rows.filter(function (r) { return !hit(r); }));
+    sorted.forEach(function (r, i) { list.appendChild(r); r.hidden = i >= 3; });
+    var t = panel.querySelector('[data-ev-title]');
+    if (t) t.textContent = rows.some(hit) ? panel.dataset.near : panel.dataset.all;
+});
+</script>
 
 <!-- Explore -->
 <section class="py-16 sm:py-20 lg:py-24">

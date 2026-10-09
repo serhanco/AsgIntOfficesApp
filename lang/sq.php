@@ -178,4 +178,5 @@ return [
     'events_req_type'         => 'Lloji i eventit',
     'events_req_where'        => 'Qyteti ose vendi',
     'events_req_msg'          => 'Përshëndetje, dua të kërkoj një event (%s) në %s.',
+    'event_wa_msg'            => 'Përshëndetje, dua të di më shumë për këtë event: %s',
 ];

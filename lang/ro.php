@@ -178,4 +178,5 @@ return [
     'events_req_type'         => 'Tipul evenimentului',
     'events_req_where'        => 'Oraș sau țară',
     'events_req_msg'          => 'Bună ziua, aș dori să solicit un eveniment (%s) în %s.',
+    'event_wa_msg'            => 'Bună ziua, aș dori să aflu mai multe despre acest eveniment: %s',
 ];

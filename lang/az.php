@@ -178,4 +178,5 @@ return [
     'events_req_type'         => 'Tədbirin növü',
     'events_req_where'        => 'Şəhər və ya ölkə',
     'events_req_msg'          => 'Salam, %2$s üçün tədbir (%1$s) sorğusu göndərmək istəyirəm.',
+    'event_wa_msg'            => 'Salam, bu tədbir haqqında ətraflı məlumat almaq istəyirəm: %s',
 ];

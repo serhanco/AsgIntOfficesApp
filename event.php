@@ -108,7 +108,7 @@ require __DIR__ . '/includes/v2/header.php';
                 <ol class="space-y-4">
                     <?php foreach ($stops as $i => $l):
                         $tel = $l['phone'] !== '' ? 'tel:' . preg_replace('/[^0-9+]/', '', $l['phone']) : '';
-                        $wa  = $l['whatsapp'] !== '' ? 'https://wa.me/' . $l['whatsapp'] : '';
+                        $wa  = $l['whatsapp'] !== '' ? 'https://wa.me/' . $l['whatsapp'] . '?text=' . rawurlencode(__('event_wa_msg', $event['title'])) : '';
                         $stopPast = $l['ends_on'] && $l['ends_on'] < date('Y-m-d');
                     ?>
                     <li id="stop-<?= $i + 1 ?>" class="card p-5 sm:p-6 scroll-mt-28<?= $stopPast && !$past ? ' opacity-60' : '' ?>">

@@ -176,4 +176,5 @@ return [
     'events_req_type'         => 'Type d\'événement',
     'events_req_where'        => 'Ville ou pays',
     'events_req_msg'          => 'Bonjour, je souhaite demander un événement (%s) à %s.',
+    'event_wa_msg'            => 'Bonjour, je souhaite en savoir plus sur cet événement : %s',
 ];

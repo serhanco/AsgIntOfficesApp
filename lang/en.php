@@ -228,4 +228,5 @@ return [
     'events_req_type'         => 'Event type',
     'events_req_where'        => 'City or country',
     'events_req_msg'          => 'Hello, I would like to request an event (%s) in %s.',
+    'event_wa_msg'            => 'Hello, I would like to know more about this event: %s',
 ];

@@ -178,4 +178,5 @@ return [
     'events_req_type'         => 'Vrsta događaja',
     'events_req_where'        => 'Grad ili zemlja',
     'events_req_msg'          => 'Zdravo, želim da zatražim događaj (%s) u mestu %s.',
+    'event_wa_msg'            => 'Zdravo, želim da saznam više o ovom događaju: %s',
 ];

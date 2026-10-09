@@ -93,3 +93,31 @@ function v2EventCard(array $ev, string $extraClass = ''): string {
     <?php
     return ob_get_clean();
 }
+
+/** WhatsApp link for an event: the first stop's office when it has a number, head office otherwise, with the event title as the message. */
+function v2EventWa(array $ev): string {
+    $digits = '905359650466';
+    foreach ($ev['locations'] as $l) {
+        if ($l['whatsapp'] !== '') { $digits = $l['whatsapp']; break; }
+    }
+    return 'https://wa.me/' . $digits . '?text=' . rawurlencode(__('event_wa_msg', $ev['title']));
+}
+
+/** Compact event row for the home page: date, title, stops, and a direct WhatsApp button. */
+function v2EventRow(array $ev, bool $hidden = false): string {
+    $dir = textDir($ev['title']);
+    ob_start(); ?>
+    <li class="ev-row" data-cc="<?= e(implode(' ', $ev['countries'])) ?>"<?= $hidden ? ' hidden' : '' ?>>
+        <a href="<?= e($ev['url']) ?>" class="ev-row__main group">
+            <?= v2DateBadge($ev['start'], $ev['end']) ?>
+            <span class="min-w-0 flex-1">
+                <?= v2EventTag($ev['tag_key']) ?>
+                <span class="event-text block mt-0.5 font-bold text-ink leading-snug line-clamp-2 group-hover:text-navy transition-colors" dir="<?= $dir ?>"><?= e($ev['title']) ?></span>
+                <span class="mt-1.5 flex flex-wrap gap-1.5"><?= v2StopChips($ev, 3) ?></span>
+            </span>
+        </a>
+        <a href="<?= e(v2EventWa($ev)) ?>" target="_blank" rel="noopener" class="ev-row__wa" aria-label="<?= e(__('js_whatsapp')) ?>"><i class="ph-fill ph-whatsapp-logo" aria-hidden="true"></i></a>
+    </li>
+    <?php
+    return ob_get_clean();
+}

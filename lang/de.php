@@ -176,4 +176,5 @@ return [
     'events_req_type'         => 'Art der Veranstaltung',
     'events_req_where'        => 'Stadt oder Land',
     'events_req_msg'          => 'Guten Tag, ich möchte eine Veranstaltung (%s) in %s anfragen.',
+    'event_wa_msg'            => 'Guten Tag, ich möchte mehr über diese Veranstaltung erfahren: %s',
 ];

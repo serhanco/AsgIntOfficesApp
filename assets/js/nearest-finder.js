@@ -242,7 +242,19 @@
       <div class="nf-footer nf-footer--center">${refineBtn()}</div>`;
   }
 
+  // Tells other parts of the page (the home page events list) which country the visitor is in
+  let lastCc = null;
+  function announceCountry() {
+    let cc = state.selected ? state.selected.cc : state.country;
+    if (!cc && state.position) { const near = byDistance(offices)[0]; cc = near && near.distance <= FAR_KM ? near.cc : null; }
+    if (cc && cc !== lastCc) {
+      lastCc = cc;
+      document.dispatchEvent(new CustomEvent('nf:country', { detail: { country: cc } }));
+    }
+  }
+
   function render() {
+    announceCountry();
     let html;
     if (state.selected) {
       html = officeCard(state.selected, [], T.selectedLabel);

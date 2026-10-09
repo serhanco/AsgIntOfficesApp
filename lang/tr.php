@@ -176,4 +176,5 @@ return [
     'events_req_type'         => 'Etkinlik türü',
     'events_req_where'        => 'Şehir veya ülke',
     'events_req_msg'          => 'Merhaba, %2$s için bir etkinlik (%1$s) talep etmek istiyorum.',
+    'event_wa_msg'            => 'Merhaba, şu etkinlik hakkında bilgi almak istiyorum: %s',
 ];
