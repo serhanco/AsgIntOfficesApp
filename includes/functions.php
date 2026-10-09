@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/language.php';
+require_once __DIR__ . '/design.php';
 
 /**
  * Helper Functions

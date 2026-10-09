@@ -36,6 +36,64 @@ $hq = [
     'country_code' => 'tr',
 ];
 
+$finderConfig = [
+    'lang'          => LANGUAGES[$GLOBALS['current_lang']]['html'] ?? 'en',
+    'serverCountry' => $serverCountry,
+    'testCountry'   => $testCountry,
+    'testAt'        => $testAt,
+    'mapUrl'        => getBaseUrl() . '/map',
+    'listUrl'       => getBaseUrl() . '/offices',
+    'hq'            => $hq,
+    'offices'       => array_map(fn($o) => [
+        'lat'          => (float)$o['latitude'],
+        'lon'          => (float)$o['longitude'],
+        'name'         => $o['display_name'],
+        'country'      => $o['country'],
+        'cc'           => strtolower((string)$o['country_code']),
+        'address'      => $o['address'],
+        'phone'        => $o['phone'],
+        'email'        => $o['email'],
+        'url'          => officeUrl($o['slug']),
+    ], $offices),
+    't' => [
+        'locate'         => __('btn_locate'),
+        'locating'       => __('nf_locating'),
+        'seemsIn'        => __('nf_seems_in'),
+        'byLocation'     => __('nf_by_location'),
+        'nearestLabel'   => __('nf_nearest_label'),
+        'selectedLabel'  => __('nf_selected_label'),
+        'regionLabel'    => __('nf_region_label'),
+        'otherInCountry' => __('nf_other_in_country'),
+        'noOfficeH'      => __('nf_no_office_h'),
+        'noOfficeRegionH'=> __('nf_no_office_region_h'),
+        'noOfficeP'      => __('nf_no_office_p'),
+        'hqName'         => __('nf_hq_name'),
+        'hqLabel'        => __('nf_hq_label'),
+        'nearestPhysical'=> __('nf_nearest_physical'),
+        'seeWorld'       => __('nf_see_world'),
+        'seeList'        => __('nf_see_list'),
+        'refine'         => __('nf_refine'),
+        'unknownH'       => __('nf_unknown_h'),
+        'unknownP'       => __('nf_unknown_p'),
+        'searchNone'     => __('nf_search_none'),
+        'deniedH'        => __('nf_denied_h'),
+        'deniedP'        => __('nf_denied_p'),
+        'stay'           => __('nf_stay'),
+        'goNow'          => __('nf_go_now'),
+        'kmAway'         => __('result_km_away'),
+        'details'        => __('result_view_details'),
+        'call'           => __('js_call'),
+        'whatsapp'       => __('js_whatsapp'),
+        'email'          => __('js_email'),
+        'route'          => __('js_route'),
+    ],
+];
+
+if (designV2()) {
+    require __DIR__ . '/includes/v2/pages/home.php';
+    return;
+}
+
 require_once __DIR__ . '/includes/header.php';
 ?>
 <link rel="stylesheet" href="<?= getBaseUrl() ?>/assets/css/finder.css?v=3">
@@ -197,60 +255,6 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 </div>
 
-<?php
-$finderConfig = [
-    'lang'          => LANGUAGES[$GLOBALS['current_lang']]['html'] ?? 'en',
-    'serverCountry' => $serverCountry,
-    'testCountry'   => $testCountry,
-    'testAt'        => $testAt,
-    'mapUrl'        => getBaseUrl() . '/map',
-    'listUrl'       => getBaseUrl() . '/offices',
-    'hq'            => $hq,
-    'offices'       => array_map(fn($o) => [
-        'lat'          => (float)$o['latitude'],
-        'lon'          => (float)$o['longitude'],
-        'name'         => $o['display_name'],
-        'country'      => $o['country'],
-        'cc'           => strtolower((string)$o['country_code']),
-        'address'      => $o['address'],
-        'phone'        => $o['phone'],
-        'email'        => $o['email'],
-        'url'          => officeUrl($o['slug']),
-    ], $offices),
-    't' => [
-        'locate'         => __('btn_locate'),
-        'locating'       => __('nf_locating'),
-        'seemsIn'        => __('nf_seems_in'),
-        'byLocation'     => __('nf_by_location'),
-        'nearestLabel'   => __('nf_nearest_label'),
-        'selectedLabel'  => __('nf_selected_label'),
-        'regionLabel'    => __('nf_region_label'),
-        'otherInCountry' => __('nf_other_in_country'),
-        'noOfficeH'      => __('nf_no_office_h'),
-        'noOfficeRegionH'=> __('nf_no_office_region_h'),
-        'noOfficeP'      => __('nf_no_office_p'),
-        'hqName'         => __('nf_hq_name'),
-        'hqLabel'        => __('nf_hq_label'),
-        'nearestPhysical'=> __('nf_nearest_physical'),
-        'seeWorld'       => __('nf_see_world'),
-        'seeList'        => __('nf_see_list'),
-        'refine'         => __('nf_refine'),
-        'unknownH'       => __('nf_unknown_h'),
-        'unknownP'       => __('nf_unknown_p'),
-        'searchNone'     => __('nf_search_none'),
-        'deniedH'        => __('nf_denied_h'),
-        'deniedP'        => __('nf_denied_p'),
-        'stay'           => __('nf_stay'),
-        'goNow'          => __('nf_go_now'),
-        'kmAway'         => __('result_km_away'),
-        'details'        => __('result_view_details'),
-        'call'           => __('js_call'),
-        'whatsapp'       => __('js_whatsapp'),
-        'email'          => __('js_email'),
-        'route'          => __('js_route'),
-    ],
-];
-?>
 <script>window.NF_CONFIG = <?= json_encode($finderConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) ?>;</script>
 <script src="<?= getBaseUrl() ?>/assets/js/tz-countries.js?v=3" defer></script>
 <script src="<?= getBaseUrl() ?>/assets/js/nearest-finder.js?v=3" defer></script>

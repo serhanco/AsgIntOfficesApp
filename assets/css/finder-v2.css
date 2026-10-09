@@ -1,0 +1,98 @@
+/* === Nearest-office finder, new design (loaded after finder.css on the v2 home page) === */
+
+.nf-card {
+  border: 1px solid rgba(255,255,255,.6); border-radius: 28px; padding: 1.75rem;
+  box-shadow: 0 40px 90px rgba(3,16,43,.45), 0 0 0 1px rgba(9,44,116,.04);
+  color: var(--ink);
+}
+.nf-card::before { /* aqua hairline on top */
+  content: ''; position: absolute; inset-inline: 1.75rem; top: 0; height: 3px; border-radius: 0 0 3px 3px;
+  background: linear-gradient(90deg, var(--aqua), var(--navy));
+}
+.nf-card--in { animation: nfIn .55s var(--ease); }
+@media (max-width: 639px) { .nf-card { padding: 1.4rem 1.15rem; border-radius: 24px; } .nf-card::before { inset-inline: 1.15rem; } }
+
+.nf-skeleton { color: var(--navy); min-height: 12rem; }
+
+.nf-context { background: #e6f5fc; color: var(--navy); border-radius: 999px; font-weight: 500; }
+.nf-context i { color: var(--azure); }
+
+/* The card sits in a narrower column: stack info above actions at every width */
+.nf-main { flex-direction: column !important; align-items: stretch !important; gap: 1.25rem; }
+.nf-label { color: var(--azure); letter-spacing: .14em; font-size: .7rem; }
+.nf-label::before { content: ''; display: inline-block; width: 18px; height: 2px; border-radius: 2px; background: currentColor; vertical-align: middle; margin-inline-end: 8px; }
+.nf-label:lang(ar), .nf-label:lang(fa) { letter-spacing: normal; }
+.nf-name { color: var(--navy); font-weight: 800; letter-spacing: -.03em; font-size: clamp(1.7rem, 3vw, 2.1rem); line-height: 1.1; }
+.nf-name--sm { font-size: 1.4rem; }
+.nf-address { color: var(--muted); }
+.nf-address i { color: var(--aqua); }
+.nf-distance { background: linear-gradient(135deg, #e6f5fc, #dcebf9); color: var(--navy); font-weight: 700; }
+
+.nf-actions { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; width: 100% !important; gap: .5rem; }
+.nf-action {
+  border: 1px solid var(--line); border-radius: 18px; box-shadow: none; min-width: 0; padding: .8rem .25rem .7rem;
+  color: var(--navy); transition: transform .25s var(--ease), box-shadow .25s var(--ease), background-color .25s, color .25s, border-color .25s;
+}
+.nf-action i { font-size: 1.45rem; margin-bottom: .3rem; color: var(--aqua-deep); transition: color .25s; }
+.nf-action span { font-size: .72rem; font-weight: 700; }
+.nf-action:hover { background: var(--navy); border-color: var(--navy); color: #fff; transform: translateY(-3px); box-shadow: 0 14px 28px rgba(9,44,116,.25); }
+.nf-action:hover i { color: #fff; }
+.nf-action--wa i { color: #1fb85a; }
+.nf-action--wa:hover { background: #1fb85a; border-color: #1fb85a; box-shadow: 0 14px 28px rgba(31,184,90,.3); }
+
+.nf-chip { border-color: var(--line); background: #fff; color: var(--navy); font-weight: 700; transition: all .2s; }
+.nf-chip:hover { background: var(--navy); border-color: var(--navy); color: #fff; }
+.nf-chip:hover small { color: #cfdcef; }
+
+.nf-footer { border-top-color: var(--line); }
+.nf-details {
+  border: 1.5px solid var(--line); border-radius: 999px; color: var(--navy); font-weight: 700; padding: .7rem 1.25rem;
+  transition: background-color .25s, color .25s, border-color .25s, transform .25s var(--ease);
+}
+.nf-details:hover { background: var(--navy); border-color: var(--navy); color: #fff; transform: translateY(-2px); }
+.nf-refine {
+  border-radius: 999px; padding: .75rem 1.25rem; font-weight: 700; font-size: .9rem;
+  background: linear-gradient(135deg, var(--aqua), var(--aqua-deep)); box-shadow: 0 10px 22px rgba(37,170,225,.3);
+  transition: transform .25s var(--ease), box-shadow .25s var(--ease);
+}
+.nf-refine:hover { background: linear-gradient(135deg, var(--aqua), var(--aqua-deep)); transform: translateY(-2px); box-shadow: 0 16px 30px rgba(37,170,225,.4); }
+
+.nf-empty__icon { border-radius: 20px; background: linear-gradient(135deg, var(--aqua), var(--navy)); box-shadow: 0 14px 30px -8px rgba(37,170,225,.6); }
+.nf-empty__h { color: var(--navy); font-weight: 800; letter-spacing: -.02em; font-size: 1.4rem; }
+.nf-empty__p { color: var(--muted); font-size: 1rem; }
+@media (min-width: 768px) { .nf-empty__h { font-size: 1.55rem; } }
+
+.nf-hq { flex-direction: column !important; align-items: stretch !important; background: var(--surface); border-color: var(--line); border-radius: 22px; }
+.nf-hq__name { color: var(--navy); }
+.nf-near { border-top-color: var(--line); }
+
+.nf-link { border: 1.5px solid var(--line); border-radius: 999px; color: var(--navy); font-weight: 700; transition: all .25s var(--ease); }
+.nf-link:hover { border-color: var(--navy); background: var(--navy); color: #fff; }
+.nf-link--primary { background: var(--navy); border-color: var(--navy); color: #fff; }
+.nf-link--primary:hover { background: var(--navy-800); }
+
+.nf-countdown { border-radius: 20px; background: var(--coral-soft, #fff1ed); border-color: #ffd3c7; }
+.nf-countdown__h { color: #9a3412; }
+.nf-countdown__p { color: #7c2d12; }
+.nf-countdown__track { stroke: #ffd3c7; }
+.nf-countdown__bar { stroke: var(--coral); }
+
+/* Search sits on the dark hero */
+.nf-search { max-width: none; margin-top: 1.25rem; }
+.nf-search__label { color: #cfdcef; font-weight: 600; }
+.nf-search__box input {
+  height: 54px; border-radius: 999px; border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.08); color: #fff;
+  padding-inline-start: 3rem; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); box-shadow: none;
+}
+.nf-search__box input::placeholder { color: #9fb3d1; }
+.nf-search__box input:focus { background: #fff; color: var(--ink); border-color: var(--aqua); box-shadow: 0 0 0 5px rgba(37,170,225,.25); }
+.nf-search__box i { color: #9fc6f5; inset-inline-start: 1.15rem; }
+.nf-search__box input:focus + i, .nf-search__box:focus-within i { color: var(--muted); }
+.nf-search__list { border-radius: 22px; border-color: var(--line); box-shadow: var(--shadow-lg); padding: .5rem; }
+.nf-opt { border-radius: 14px; }
+.nf-opt[aria-selected="true"], .nf-opt:hover { background: #e6f5fc; }
+.nf-opt__name { color: var(--navy); }
+
+/* Hero locate button: radar in white */
+.nf-locate-btn .nf-radar { color: #fff; }
+.nf-locate-btn.is-locating { transform: none !important; }

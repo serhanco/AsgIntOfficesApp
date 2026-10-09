@@ -11,6 +11,11 @@ $currentPage = '';
 $needsMap = false;
 $metaDescription = __('404_subtitle');
 
+if (designV2()) {
+    require __DIR__ . '/includes/v2/pages/404.php';
+    return;
+}
+
 require_once __DIR__ . '/includes/header.php';
 ?>
 

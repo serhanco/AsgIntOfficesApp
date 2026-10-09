@@ -166,7 +166,8 @@ function initMap(containerId, offices, options = {}) {
   const defaults = {
     center: [41.0082, 28.9784],
     zoom: 4,
-    singleOffice: false
+    singleOffice: false,
+    markerHtml: ''   // custom pin markup (new design)
   };
   const config = { ...defaults, ...options };
   
@@ -189,7 +190,7 @@ function initMap(containerId, offices, options = {}) {
     if (office.lat && office.lon) {
       const customIcon = L.divIcon({
         className: 'bg-transparent',
-        html: '<div style="width:40px;height:40px;background:#0c2d74;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(12,45,116,0.4);border:3px solid white;transition:transform 0.2s;cursor:pointer"><i class="ph-fill ph-map-pin" style="font-size:20px"></i></div>',
+        html: config.markerHtml || '<div style="width:40px;height:40px;background:#0c2d74;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(12,45,116,0.4);border:3px solid white;transition:transform 0.2s;cursor:pointer"><i class="ph-fill ph-map-pin" style="font-size:20px"></i></div>',
         iconSize: [40, 40],
         iconAnchor: [20, 40]
       });

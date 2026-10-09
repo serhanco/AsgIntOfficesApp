@@ -1,12 +1,15 @@
 {
   "name": "asg-int-offices-app",
   "private": true,
-  "description": "Builds the frontend Tailwind CSS (assets/css/tailwind.css). Run `npm install` once, then `npm run build:css` after changing classes in PHP/JS files.",
+  "description": "Builds the frontend assets. Run `npm install` once, then `npm run build:css` after changing classes in PHP/JS files and `npm run build:icons` after using a new Phosphor icon.",
   "scripts": {
     "build:css": "tailwindcss -c tailwind.config.js -i assets/css/tailwind.src.css -o assets/css/tailwind.css --minify",
-    "watch:css": "tailwindcss -c tailwind.config.js -i assets/css/tailwind.src.css -o assets/css/tailwind.css --watch"
+    "watch:css": "tailwindcss -c tailwind.config.js -i assets/css/tailwind.src.css -o assets/css/tailwind.css --watch",
+    "build:icons": "node scripts/build-icons.mjs"
   },
   "devDependencies": {
+    "@phosphor-icons/web": "2.1.2",
+    "subset-font": "2.4.0",
     "tailwindcss": "3.4.19"
   }
 }
