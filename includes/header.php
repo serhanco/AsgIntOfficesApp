@@ -119,7 +119,7 @@ function renderLangMenu(): void {
                 
                 <!-- Desktop Nav -->
                 <nav class="hidden lg:flex items-center gap-1">
-                    <a href="<?= getBaseUrl() ?>/" class="flex items-center px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors <?= $currentPage === 'home' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
+                    <a href="<?= getBaseUrl() ?>/?find=1" class="flex items-center px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors <?= $currentPage === 'home' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
                         <i class="ph ph-target text-lg me-2"></i><?= __('nav_nearest') ?>
                     </a>
                     <a href="<?= getBaseUrl() ?>/map" class="flex items-center px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors <?= $currentPage === 'map' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
@@ -145,7 +145,7 @@ function renderLangMenu(): void {
         <!-- Mobile Nav Menu -->
         <div id="mobile-menu" class="hidden lg:hidden bg-acibadem-blue border-t border-white/10">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="<?= getBaseUrl() ?>/" class="flex items-center px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'home' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
+                <a href="<?= getBaseUrl() ?>/?find=1" class="flex items-center px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'home' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">
                     <i class="ph ph-target text-xl me-3"></i><?= __('nav_nearest') ?>
                 </a>
                 <a href="<?= getBaseUrl() ?>/map" class="flex items-center px-3 py-2 rounded-md text-base font-medium <?= $currentPage === 'map' ? 'bg-white/10 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white' ?>">

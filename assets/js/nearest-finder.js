@@ -1,5 +1,5 @@
 /**
- * Nearest-office finder (test page: nearest-beta.php)
+ * Nearest-office finder (home page: index.php)
  *
  * 1. On load, guess the visitor's country without asking for location
  *    (test ?cc= > Cloudflare country > device time zone > browser language region).
@@ -168,7 +168,7 @@
         ${actionsHtml(hq)}
       </div>
       <div class="nf-footer">
-        <a href="${esc(C.mapUrl)}" class="nf-details">${esc(T.seeWorld)} <i class="ph ph-arrow-right nf-arrow"></i></a>
+        <a href="${esc(C.intlUrl)}" class="nf-details" target="_blank" rel="noopener"><span dir="ltr">${esc(C.intlUrl.replace(/^https?:\/\//, '').replace(/\/$/, ''))}</span> <i class="ph ph-arrow-up-right"></i></a>
       </div>`;
   }
 
@@ -417,4 +417,6 @@
 
   Object.assign(state, guessCountry());
   render();
+  // The menu link "En Yakın Ofis" opens the home page with ?find=1
+  if (/[?&]find=1(&|$)/.test(window.location.search)) locate();
 })();
