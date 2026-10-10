@@ -29,6 +29,40 @@ function getBaseUrl(): string {
     return $protocol . '://' . $host . $path;
 }
 
+/** Is $ip inside the CIDR range? Works for IPv4 and IPv6. */
+function ip_in_cidr(string $ip, string $cidr): bool {
+    [$net, $bits] = explode('/', $cidr) + [1 => null];
+    $ipBin = @inet_pton($ip);
+    $netBin = @inet_pton($net);
+    if ($ipBin === false || $netBin === false || strlen($ipBin) !== strlen($netBin)) return false;
+    $bits = (int)$bits;
+    $bytes = intdiv($bits, 8);
+    if ($bytes && substr($ipBin, 0, $bytes) !== substr($netBin, 0, $bytes)) return false;
+    $rest = $bits % 8;
+    if ($rest === 0) return true;
+    $mask = (0xFF << (8 - $rest)) & 0xFF;
+    return (ord($ipBin[$bytes]) & $mask) === (ord($netBin[$bytes]) & $mask);
+}
+
+/**
+ * The visitor's real IP. Behind Cloudflare every request arrives from a Cloudflare address,
+ * so CF-Connecting-IP is trusted only when the connection really comes from Cloudflare.
+ */
+function client_ip(): string {
+    $remote = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $cf = $_SERVER['HTTP_CF_CONNECTING_IP'] ?? '';
+    if ($cf === '' || filter_var($cf, FILTER_VALIDATE_IP) === false) return $remote;
+    $cloudflare = [
+        '173.245.48.0/20', '103.21.244.0/22', '103.22.200.0/22', '103.31.4.0/22', '141.101.64.0/18',
+        '108.162.192.0/18', '190.93.240.0/20', '188.114.96.0/20', '197.234.240.0/22', '198.41.128.0/17',
+        '162.158.0.0/15', '104.16.0.0/13', '104.24.0.0/14', '172.64.0.0/13', '131.0.72.0/22',
+        '2400:cb00::/32', '2606:4700::/32', '2803:f800::/32', '2405:b500::/32', '2405:8100::/32',
+        '2a06:98c0::/29', '2c0f:f248::/32',
+    ];
+    foreach ($cloudflare as $range) if (ip_in_cidr($remote, $range)) return $cf;
+    return $remote;
+}
+
 /** Site setting saved in the admin (table site_settings). Empty string when unset or the patch is not applied yet. */
 function siteSetting(string $key): string {
     static $all = null;
