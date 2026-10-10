@@ -64,7 +64,7 @@ function renderLangMenu(): void {
     <link rel="icon" type="image/x-icon" href="<?= getBaseUrl() ?>/assets/images/favicon.ico">
     
     <?php $ga4Id = ga4Id(); ?>
-    <?php if ($ga4Id !== '' && !isAdminVisitor()): ?>
+    <?php if ($ga4Id !== '' && !isAdminVisitor() && analyticsAllowed()): ?>
     <!-- Google tag (gtag.js) — set define('GA4_ID', '') in config.php to turn off -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=<?= e($ga4Id) ?>"></script>
     <script>

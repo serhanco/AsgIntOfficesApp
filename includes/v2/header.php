@@ -70,7 +70,7 @@ $navItems = [
     <script>document.documentElement.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('js-anim');</script>
 
     <?php $ga4Id = ga4Id(); ?>
-    <?php if ($ga4Id !== '' && !isAdminVisitor()): ?>
+    <?php if ($ga4Id !== '' && !isAdminVisitor() && analyticsAllowed()): ?>
     <script async src="https://www.googletagmanager.com/gtag/js?id=<?= e($ga4Id) ?>"></script>
     <script>
       window.dataLayer = window.dataLayer || [];

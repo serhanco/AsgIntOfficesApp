@@ -42,9 +42,41 @@ function siteSetting(string $key): string {
     return $all[$key] ?? '';
 }
 
-/** Custom code from the admin for a slot (head_code, body_code, footer_code). Not printed for logged-in admins, so their visits are not tracked. */
+/**
+ * Cookie consent: visitors from the EU/EEA, UK, Switzerland and Russia (country from Cloudflare) must accept
+ * before statistics and the custom codes from the admin load. Unknown country counts as "needs consent".
+ * Edit CONSENT_COUNTRIES to add or remove countries (e.g. 'TR').
+ */
+const CONSENT_COUNTRIES = [
+    'AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE',
+    'IS','LI','NO','GB','CH','RU',
+];
+
+function consentRegion(): bool {
+    $cc = strtoupper(trim($_SERVER['HTTP_CF_IPCOUNTRY'] ?? ''));
+    if (!preg_match('/^[A-Z]{2}$/', $cc) || $cc === 'XX' || $cc === 'T1') return true;
+    return in_array($cc, CONSENT_COUNTRIES, true);
+}
+
+/** 'yes', 'no' or '' (not chosen yet) */
+function consentChoice(): string {
+    $v = $_COOKIE['asg_consent'] ?? '';
+    return $v === 'yes' || $v === 'no' ? $v : '';
+}
+
+/** May statistics and custom codes load for this visitor? */
+function analyticsAllowed(): bool {
+    return !consentRegion() || consentChoice() === 'yes';
+}
+
+/** Show the cookie bar / preferences link to this visitor? */
+function showConsentUi(): bool {
+    return consentRegion() && !isAdminVisitor();
+}
+
+/** Custom code from the admin for a slot (head_code, body_code, footer_code). Not printed for logged-in admins (their visits are not tracked) or before consent. */
 function customCode(string $slot): string {
-    return isAdminVisitor() ? '' : siteSetting($slot);
+    return isAdminVisitor() || !analyticsAllowed() ? '' : siteSetting($slot);
 }
 
 /** GA4 measurement ID: admin setting, then config.php GA4_ID, then the built-in default. 'kapat' in the admin turns it off. */

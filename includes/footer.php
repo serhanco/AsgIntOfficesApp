@@ -61,6 +61,7 @@
             <div class="max-w-6xl mx-auto px-4 text-center">
                 <p class="text-gray-400 text-xs">
                     <?= __('footer_copyright') ?>
+                    <?php if (showConsentUi()): ?> · <a href="#" data-consent-open class="underline hover:text-white"><?= __('cookie_manage') ?></a><?php endif; ?>
                 </p>
             </div>
         </div>
@@ -68,6 +69,7 @@
 
     <!-- App JS -->
     <script src="<?= getBaseUrl() ?>/assets/js/app.js"></script>
+    <?php require __DIR__ . '/consent-banner.php'; ?>
     <?= customCode('footer_code') ?>
 </body>
 </html>
