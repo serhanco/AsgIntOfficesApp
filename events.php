@@ -15,11 +15,11 @@ $past     = array_values(array_filter($events, fn($e) => $e['status'] === 'past'
 // Filters: only countries and types that events actually have
 $countryNames = [];
 $types = [];
+$audiences = [];
 foreach ($events as $ev) {
-    foreach ($ev['locations'] as $l) {
-        if ($l['country_code'] !== '') $countryNames[$l['country_code']] = $l['country'];
-    }
+    foreach ($ev['countries'] as $cc) $countryNames[$cc] = countryNameFor($cc);
     $types[$ev['tag_key']] = true;
+    $audiences[$ev['audience']] = true;
 }
 asort($countryNames);
 $types = array_values(array_intersect(array_keys(EVENT_TYPES), array_keys($types)));
@@ -33,7 +33,7 @@ $jsEvents = array_map(function ($ev) use (&$hasCoords) {
                 'online' => $l['is_online'], 'lat' => $l['is_online'] ? null : $l['lat'], 'lon' => $l['is_online'] ? null : $l['lon']];
     }, $ev['locations']);
     return ['url' => $ev['url'], 'title' => $ev['title'], 'tag' => $ev['tag_key'], 'tagLabel' => __($ev['tag_key']), 'icon' => $ev['icon'],
-            'past' => $ev['status'] === 'past', 'cc' => $ev['countries'], 'stops' => $stops,
+            'past' => $ev['status'] === 'past', 'cc' => $ev['countries'], 'aud' => $ev['audience'], 'g' => $ev['is_global'], 'stops' => $stops,
             'q' => mb_strtolower($ev['title'] . ' ' . implode(' ', array_column($stops, 'city')), 'UTF-8')];
 }, $events);
 
@@ -88,6 +88,13 @@ $hqMail = 'international@acibadem.com';
                 <?php endif; ?>
             </div>
         </div>
+        <?php if (count($audiences) > 1): ?>
+        <div class="flex gap-2 overflow-x-auto no-scrollbar -mx-1 px-1" role="group" aria-label="<?= e(__('events_filter_aud')) ?>">
+            <button type="button" class="filter-pill" aria-pressed="true" data-aud-filter=""><?= __('events_filter_aud') ?></button>
+            <button type="button" class="filter-pill" aria-pressed="false" data-aud-filter="b2c"><i class="ph-fill ph-users-three" aria-hidden="true"></i><?= __('aud_b2c') ?></button>
+            <button type="button" class="filter-pill" aria-pressed="false" data-aud-filter="b2b"><i class="ph-fill ph-buildings" aria-hidden="true"></i><?= __('aud_b2b') ?></button>
+        </div>
+        <?php endif; ?>
         <?php if (count($types) > 1 || count($countryNames) > 1): ?>
         <div class="flex flex-col md:flex-row md:items-center gap-3">
             <?php if (count($types) > 1): ?>
@@ -199,7 +206,7 @@ $hqMail = 'international@acibadem.com';
                 <div class="relative">
                     <label for="req-type" class="sr-only"><?= __('events_req_type') ?></label>
                     <select id="req-type" class="field !bg-white/10 !text-white !border-white/25">
-                        <?php foreach (EVENT_TYPES as $k => $_): ?>
+                        <?php foreach (EVENT_REQUEST_TYPES as $k): ?>
                         <option value="<?= e($k) ?>" class="text-ink"><?= __($k) ?></option>
                         <?php endforeach; ?>
                     </select>
@@ -232,7 +239,7 @@ $hqMail = 'international@acibadem.com';
     var START = <?= json_encode($firstDate) ?>;
     var lang = document.documentElement.lang || 'en';
     var rtlWeek = /^(ar|fa)/.test(lang);
-    var state = { view: <?= json_encode($view) ?>, type: '', cc: '', q: '', y: 0, m: 0, sel: null };
+    var state = { view: <?= json_encode($view) ?>, type: '', aud: '', cc: '', q: '', y: 0, m: 0, sel: null };
     var $ = function (s, r) { return (r || document).querySelector(s); };
     var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
 
@@ -243,7 +250,8 @@ $hqMail = 'international@acibadem.com';
     function fmt(s, o) { try { return new Intl.DateTimeFormat(lang, Object.assign({ timeZone: 'UTC' }, o)).format(utc(s)); } catch (e) { return s; } }
     function matches(ev) {
         if (state.type && ev.tag !== state.type) return false;
-        if (state.cc && ev.cc.indexOf(state.cc) === -1) return false;
+        if (state.aud && ev.aud !== state.aud) return false;
+        if (state.cc && !ev.g && ev.cc.indexOf(state.cc) === -1) return false; // events without a place or country suit every country
         if (state.q && ev.q.indexOf(state.q) === -1) return false;
         return true;
     }
@@ -389,6 +397,13 @@ $hqMail = 'international@acibadem.com';
         p.addEventListener('click', function () {
             state.type = p.dataset.typeFilter;
             $$('[data-type-filter]').forEach(function (q) { q.setAttribute('aria-pressed', String(q === p)); });
+            refresh();
+        });
+    });
+    $$('[data-aud-filter]').forEach(function (p) {
+        p.addEventListener('click', function () {
+            state.aud = p.dataset.audFilter;
+            $$('[data-aud-filter]').forEach(function (q) { q.setAttribute('aria-pressed', String(q === p)); });
             refresh();
         });
     });
