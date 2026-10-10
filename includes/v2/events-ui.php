@@ -9,6 +9,13 @@ const V2_EVENT_STYLE = [
     'act_tag_presentation' => ['chip' => 'from-violet-400 to-violet-700',   'text' => 'text-violet-700'],
     'act_tag_exhibition'   => ['chip' => 'from-emerald-400 to-emerald-700', 'text' => 'text-emerald-700'],
     'act_tag_webinar'      => ['chip' => 'from-coral-light to-coral-ink',   'text' => 'text-coral-ink'],
+    'act_tag_consult'      => ['chip' => 'from-aqua to-navy',               'text' => 'text-azure'],
+    'act_tag_seminar'      => ['chip' => 'from-aqua to-navy',               'text' => 'text-azure'],
+    'act_tag_checkup'      => ['chip' => 'from-coral-light to-coral-ink',   'text' => 'text-coral-ink'],
+    'act_tag_conference'   => ['chip' => 'from-violet-400 to-violet-700',   'text' => 'text-violet-700'],
+    'act_tag_visit'        => ['chip' => 'from-emerald-400 to-emerald-700', 'text' => 'text-emerald-700'],
+    'act_tag_insurer'      => ['chip' => 'from-emerald-400 to-emerald-700', 'text' => 'text-emerald-700'],
+    'act_tag_other'        => ['chip' => 'from-violet-400 to-violet-700',   'text' => 'text-violet-700'],
 ];
 
 function v2EventStyle(string $tagKey): array {
@@ -57,15 +64,25 @@ function v2StopChips(array $ev, int $max = 4, string $tone = 'light'): string {
     $cls = $tone === 'dark'
         ? 'bg-white/10 border-white/20 text-white'
         : 'bg-surface border-line text-ink';
-    foreach (array_slice($ev['locations'], 0, $max) as $l) {
+    $shown = array_values(array_filter($ev['locations'], fn($l) => !$l['floating']));
+    foreach (array_slice($shown, 0, $max) as $l) {
         $label = $l['is_online'] ? __('event_online') : ($l['city'] ?: $l['name']);
         $flag = $l['is_online'] || !$l['country_code']
             ? '<i class="ph-fill ' . ($l['is_online'] ? 'ph-video-camera' : 'ph-map-pin') . ' text-aqua" aria-hidden="true"></i>'
             : '<img src="' . e(getFlagUrl($l['country_code'])) . '" alt="" width="18" height="13" loading="lazy" class="w-[18px] h-[13px] object-cover rounded-[3px] flex-shrink-0">';
         $out .= '<span class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ' . $cls . '">' . $flag . '<bdi>' . e($label) . '</bdi></span>';
     }
-    $more = count($ev['locations']) - $max;
+    $more = count($shown) - $max;
     if ($more > 0) $out .= '<span class="inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold ' . $cls . '">+' . $more . '</span>';
+    return $out;
+}
+
+/** Small labels next to the type: "For institutions" (B2B events) and "From head office". Patient events carry no label. */
+function v2EventBadges(array $ev): string {
+    $out = '';
+    $cls = 'inline-flex items-center gap-1 rounded-full border border-line bg-surface px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider text-muted';
+    if ($ev['audience'] === 'b2b') $out .= '<span class="' . $cls . '"><i class="ph-fill ph-buildings" aria-hidden="true"></i>' . __('aud_b2b') . '</span>';
+    if ($ev['relates_hq']) $out .= '<span class="' . $cls . '"><i class="ph-fill ph-seal-check" aria-hidden="true"></i>' . __('event_from_hq') . '</span>';
     return $out;
 }
 
@@ -81,6 +98,7 @@ function v2EventCard(array $ev, string $extraClass = ''): string {
             <div class="flex items-center gap-2 flex-wrap">
                 <?= v2EventTag($ev['tag_key']) ?>
                 <?php if ($past): ?><span class="text-[0.7rem] font-bold uppercase tracking-wider text-muted-2"><?= __('event_past_badge') ?></span><?php endif; ?>
+                <?= v2EventBadges($ev) ?>
             </div>
             <p class="event-text mt-1 font-bold text-ink leading-snug text-[1.02rem] line-clamp-2 group-hover:text-navy transition-colors" dir="<?= $dir ?>"><?= e($ev['title']) ?></p>
             <p class="mt-1 text-sm text-muted"><?= v2DateText($ev['start'], $ev['end']) ?></p>
@@ -94,12 +112,9 @@ function v2EventCard(array $ev, string $extraClass = ''): string {
     return ob_get_clean();
 }
 
-/** WhatsApp link for an event: the first stop's office when it has a number, head office otherwise, with the event title as the message. */
+/** WhatsApp link for an event: its contact office (see eventContact), head office when that has no number, with the event title as the message. */
 function v2EventWa(array $ev): string {
-    $digits = '905359650466';
-    foreach ($ev['locations'] as $l) {
-        if ($l['whatsapp'] !== '') { $digits = $l['whatsapp']; break; }
-    }
+    $digits = eventContact($ev)['whatsapp'] ?: '905359650466';
     return 'https://wa.me/' . $digits . '?text=' . rawurlencode(__('event_wa_msg', $ev['title']));
 }
 

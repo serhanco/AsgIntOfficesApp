@@ -12,8 +12,8 @@ if ($ready && ($_POST['action'] ?? '') === 'delete' && isset($_POST['id'])) {
     exit;
 }
 
-$events = $ready ? sortEvents(getEvents(false)) : [];
-$typeLabels = ['act_tag_doctor' => 'Doktor görüşmesi', 'act_tag_presentation' => 'Sunum', 'act_tag_exhibition' => 'Fuar / Sergi', 'act_tag_webinar' => 'Online / Webinar'];
+$events = $ready ? sortEvents(getEvents(false, 'all')) : [];
+$typeLabels = eventTypeLabelsTr();
 $msg = $_GET['msg'] ?? '';
 $fmt = fn($d) => $d ? date('d.m.Y', strtotime($d)) : '';
 ?>
@@ -33,6 +33,7 @@ $fmt = fn($d) => $d ? date('d.m.Y', strtotime($d)) : '';
             <a href="offices.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Ofisler</a>
             <a href="teams.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Ekipler</a>
             <a href="events.php" class="block px-4 py-2 rounded-md bg-gray-800 text-white">Etkinlikler</a>
+            <a href="people.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Kişiler</a>
             <a href="event_requests.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Talepler</a>
             <a href="settings.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Ayarlar</a>
             <a href="admins.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Yöneticiler</a>
@@ -68,7 +69,7 @@ $fmt = fn($d) => $d ? date('d.m.Y', strtotime($d)) : '';
                             <tr>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tarih</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Etkinlik</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Duraklar</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Lokasyonlar</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Durum</th>
                                 <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">İşlemler</th>
                             </tr>
@@ -81,13 +82,17 @@ $fmt = fn($d) => $d ? date('d.m.Y', strtotime($d)) : '';
                                 </td>
                                 <td class="px-4 py-4">
                                     <div class="text-sm font-bold text-gray-900" dir="auto"><?= htmlspecialchars($ev['title']) ?></div>
-                                    <div class="text-xs text-blue-600 mt-1"><?= htmlspecialchars($typeLabels[$ev['tag_key']] ?? $ev['tag_key']) ?></div>
+                                    <div class="text-xs text-blue-600 mt-1"><?= htmlspecialchars($typeLabels[$ev['tag_key']] ?? $ev['tag_key']) ?>
+                                        · <?= $ev['audience'] === 'b2b' ? 'Kurumlar' : 'Hastalar' ?>
+                                        <?php if ($ev['featured_rank'] > 0): ?>· <span class="font-semibold text-amber-700">Öne çıkan <?= (int)$ev['featured_rank'] ?></span><?php endif; ?>
+                                        <?php if ($ev['visibility'] === 'link'): ?>· <span class="text-gray-600">Yalnız linkle</span><?php elseif ($ev['visibility'] === 'internal'): ?>· <span class="text-gray-600">İç kayıt</span><?php endif; ?>
+                                        <?php if ($ev['is_global']): ?>· <span class="text-gray-600">Konumdan bağımsız</span><?php endif; ?></div>
                                 </td>
                                 <td class="px-4 py-4 text-sm text-gray-700">
                                     <?php foreach ($ev['locations'] as $l): ?>
-                                        <div class="whitespace-nowrap"><?= $l['is_online'] ? 'Online' : htmlspecialchars($l['name']) ?><?= $l['starts_on'] ? ' <span class="text-gray-400">· ' . $fmt($l['starts_on']) . '</span>' : '' ?></div>
+                                        <div class="whitespace-nowrap"><?= $l['is_online'] ? 'Online' : ($l['floating'] ? '<span class="text-gray-400">Yalnız tarih</span>' : htmlspecialchars($l['name'])) ?><?= $l['starts_on'] ? ' <span class="text-gray-400">· ' . $fmt($l['starts_on']) . '</span>' : '' ?></div>
                                     <?php endforeach; ?>
-                                    <?php if (!$ev['locations']): ?><span class="text-red-600">Durak yok</span><?php endif; ?>
+                                    <?php if (!$ev['locations']): ?><span class="text-red-600">Lokasyon yok</span><?php endif; ?>
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap text-sm">
                                     <?php if (!$ev['is_published']): ?><span class="px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">Taslak</span>
@@ -97,7 +102,7 @@ $fmt = fn($d) => $d ? date('d.m.Y', strtotime($d)) : '';
                                 <td class="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <a href="<?= htmlspecialchars($ev['url']) ?>" target="_blank" class="text-gray-500 hover:text-gray-800 mr-4">Gör</a>
                                     <a href="event_edit.php?id=<?= $ev['id'] ?>" class="text-indigo-600 hover:text-indigo-900 mr-4">Düzenle</a>
-                                    <form method="POST" action="events.php" class="inline" onsubmit="return confirm('Bu etkinlik ve tüm durakları silinecek. Emin misiniz?');">
+                                    <form method="POST" action="events.php" class="inline" onsubmit="return confirm('Bu etkinlik ve tüm lokasyonları silinecek. Emin misiniz?');">
                                         <?= csrf_field() ?>
                                         <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="id" value="<?= $ev['id'] ?>">
