@@ -29,11 +29,19 @@ $choice = consentChoice();
 (function () {
     var bar = document.getElementById('cc-bar');
     var was = <?= json_encode($choice) ?>;
+    var advanced = <?= json_encode(consentMode() === 'advanced') ?>;
     function set(v) {
         try {
             document.cookie = 'asg_consent=' + v + '; Max-Age=15552000; Path=/; SameSite=Lax' + (location.protocol === 'https:' ? '; Secure' : '');
         } catch (e) {}
-        if (v === 'yes' || was === 'yes') { location.reload(); return; }
+        // Basic mode: nothing is loaded before consent, so the page reloads to add (or drop) the tags
+        if (!advanced && (v === 'yes' || was === 'yes')) { location.reload(); return; }
+        // Advanced mode: tell Google (Consent Mode v2) without reloading
+        if (typeof gtag === 'function') {
+            var s = v === 'yes' ? 'granted' : 'denied';
+            gtag('consent', 'update', { ad_storage: s, ad_user_data: s, ad_personalization: s, analytics_storage: s });
+            window.dataLayer.push({ event: 'consent_update', consent_choice: v });
+        }
         was = v;
         bar.hidden = true;
     }

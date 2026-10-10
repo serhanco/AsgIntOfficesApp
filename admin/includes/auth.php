@@ -50,6 +50,16 @@ if (isset($_SESSION['admin_user_id'])) {
         session_start();
     } else {
         $_SESSION['admin_last_seen'] = $now;
+        // The account must still exist and its password must be unchanged since this login
+        // (so deleting an admin or resetting a password ends that person's open sessions)
+        $st = getDb()->prepare('SELECT password_hash FROM admin_users WHERE id = ?');
+        $st->execute([(int)$_SESSION['admin_user_id']]);
+        $hash = $st->fetchColumn();
+        if (!$hash || !hash_equals((string)($_SESSION['admin_pw_fp'] ?? ''), hash('sha256', $hash))) {
+            $_SESSION = [];
+            session_destroy();
+            session_start();
+        }
     }
 }
 
@@ -137,6 +147,7 @@ function admin_login(string $username, string $password): bool {
         session_regenerate_id(true);
         $_SESSION['admin_user_id'] = $user['id'];
         $_SESSION['admin_username'] = $username;
+        $_SESSION['admin_pw_fp'] = hash('sha256', $user['password_hash']);
         $_SESSION['admin_login_at'] = time();
         $_SESSION['admin_last_seen'] = time();
         clear_login_failures($username);

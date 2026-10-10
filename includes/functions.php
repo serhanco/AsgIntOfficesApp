@@ -98,9 +98,29 @@ function consentChoice(): string {
     return $v === 'yes' || $v === 'no' ? $v : '';
 }
 
+/** 'basic': nothing loads before consent. 'advanced': Google tags load in denied mode and switch on after consent (Consent Mode v2). */
+function consentMode(): string {
+    return siteSetting('consent_mode') === 'advanced' ? 'advanced' : 'basic';
+}
+
 /** May statistics and custom codes load for this visitor? */
 function analyticsAllowed(): bool {
-    return !consentRegion() || consentChoice() === 'yes';
+    return !consentRegion() || consentMode() === 'advanced' || consentChoice() === 'yes';
+}
+
+/** Google Consent Mode v2 default state, printed before any Google tag. Only for visitors who are asked for consent. */
+function consentDefaultScript(): string {
+    if (!showConsentUi()) return '';
+    $v = consentChoice() === 'yes' ? 'granted' : 'denied';
+    return '<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}'
+        . "gtag('consent','default',{ad_storage:'$v',ad_user_data:'$v',ad_personalization:'$v',analytics_storage:'$v',functionality_storage:'granted',security_storage:'granted',wait_for_update:500});</script>\n";
+}
+
+/** Number for the "countries served" tile: [number, suffix]. Admin setting, default 90+. */
+function statServed(): array {
+    $v = trim(siteSetting('stat_served'));
+    if (!preg_match('/^(\d{1,5})(\+?)$/', $v, $m)) return [90, '+'];
+    return [(int)$m[1], $m[2]];
 }
 
 /** Show the cookie bar / preferences link to this visitor? */

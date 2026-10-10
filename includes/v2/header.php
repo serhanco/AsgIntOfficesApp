@@ -69,6 +69,7 @@ $navItems = [
     <link rel="icon" type="image/x-icon" href="<?= getBaseUrl() ?>/assets/images/favicon.ico">
     <script>document.documentElement.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('js-anim');</script>
 
+    <?= consentDefaultScript() ?>
     <?php $ga4Id = ga4Id(); ?>
     <?php if ($ga4Id !== '' && !isAdminVisitor() && analyticsAllowed()): ?>
     <script async src="https://www.googletagmanager.com/gtag/js?id=<?= e($ga4Id) ?>"></script>

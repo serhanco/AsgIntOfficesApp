@@ -152,7 +152,7 @@ require_once __DIR__ . '/includes/header.php';
                     <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-50 text-[#0c2d74] mb-4 group-hover:scale-110 group-hover:bg-[#0c2d74] group-hover:text-white transition-all duration-300">
                         <i class="ph-fill ph-buildings text-2xl"></i>
                     </div>
-                    <div class="text-3xl font-black text-gray-900 mb-1"><?= count($offices) ?>+</div>
+                    <div class="text-3xl font-black text-gray-900 mb-1"><?= count($offices) ?></div>
                     <div class="text-xs font-bold text-gray-400 uppercase tracking-wider"><?= __('stat_offices') ?></div>
                 </div>
                 <div class="text-center px-4 group">
@@ -173,7 +173,7 @@ require_once __DIR__ . '/includes/header.php';
                     <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-50 text-[#0c2d74] mb-4 group-hover:scale-110 group-hover:bg-[#0c2d74] group-hover:text-white transition-all duration-300">
                         <i class="ph-fill ph-users text-2xl"></i>
                     </div>
-                    <div class="text-3xl font-black text-gray-900 mb-1">90+</div>
+                    <div class="text-3xl font-black text-gray-900 mb-1"><?= statServed()[0] . statServed()[1] ?></div>
                     <div class="text-xs font-bold text-gray-400 uppercase tracking-wider"><?= __('stat_served') ?></div>
                 </div>
             </div>

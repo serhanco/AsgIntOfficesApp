@@ -37,7 +37,9 @@ if ($isPwForm) {
     } elseif ($new_pw === $cur_pw) {
         $pwErr = 'Yeni şifre eskisinden farklı olmalı.';
     } else {
-        $db->prepare('UPDATE admin_users SET password_hash = ? WHERE id = ?')->execute([password_hash($new_pw, PASSWORD_DEFAULT), (int)$_SESSION['admin_user_id']]);
+        $newHash = password_hash($new_pw, PASSWORD_DEFAULT);
+        $db->prepare('UPDATE admin_users SET password_hash = ? WHERE id = ?')->execute([$newHash, (int)$_SESSION['admin_user_id']]);
+        $_SESSION['admin_pw_fp'] = hash('sha256', $newHash);
         session_regenerate_id(true);
         header('Location: settings.php?msg=pw');
         exit;
@@ -56,6 +58,10 @@ if ($ready && !$isPwForm && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $err = 'GA4 ölçüm kimliği "G-XXXXXXXXXX" biçiminde olmalı (kapatmak için "kapat" yazın, varsayılan için boş bırakın).';
     }
     $values['ga4_id'] = $ga === 'KAPAT' ? 'kapat' : $ga;
+    $values['consent_mode'] = ($_POST['consent_mode'] ?? '') === 'advanced' ? 'advanced' : 'basic';
+    $served = trim((string)($_POST['stat_served'] ?? ''));
+    if ($served !== '' && !preg_match('/^\d{1,5}\+?$/', $served)) $err = 'Hizmet verilen ülke sayısı bir sayı olmalı (ör. 90 veya 90+).';
+    $values['stat_served'] = $served;
     if ($err === '') {
         $st = $db->prepare("INSERT INTO site_settings (skey, svalue) VALUES (?, ?) ON DUPLICATE KEY UPDATE svalue = VALUES(svalue)");
         foreach ($values as $k => $v) $st->execute([$k, $v]);
@@ -68,10 +74,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$isPwForm && $err !== '') {
     $cur = $_POST;
 } else {
     $cur = [];
-    if ($ready) foreach (array_merge(array_keys($fields), ['ga4_id']) as $k) $cur[$k] = siteSetting($k);
+    if ($ready) foreach (array_merge(array_keys($fields), ['ga4_id', 'consent_mode', 'stat_served']) as $k) $cur[$k] = siteSetting($k);
 }
 $h = fn($v) => htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
-$nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => 'Ekipler', 'events.php' => 'Etkinlikler', 'settings.php' => 'Ayarlar'];
+$nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => 'Ekipler', 'events.php' => 'Etkinlikler', 'settings.php' => 'Ayarlar', 'admins.php' => 'Yöneticiler'];
 ?>
 <!DOCTYPE html>
 <html lang="tr">
@@ -127,10 +133,28 @@ $nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => '
                                class="mt-3 w-full sm:w-72 border border-gray-300 rounded-md px-3 py-2 text-sm font-mono">
                     </section>
 
+                    <section class="bg-white border border-gray-200 rounded-lg shadow-sm p-5 md:p-6">
+                        <h3 class="font-semibold text-gray-900">Çerez onayı modu (Google Consent Mode v2)</h3>
+                        <p class="text-sm text-gray-600 mt-1">Onay şeridi AB/AEA, Birleşik Krallık, İsviçre, Rusya ve ülkesi bilinmeyen ziyaretçilere çıkar. Her iki modda da Google'a gerekli onay sinyalleri (analytics_storage, ad_storage, ad_user_data, ad_personalization) gönderilir: onaydan önce "denied", "Kabul et"ten sonra "granted".</p>
+                        <div class="mt-3 space-y-3 text-sm text-gray-800">
+                            <label class="flex gap-3 items-start"><input type="radio" name="consent_mode" value="basic" class="mt-1" <?= ($cur['consent_mode'] ?? '') !== 'advanced' ? 'checked' : '' ?>>
+                                <span><strong>Temel (önerilen başlangıç):</strong> GA4 ve aşağıdaki özel kodlar onay verilmeden hiç yüklenmez. En güvenli seçenek, onaysız ziyaretçi ölçülmez.</span></label>
+                            <label class="flex gap-3 items-start"><input type="radio" name="consent_mode" value="advanced" class="mt-1" <?= ($cur['consent_mode'] ?? '') === 'advanced' ? 'checked' : '' ?>>
+                                <span><strong>Gelişmiş:</strong> GA4 ve özel kodlar her zaman yüklenir, ama Google etiketleri onay verilene kadar çerez kullanmadan (denied) çalışır. Google Tag Manager kullanacaksanız bu moddur. <em>Dikkat: bu modda özel alanlara Google dışı araçlar (Meta Pixel, sohbet vb.) koymayın, onaysız çalışırlar. Onları GTM içinde onay koşuluna bağlayın.</em></span></label>
+                        </div>
+                    </section>
+
+                    <section class="bg-white border border-gray-200 rounded-lg shadow-sm p-5 md:p-6">
+                        <h3 class="font-semibold text-gray-900">Ana sayfa istatistiği: hizmet verilen ülke</h3>
+                        <p class="text-sm text-gray-600 mt-1">Ofis ve ülke sayıları veritabanından otomatik hesaplanır. Hastalara hizmet verilen ülke sayısı veritabanında olmadığı için buradan girilir (ör. <code>90+</code> veya <code>92</code>). Boşsa 90+ gösterilir.</p>
+                        <input type="text" name="stat_served" value="<?= $h($cur['stat_served'] ?? '') ?>" placeholder="90+" maxlength="6"
+                               class="mt-3 w-full sm:w-40 border border-gray-300 rounded-md px-3 py-2 text-sm">
+                    </section>
+
                     <section class="bg-white border border-gray-200 rounded-lg shadow-sm p-5 md:p-6 space-y-6">
                         <div>
                             <h3 class="font-semibold text-gray-900">Özel kod alanları</h3>
-                            <p class="text-sm text-gray-600 mt-1">Buraya yapıştırdığınız kod sitenin tüm sayfalarında olduğu gibi (değiştirilmeden) yayınlanır. Yalnızca güvendiğiniz kaynaklardan gelen kodu ekleyin. Yönetici olarak giriş yapmışken siteyi gezdiğinizde bu kodlar çalışmaz, böylece kendi ziyaretleriniz ölçüme karışmaz. Bir kod siteyi bozarsa alanı boşaltıp kaydetmeniz yeterlidir; bu ekran her zaman açılır.</p>
+                            <p class="text-sm text-gray-600 mt-1">Buraya yapıştırdığınız kod sitenin tüm sayfalarında olduğu gibi (değiştirilmeden) yayınlanır. Yalnızca güvendiğiniz kaynaklardan gelen kodu ekleyin. Yönetici olarak giriş yapmışken siteyi gezdiğinizde bu kodlar çalışmaz, böylece kendi ziyaretleriniz ölçüme karışmaz. Onay şeridi gösterilen ziyaretçilerde kodların ne zaman yüklendiği yukarıdaki çerez onayı moduna bağlıdır. Bir kod siteyi bozarsa alanı boşaltıp kaydetmeniz yeterlidir; bu ekran her zaman açılır.</p>
                         </div>
                         <?php foreach ($fields as $key => [$label, $hint]): ?>
                         <div>
