@@ -4,6 +4,7 @@
  * Filter by Acıbadem / outside speakers. Events are edited in event_edit.php; people can also be added there.
  */
 require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/upload.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_admin_login();
 
@@ -24,7 +25,15 @@ if ($ready && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = (int)($_POST['id'] ?? 0);
     $name = trim($_POST['name'] ?? '');
     $photo = trim($_POST['photo_url'] ?? '');
-    if ($name === '') {
+    try {
+        $uploaded = handle_image_upload('photo_file', 'people', 600);
+        if ($uploaded !== null) $photo = $uploaded;
+    } catch (RuntimeException $e) {
+        $error = $e->getMessage();
+    }
+    if ($error) {
+        // keep the message, show the form again
+    } elseif ($name === '') {
         $error = 'Ad soyad zorunludur.';
     } elseif ($photo !== '' && !preg_match('#^(https?://|assets/)#i', $photo)) {
         $error = 'Fotoğraf linki http(s):// ya da assets/ ile başlamalı.';
@@ -110,7 +119,7 @@ $tab = fn($key, $label) => '<a href="people.php' . ($key !== 'all' ? '?f=' . $ke
                 <?php if ($msg === 'deleted'): ?><div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg max-w-3xl">Kişi silindi (etkinliklerden de çıkarıldı).</div><?php endif; ?>
                 <?php if ($error): ?><div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg max-w-3xl"><?= $h($error) ?></div><?php endif; ?>
 
-                <form method="POST" class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 max-w-3xl">
+                <form method="POST" enctype="multipart/form-data" class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 max-w-3xl">
                     <?= csrf_field() ?>
                     <input type="hidden" name="id" value="<?= (int)$form['id'] ?>">
                     <h3 class="text-base font-semibold text-gray-900 mb-3"><?= $form['id'] ? 'Kişiyi düzenle' : 'Yeni kişi' ?></h3>
@@ -119,7 +128,10 @@ $tab = fn($key, $label) => '<a href="people.php' . ($key !== 'all' ? '?f=' . $ke
                         <div><label class="block text-sm font-medium text-gray-700">Unvan</label><input type="text" dir="auto" name="title" value="<?= $h($form['title']) ?>" placeholder="Prof. Dr., Genel Müdür …" class="<?= $input ?>"></div>
                         <div><label class="block text-sm font-medium text-gray-700">Branş / görev</label><input type="text" dir="auto" name="specialty" value="<?= $h($form['specialty']) ?>" class="<?= $input ?>"></div>
                         <div><label class="block text-sm font-medium text-gray-700">Kurum</label><input type="text" dir="auto" name="organization" value="<?= $h($form['organization']) ?>" class="<?= $input ?>"></div>
-                        <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700">Fotoğraf linki (isteğe bağlı)</label><input type="text" name="photo_url" value="<?= $h($form['photo_url']) ?>" placeholder="https://… ya da assets/images/…" class="<?= $input ?>"></div>
+                        <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700">Fotoğraf (isteğe bağlı)</label>
+                            <input type="file" name="photo_file" accept="image/jpeg,image/png,image/webp" class="mt-1 block w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700">
+                            <input type="text" name="photo_url" value="<?= $h($form['photo_url']) ?>" placeholder="ya da fotoğraf linki: https://… / assets/images/…" class="<?= $input ?>">
+                            <?php if (!empty($form['photo_url'])): ?><img src="<?= $h(admin_image_src($form['photo_url'])) ?>" alt="" class="mt-2 h-16 w-16 rounded-full object-cover border border-gray-200"><?php endif; ?></div>
                         <label class="inline-flex items-center gap-2 text-sm"><input type="checkbox" name="is_acibadem" value="1" <?= $form['is_acibadem'] ? 'checked' : '' ?>> Acıbadem'de çalışıyor</label>
                     </div>
                     <div class="mt-4 flex justify-end gap-3">

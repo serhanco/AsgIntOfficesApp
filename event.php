@@ -48,6 +48,13 @@ $needsMap = (bool)$mapStops;
 $metaDescription = trim(mb_substr(preg_replace('/\s+/', ' ', $event['description']), 0, 160)) ?: __('events_subtitle');
 if ($event['image_url']) $ogImage = imageUrl($event['image_url']);
 $heroImg = $event['image_url'] ? imageUrl($event['image_url']) : '';
+// A poster (square or portrait, mostly text and faces) is shown whole in the page; only a wide photo works as a dimmed hero background.
+$poster = '';
+if ($heroImg !== '') {
+    $local = realpath(__DIR__ . '/' . ltrim((string)$event['image_url'], '/'));
+    $size = ($local && strpos($local, realpath(__DIR__ . '/assets/images')) === 0) ? @getimagesize($local) : false;
+    if ($size && $size[1] >= $size[0] * 0.7) { $poster = $heroImg; $heroImg = ''; }
+}
 
 require __DIR__ . '/includes/v2/header.php';
 ?>
@@ -103,6 +110,11 @@ require __DIR__ . '/includes/v2/header.php';
 
     <div class="grid gap-6 sm:gap-8 <?= $mapStops ? 'lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]' : '' ?>">
         <div class="space-y-6 sm:space-y-8 min-w-0">
+            <?php if ($poster): ?>
+            <a href="<?= e($poster) ?>" target="_blank" rel="noopener" class="block reveal">
+                <img src="<?= e($poster) ?>" alt="<?= e($event['title']) ?>" loading="eager" decoding="async" class="w-full max-w-xl mx-auto rounded-3xl border border-line shadow-sm">
+            </a>
+            <?php endif; ?>
             <?php if (trim($event['description']) !== ''): ?>
             <section class="card p-6 sm:p-8 reveal">
                 <div class="event-text text-[1.02rem] text-ink leading-relaxed whitespace-pre-line" dir="<?= $dir ?>"><?= e(trim($event['description'])) ?></div>
