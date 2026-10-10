@@ -318,6 +318,18 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 [dir="rtl"] .arrow-back { transform: scaleX(-1); }
 
 /* Home: the two main sections side by side */
+/* Home intro: the two pillars (offices + events) as jump links with live counts */
+.hero__accent { color: #8fd6f3; }
+.hero-pillars { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; max-width: 34rem; margin-inline: auto; }
+.hero-pillar { display: flex; align-items: center; gap: .6rem; min-width: 0; padding: .45rem .55rem; padding-inline-end: .8rem; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.22); color: #fff; font-weight: 700; font-size: .92rem; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: background-color .2s, border-color .2s, transform .2s; }
+.hero-pillar:hover { background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.6); transform: translateY(-2px); }
+.hero-pillar__icon { width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; background: linear-gradient(135deg, var(--aqua), var(--aqua-deep)); }
+.hero-pillar__icon--coral { background: linear-gradient(135deg, #f58a73, var(--coral)); }
+.hero-pillar__l { flex: 1; min-width: 0; text-align: start; line-height: 1.2; overflow-wrap: break-word; -webkit-hyphens: auto; hyphens: auto; }
+.hero-pillar__n { flex-shrink: 0; min-width: 1.9rem; height: 1.9rem; padding-inline: .5rem; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; font-size: .82rem; background: #fff; color: var(--navy); font-variant-numeric: tabular-nums; }
+@media (max-width: 639px) { .hero-pillar { border-radius: 18px; gap: .5rem; padding: .5rem; font-size: .84rem; } .hero-pillar__icon { width: 32px; height: 32px; font-size: 1rem; } .hero-pillar__n { min-width: 1.7rem; height: 1.7rem; font-size: .76rem; } }
+@media (max-width: 399px) { .hero-pillar { padding-inline-start: .9rem; } .hero-pillar__icon { display: none; } }
+
 .panel-head { display: flex; align-items: center; gap: .85rem; margin-bottom: 1rem; color: #fff; }
 .panel-head__icon { width: 46px; height: 46px; border-radius: 14px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.45rem; background: linear-gradient(135deg, var(--aqua), var(--aqua-deep)); box-shadow: 0 10px 22px rgba(37,170,225,.35); }
 .panel-head h2 { font-size: 1.35rem; font-weight: 800; line-height: 1.15; }
