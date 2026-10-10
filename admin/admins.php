@@ -8,13 +8,43 @@ $h = fn($v) => htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
 $meId = (int)$_SESSION['admin_user_id'];
 $msg = $_GET['msg'] ?? '';
 $err = '';
+$errIn = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $act = $_POST['action'] ?? '';
     $id = (int)($_POST['id'] ?? 0);
     $total = (int)$db->query("SELECT COUNT(*) FROM admin_users")->fetchColumn();
 
-    if ($act === 'add') {
+    if ($act === 'change_own') {
+        $cur_pw = is_string($_POST['current_password'] ?? null) ? $_POST['current_password'] : '';
+        $new_pw = is_string($_POST['new_password'] ?? null) ? $_POST['new_password'] : '';
+        $new_pw2 = is_string($_POST['new_password2'] ?? null) ? $_POST['new_password2'] : '';
+        $row = $db->prepare('SELECT password_hash FROM admin_users WHERE id = ?');
+        $row->execute([$meId]);
+        $hash = $row->fetchColumn();
+        $ownErr = '';
+        if (is_login_locked((string)$_SESSION['admin_username'])) {
+            $ownErr = 'Çok fazla hatalı deneme. Lütfen 15 dakika sonra tekrar deneyin.';
+        } elseif (!$hash || !password_verify($cur_pw, $hash)) {
+            record_login_failure((string)$_SESSION['admin_username']);
+            $ownErr = 'Mevcut şifre yanlış.';
+        } elseif (mb_strlen($new_pw) < 12) {
+            $ownErr = 'Yeni şifre en az 12 karakter olmalı.';
+        } elseif ($new_pw !== $new_pw2) {
+            $ownErr = 'Yeni şifreler aynı değil.';
+        } elseif ($new_pw === $cur_pw) {
+            $ownErr = 'Yeni şifre eskisinden farklı olmalı.';
+        } else {
+            $newHash = password_hash($new_pw, PASSWORD_DEFAULT);
+            $db->prepare('UPDATE admin_users SET password_hash = ? WHERE id = ?')->execute([$newHash, $meId]);
+            $_SESSION['admin_pw_fp'] = hash('sha256', $newHash); // keeps this session logged in
+            session_regenerate_id(true);
+            header('Location: admins.php?msg=own');
+            exit;
+        }
+        $err = $ownErr;
+        $errIn = 'own';
+    } elseif ($act === 'add') {
         $u = trim((string)($_POST['username'] ?? ''));
         $p1 = is_string($_POST['password'] ?? null) ? $_POST['password'] : '';
         $p2 = is_string($_POST['password2'] ?? null) ? $_POST['password2'] : '';
@@ -83,9 +113,9 @@ $input = 'border border-gray-300 rounded-md px-3 py-2 text-sm';
 
         <div class="p-4 md:p-8 max-w-4xl w-full space-y-6">
             <?php if ($msg): ?>
-                <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg"><?= $h(['added' => 'Yönetici eklendi.', 'reset' => 'Şifre değiştirildi. Bu kişinin açık oturumları kapandı.', 'deleted' => 'Yönetici silindi.'][$msg] ?? '') ?></div>
+                <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg"><?= $h(['added' => 'Yönetici eklendi.', 'reset' => 'Şifre değiştirildi. Bu kişinin açık oturumları kapandı.', 'deleted' => 'Yönetici silindi.', 'own' => 'Şifreniz değiştirildi.'][$msg] ?? '') ?></div>
             <?php endif; ?>
-            <?php if ($err): ?>
+            <?php if ($err && $errIn !== 'own'): ?>
                 <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg"><?= $h($err) ?></div>
             <?php endif; ?>
 
@@ -101,7 +131,7 @@ $input = 'border border-gray-300 rounded-md px-3 py-2 text-sm';
                             <td class="px-4 py-3 text-gray-500 whitespace-nowrap"><?= $h(date('d.m.Y', strtotime($a['created_at']))) ?></td>
                             <td class="px-4 py-3 text-right">
                             <?php if ($isMe): ?>
-                                <a href="settings.php" class="text-indigo-600 hover:underline text-xs">Şifremi değiştir</a>
+                                <a href="#sifrem" class="text-indigo-600 hover:underline text-xs">Şifremi değiştir</a>
                             <?php else: ?>
                                 <form method="POST" class="inline-flex flex-wrap items-center justify-end gap-2">
                                     <?= csrf_field() ?>
@@ -118,12 +148,33 @@ $input = 'border border-gray-300 rounded-md px-3 py-2 text-sm';
                 </table>
             </section>
 
+            <form method="POST" id="sifrem" action="admins.php#sifrem" class="bg-white border border-gray-200 rounded-lg shadow-sm p-5 md:p-6 space-y-4 scroll-mt-4" autocomplete="off">
+                <?= csrf_field() ?>
+                <input type="hidden" name="action" value="change_own">
+                <div>
+                    <h3 class="font-semibold text-gray-900">Şifremi değiştir <span class="font-normal text-gray-500">(<?= $h($_SESSION['admin_username']) ?>)</span></h3>
+                    <p class="text-sm text-gray-600 mt-1">Yalnızca kendi hesabınızın şifresini değiştirir. Yeni şifre en az 12 karakter olmalı; uzun bir cümle en iyisidir. Başkasının şifresi için yukarıdaki listede "Şifre sıfırla" kullanılır.</p>
+                </div>
+                <?php if ($err && $errIn === 'own'): ?>
+                    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm"><?= $h($err) ?></div>
+                <?php endif; ?>
+                <div class="grid sm:grid-cols-3 gap-4">
+                    <label class="block text-sm text-gray-700">Mevcut şifre
+                        <input type="password" name="current_password" required autocomplete="current-password" class="mt-1 w-full <?= $input ?>"></label>
+                    <label class="block text-sm text-gray-700">Yeni şifre
+                        <input type="password" name="new_password" required minlength="12" autocomplete="new-password" class="mt-1 w-full <?= $input ?>"></label>
+                    <label class="block text-sm text-gray-700">Yeni şifre (tekrar)
+                        <input type="password" name="new_password2" required minlength="12" autocomplete="new-password" class="mt-1 w-full <?= $input ?>"></label>
+                </div>
+                <button type="submit" class="bg-gray-800 hover:bg-gray-900 text-white px-5 py-2 rounded-md text-sm font-medium">Şifremi değiştir</button>
+            </form>
+
             <form method="POST" class="bg-white border border-gray-200 rounded-lg shadow-sm p-5 md:p-6 space-y-4" autocomplete="off">
                 <?= csrf_field() ?>
                 <input type="hidden" name="action" value="add">
                 <div>
                     <h3 class="font-semibold text-gray-900">Yeni yönetici ekle</h3>
-                    <p class="text-sm text-gray-600 mt-1">Her yönetici tüm ekranlara erişir. Şifre en az 12 karakter olmalı; ilk girişten sonra kişi şifresini Ayarlar'dan değiştirebilir. Silinen veya şifresi sıfırlanan kişinin açık oturumları hemen kapanır.</p>
+                    <p class="text-sm text-gray-600 mt-1">Her yönetici tüm ekranlara erişir. Şifre en az 12 karakter olmalı; ilk girişten sonra kişi şifresini bu sayfadaki "Şifremi değiştir" bölümünden değiştirebilir. Silinen veya şifresi sıfırlanan kişinin açık oturumları hemen kapanır.</p>
                 </div>
                 <div class="grid sm:grid-cols-3 gap-4">
                     <label class="block text-sm text-gray-700">Kullanıcı adı
