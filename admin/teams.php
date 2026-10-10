@@ -30,7 +30,7 @@ $msg = $_GET['msg'] ?? '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ekip Yönetimi - Yönetim Paneli</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../assets/css/tailwind.css?v=<?= @filemtime(__DIR__ . '/../assets/css/tailwind.css') ?>">
 </head>
 <body class="bg-gray-100 flex min-h-screen">
     <!-- Sidebar -->
@@ -42,6 +42,7 @@ $msg = $_GET['msg'] ?? '';
             <a href="teams.php" class="block px-4 py-2 rounded-md bg-gray-800 text-white">Ekipler</a>
             <a href="events.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">Etkinlikler</a>
             <a href="settings.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">Ayarlar</a>
+            <a href="../" target="_blank" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">Siteyi gör ↗</a>
         </nav>
     </aside>
 

@@ -4,7 +4,7 @@ require_once __DIR__ . '/../includes/functions.php';
 require_admin_login();
 
 // Logout logic
-if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+if (($_POST['action'] ?? '') === 'logout') { // POST only (CSRF-checked in auth.php)
     admin_logout();
     header('Location: login.php');
     exit;
@@ -49,7 +49,7 @@ $h = fn($v) => htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Yönetim Paneli</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../assets/css/tailwind.css?v=<?= @filemtime(__DIR__ . '/../assets/css/tailwind.css') ?>">
 </head>
 <body class="bg-gray-100 flex min-h-screen">
     <aside class="w-64 bg-gray-900 text-white flex-col hidden md:flex">
@@ -62,14 +62,14 @@ $h = fn($v) => htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
         </nav>
         <div class="p-4 border-t border-gray-800">
             <div class="text-sm text-gray-400 mb-2">Giriş yapan: <?= $h($_SESSION['admin_username']) ?></div>
-            <a href="?action=logout" class="block w-full text-center px-4 py-2 border border-gray-600 rounded-md text-sm text-gray-300 hover:bg-gray-800 hover:text-white">Çıkış Yap</a>
+            <form method="POST" action="index.php"><?= csrf_field() ?><input type="hidden" name="action" value="logout"><button type="submit" class="block w-full text-center px-4 py-2 border border-gray-600 rounded-md text-sm text-gray-300 hover:bg-gray-800 hover:text-white">Çıkış Yap</button></form>
         </div>
     </aside>
 
     <main class="flex-1 flex flex-col min-w-0">
         <header class="h-16 bg-white shadow-sm flex items-center justify-between px-4 md:px-8 gap-4">
             <h2 class="text-xl font-semibold text-gray-800">Dashboard</h2>
-            <a href="?action=logout" class="md:hidden text-sm text-gray-500 underline">Çıkış</a>
+            <form method="POST" action="index.php" class="md:hidden"><?= csrf_field() ?><input type="hidden" name="action" value="logout"><button type="submit" class="text-sm text-gray-500 underline">Çıkış</button></form>
         </header>
         <!-- Mobile menu -->
         <nav class="md:hidden bg-gray-900 text-sm flex overflow-x-auto">

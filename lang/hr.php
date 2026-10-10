@@ -14,7 +14,7 @@ return [
     'nav_map'              => 'Karta svijeta',
     'nav_all_offices'      => 'Svi uredi',
     'home_title'           => 'Pronađite najbliži ACIBADEM',
-    'home_subtitle'        => 'Naša globalna mreža od više od %d informativnih ureda u %d zemalja tu je da vam pomogne.',
+    'home_subtitle'        => 'Naša globalna mreža od %d informativnih ureda u %d zemalja tu je da vam pomogne.',
     'btn_locate'           => 'Pronađite najbliži Acıbadem',
     'btn_map'              => 'Pogledajte Acıbadem na karti svijeta',
     'loading_nearest'      => 'Traži se najbliži ured...',

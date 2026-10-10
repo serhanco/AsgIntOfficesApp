@@ -12,7 +12,7 @@ return [
     'nav_map'              => 'Weltkarte',
     'nav_all_offices'      => 'Alle Büros',
     'home_title'           => 'Nächstes ACIBADEM finden',
-    'home_subtitle'        => 'Unser weltweites Netzwerk aus über %d Informationsbüros in %d Ländern ist für Sie da.',
+    'home_subtitle'        => 'Unser weltweites Netzwerk aus %d Informationsbüros in %d Ländern ist für Sie da.',
     'btn_locate'           => 'Nächstes Acıbadem finden',
     'btn_map'              => 'Acıbadem auf der Weltkarte ansehen',
     'loading_nearest'      => 'Nächstes Büro wird gesucht...',

@@ -14,7 +14,7 @@ return [
     'nav_map'              => 'Harta e botës',
     'nav_all_offices'      => 'Të gjitha zyrat',
     'home_title'           => 'Gjeni ACIBADEM-in më të afërt',
-    'home_subtitle'        => 'Rrjeti ynë global me mbi %d zyra informacioni në %d vende është këtu për t\'ju ndihmuar.',
+    'home_subtitle'        => 'Rrjeti ynë global me %d zyra informacioni në %d vende është këtu për t\'ju ndihmuar.',
     'btn_locate'           => 'Gjeni Acıbadem-in më të afërt',
     'btn_map'              => 'Shihni Acıbadem në hartën e botës',
     'loading_nearest'      => 'Po kërkohet zyra më e afërt...',

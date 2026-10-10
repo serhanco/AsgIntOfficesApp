@@ -15,7 +15,7 @@ return [
 
     // Home page
     'home_title'          => 'Find Nearest ACIBADEM',
-    'home_subtitle'       => 'Our global network of %d+ information offices across %d countries is here to assist you.',
+    'home_subtitle'       => 'Our global network of %d information offices across %d countries is here to assist you.',
     'btn_locate'          => 'Locate Nearest Acibadem',
     'btn_map'             => 'See Acibadem on World Map',
     'loading_nearest'     => 'Finding nearest office...',

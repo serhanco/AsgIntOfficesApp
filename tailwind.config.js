@@ -3,6 +3,7 @@ module.exports = {
   content: [
     './*.php',
     './includes/**/*.php',
+    './admin/**/*.php',
     './lang/**/*.php',
     './assets/js/**/*.js',
   ],

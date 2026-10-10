@@ -14,7 +14,7 @@ return [
     'nav_map'              => 'Harta lumii',
     'nav_all_offices'      => 'Toate birourile',
     'home_title'           => 'Găsiți cel mai apropiat ACIBADEM',
-    'home_subtitle'        => 'Rețeaua noastră globală de peste %d birouri de informare din %d țări este aici pentru dumneavoastră.',
+    'home_subtitle'        => 'Rețeaua noastră globală de %d birouri de informare din %d țări este aici pentru dumneavoastră.',
     'btn_locate'           => 'Găsiți cel mai apropiat Acıbadem',
     'btn_map'              => 'Vedeți Acıbadem pe harta lumii',
     'loading_nearest'      => 'Se caută cel mai apropiat birou...',

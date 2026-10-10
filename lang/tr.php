@@ -12,7 +12,7 @@ return [
     'nav_map'              => 'Dünya Haritası',
     'nav_all_offices'      => 'Tüm Ofisler',
     'home_title'           => 'En Yakın ACIBADEM\'i Bulun',
-    'home_subtitle'        => '%2$d ülkedeki %1$d+ bilgi ofisimizden oluşan küresel ağımız size yardımcı olmak için burada.',
+    'home_subtitle'        => '%2$d ülkedeki %1$d bilgi ofisimizden oluşan küresel ağımız size yardımcı olmak için burada.',
     'btn_locate'           => 'En Yakın Acıbadem\'i Bul',
     'btn_map'              => 'Acıbadem\'i Dünya Haritasında Gör',
     'loading_nearest'      => 'En yakın ofis aranıyor...',

@@ -15,7 +15,36 @@ $maxLen = 20000;
 $msg = '';
 $err = '';
 
-if ($ready && $_SERVER['REQUEST_METHOD'] === 'POST') {
+$isPwForm = ($_POST['form'] ?? '') === 'password';
+$pwErr = '';
+
+if ($isPwForm) {
+    $cur_pw = is_string($_POST['current_password'] ?? null) ? $_POST['current_password'] : '';
+    $new_pw = is_string($_POST['new_password'] ?? null) ? $_POST['new_password'] : '';
+    $new_pw2 = is_string($_POST['new_password2'] ?? null) ? $_POST['new_password2'] : '';
+    $row = $db->prepare('SELECT password_hash FROM admin_users WHERE id = ?');
+    $row->execute([(int)$_SESSION['admin_user_id']]);
+    $hash = $row->fetchColumn();
+    if (is_login_locked((string)$_SESSION['admin_username'])) {
+        $pwErr = 'Çok fazla hatalı deneme. Lütfen 15 dakika sonra tekrar deneyin.';
+    } elseif (!$hash || !password_verify($cur_pw, $hash)) {
+        record_login_failure((string)$_SESSION['admin_username']);
+        $pwErr = 'Mevcut şifre yanlış.';
+    } elseif (mb_strlen($new_pw) < 12) {
+        $pwErr = 'Yeni şifre en az 12 karakter olmalı.';
+    } elseif ($new_pw !== $new_pw2) {
+        $pwErr = 'Yeni şifreler aynı değil.';
+    } elseif ($new_pw === $cur_pw) {
+        $pwErr = 'Yeni şifre eskisinden farklı olmalı.';
+    } else {
+        $db->prepare('UPDATE admin_users SET password_hash = ? WHERE id = ?')->execute([password_hash($new_pw, PASSWORD_DEFAULT), (int)$_SESSION['admin_user_id']]);
+        session_regenerate_id(true);
+        header('Location: settings.php?msg=pw');
+        exit;
+    }
+}
+
+if ($ready && !$isPwForm && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $values = [];
     foreach ($fields as $key => $_) {
         $v = str_replace("\r\n", "\n", (string)($_POST[$key] ?? ''));
@@ -35,7 +64,7 @@ if ($ready && $_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $err !== '') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$isPwForm && $err !== '') {
     $cur = $_POST;
 } else {
     $cur = [];
@@ -50,7 +79,7 @@ $nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => '
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ayarlar - Yönetim Paneli</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../assets/css/tailwind.css?v=<?= @filemtime(__DIR__ . '/../assets/css/tailwind.css') ?>">
 </head>
 <body class="bg-gray-100 flex min-h-screen">
     <aside class="w-64 bg-gray-900 text-white flex-col hidden md:flex">
@@ -59,6 +88,7 @@ $nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => '
             <?php foreach ($nav as $href => $label): ?>
             <a href="<?= $href ?>" class="block px-4 py-2 rounded-md <?= $href === 'settings.php' ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white' ?>"><?= $label ?></a>
             <?php endforeach; ?>
+            <a href="../" target="_blank" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">Siteyi gör ↗</a>
         </nav>
     </aside>
 
@@ -119,6 +149,30 @@ $nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => '
                     </div>
                 </form>
             <?php endif; ?>
+
+            <?php if (($_GET['msg'] ?? '') === 'pw'): ?>
+                <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">Şifre değiştirildi.</div>
+            <?php endif; ?>
+            <?php if ($pwErr): ?>
+                <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg"><?= $h($pwErr) ?></div>
+            <?php endif; ?>
+            <form method="POST" class="bg-white border border-gray-200 rounded-lg shadow-sm p-5 md:p-6 space-y-4" autocomplete="off">
+                <?= csrf_field() ?>
+                <input type="hidden" name="form" value="password">
+                <div>
+                    <h3 class="font-semibold text-gray-900">Şifre değiştir</h3>
+                    <p class="text-sm text-gray-600 mt-1">Giriş yapan kullanıcı: <strong><?= $h($_SESSION['admin_username']) ?></strong>. Yeni şifre en az 12 karakter olmalı; uzun bir cümle en iyisidir.</p>
+                </div>
+                <div class="grid sm:grid-cols-3 gap-4">
+                    <label class="block text-sm text-gray-700">Mevcut şifre
+                        <input type="password" name="current_password" required autocomplete="current-password" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 text-sm"></label>
+                    <label class="block text-sm text-gray-700">Yeni şifre
+                        <input type="password" name="new_password" required minlength="12" autocomplete="new-password" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 text-sm"></label>
+                    <label class="block text-sm text-gray-700">Yeni şifre (tekrar)
+                        <input type="password" name="new_password2" required minlength="12" autocomplete="new-password" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 text-sm"></label>
+                </div>
+                <button type="submit" class="bg-gray-800 hover:bg-gray-900 text-white px-5 py-2 rounded-md text-sm font-medium">Şifreyi değiştir</button>
+            </form>
         </div>
     </main>
 </body>

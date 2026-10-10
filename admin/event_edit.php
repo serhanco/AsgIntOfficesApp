@@ -176,7 +176,7 @@ function stopRow(int $i, array $s, array $offices, callable $h, string $input): 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $isEdit ? 'Etkinlik Düzenle' : 'Yeni Etkinlik' ?> - Yönetim Paneli</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../assets/css/tailwind.css?v=<?= @filemtime(__DIR__ . '/../assets/css/tailwind.css') ?>">
 </head>
 <body class="bg-gray-100 flex min-h-screen">
     <aside class="w-64 bg-gray-900 text-white flex flex-col hidden md:flex">
@@ -187,6 +187,7 @@ function stopRow(int $i, array $s, array $offices, callable $h, string $input): 
             <a href="teams.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Ekipler</a>
             <a href="events.php" class="block px-4 py-2 rounded-md bg-gray-800 text-white">Etkinlikler</a>
             <a href="settings.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Ayarlar</a>
+            <a href="../" target="_blank" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Siteyi gör ↗</a>
         </nav>
     </aside>
 
