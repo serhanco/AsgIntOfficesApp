@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$isPwForm && $err !== '') {
     if ($ready) foreach (array_merge(array_keys($fields), ['ga4_id', 'consent_mode', 'stat_served']) as $k) $cur[$k] = siteSetting($k);
 }
 $h = fn($v) => htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
-$nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => 'Ekipler', 'events.php' => 'Etkinlikler', 'settings.php' => 'Ayarlar', 'admins.php' => 'Yöneticiler'];
+$nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => 'Ekipler', 'events.php' => 'Etkinlikler', 'event_requests.php' => 'Talepler', 'settings.php' => 'Ayarlar', 'admins.php' => 'Yöneticiler', '../apply_update.php' => 'Güncellemeler'];
 ?>
 <!DOCTYPE html>
 <html lang="tr">

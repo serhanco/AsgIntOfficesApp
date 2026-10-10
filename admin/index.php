@@ -27,11 +27,16 @@ $drafts = array_values(array_filter($events, fn($e) => !$e['is_published']));
 // Things that need attention
 $todo = [];
 if (!$ready) $todo[] = ['Etkinlik veritabanı yaması bekliyor', 'Yamayı uygula', '../apply_update.php', 'amber'];
-if (!$hasWhatsapp) $todo[] = ['WhatsApp alanı için veritabanı yaması bekliyor', 'Yamayı uygula', '../apply_update.php', 'amber'];
-if (!$db->query("SHOW TABLES LIKE 'site_settings'")->fetchColumn()) $todo[] = ['Ayarlar ekranı için veritabanı yaması bekliyor', 'Yamayı uygula', '../apply_update.php', 'amber'];
+// Database patches that were added to the project but not applied yet
+$pendingPatches = [];
+try {
+    $applied = $db->query("SHOW TABLES LIKE 'schema_patches'")->fetchColumn() ? $db->query("SELECT filename FROM schema_patches")->fetchAll(PDO::FETCH_COLUMN) : [];
+    $pendingPatches = array_values(array_diff(array_map('basename', glob(__DIR__ . '/../database/patch_*.sql') ?: []), $applied));
+} catch (\Throwable $e) {
+}
+if ($pendingPatches) $todo[] = [count($pendingPatches) . ' veritabanı yaması bekliyor (' . implode(', ', array_map(fn($f) => preg_replace('/^patch_|\.sql$/', '', $f), $pendingPatches)) . ')', 'Güncellemeler', '../apply_update.php', 'amber'];
 $reqReady = (bool)$db->query("SHOW TABLES LIKE 'event_requests'")->fetchColumn();
-if (!$reqReady) $todo[] = ['Etkinlik talepleri için veritabanı yaması bekliyor', 'Yamayı uygula', '../apply_update.php', 'amber'];
-else {
+if ($reqReady) {
     $n = $one("SELECT COUNT(*) FROM event_requests WHERE status = 'new'");
     if ($n > 0) array_unshift($todo, [$n . ' etkinlik talebi yanıt bekliyor', 'Talepler', 'event_requests.php', 'blue']);
 }
@@ -46,7 +51,7 @@ $undated = count(array_filter($upcoming, fn($e) => !$e['start']));
 if ($undated > 0) $todo[] = [$undated . ' etkinliğin tarihi yok', 'Etkinlikler', 'events.php', 'blue'];
 
 $fmt = fn($d) => $d ? date('d.m.Y', strtotime($d)) : 'Tarih yok';
-$nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => 'Ekipler', 'events.php' => 'Etkinlikler', 'event_requests.php' => 'Talepler', 'settings.php' => 'Ayarlar', 'admins.php' => 'Yöneticiler'];
+$nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => 'Ekipler', 'events.php' => 'Etkinlikler', 'event_requests.php' => 'Talepler', 'settings.php' => 'Ayarlar', 'admins.php' => 'Yöneticiler', '../apply_update.php' => 'Güncellemeler'];
 $h = fn($v) => htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
 ?>
 <!DOCTYPE html>
