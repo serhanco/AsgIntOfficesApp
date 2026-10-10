@@ -125,6 +125,7 @@ $navItems = [
         <div class="wrap site-header__bar">
             <a href="<?= getBaseUrl() ?>/" class="flex items-center min-w-0 flex-shrink" aria-label="Acıbadem">
                 <img class="h-6 sm:h-7 lg:h-8 w-auto max-w-full object-contain" src="<?= getBaseUrl() ?>/assets/images/acibadem-white-logo.webp" alt="Acıbadem" width="200" height="32">
+                <span class="logo-side" dir="ltr" translate="no" aria-hidden="true"><b>INTERNATIONAL</b><i>OFFICES &amp; EVENTS</i></span>
             </a>
 
             <nav class="hidden lg:flex items-center gap-1" aria-label="Main">
