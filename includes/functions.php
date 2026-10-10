@@ -25,6 +25,7 @@ function getBaseUrl(): string {
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
     $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
     $path = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
+    $path = preg_replace('#/admin$#', '', $path); // links built inside the admin must still point at the public site
     return $protocol . '://' . $host . $path;
 }
 
