@@ -69,7 +69,7 @@ $navItems = [
     <link rel="icon" type="image/x-icon" href="<?= getBaseUrl() ?>/assets/images/favicon.ico">
     <script>document.documentElement.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('js-anim');</script>
 
-    <?php $ga4Id = defined('GA4_ID') ? GA4_ID : 'G-QN9G5K8F63'; ?>
+    <?php $ga4Id = ga4Id(); ?>
     <?php if ($ga4Id !== '' && !isAdminVisitor()): ?>
     <script async src="https://www.googletagmanager.com/gtag/js?id=<?= e($ga4Id) ?>"></script>
     <script>
@@ -107,8 +107,10 @@ $navItems = [
     <script defer src="<?= asset('assets/js/app.js') ?>"></script>
     <script defer src="<?= asset('assets/js/v2.js') ?>"></script>
     <?= $extraHead ?>
+    <?= customCode('head_code') ?>
 </head>
 <body class="v2 min-h-screen flex flex-col antialiased">
+    <?= customCode('body_code') ?>
     <?php if (designPreview()): ?>
     <div class="preview-bar">
         <div class="wrap py-1.5 flex items-center justify-center gap-3 text-center" dir="ltr" lang="tr">

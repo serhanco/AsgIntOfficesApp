@@ -63,7 +63,7 @@ function renderLangMenu(): void {
     <link rel="icon" type="image/png" href="<?= getBaseUrl() ?>/assets/images/favicon.png">
     <link rel="icon" type="image/x-icon" href="<?= getBaseUrl() ?>/assets/images/favicon.ico">
     
-    <?php $ga4Id = defined('GA4_ID') ? GA4_ID : 'G-QN9G5K8F63'; ?>
+    <?php $ga4Id = ga4Id(); ?>
     <?php if ($ga4Id !== '' && !isAdminVisitor()): ?>
     <!-- Google tag (gtag.js) — set define('GA4_ID', '') in config.php to turn off -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=<?= e($ga4Id) ?>"></script>
@@ -101,8 +101,10 @@ function renderLangMenu(): void {
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="<?= getBaseUrl() ?>/assets/css/style.css">
+    <?= customCode('head_code') ?>
 </head>
 <body class="font-sans bg-gray-50 min-h-screen antialiased">
+    <?= customCode('body_code') ?>
     <!-- Top accent bar -->
     <div class="h-[3px] w-full bg-gradient-to-r from-[#0c2d74] to-[#1a4ba0]"></div>
     

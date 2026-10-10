@@ -68,5 +68,6 @@
 
     <!-- App JS -->
     <script src="<?= getBaseUrl() ?>/assets/js/app.js"></script>
+    <?= customCode('footer_code') ?>
 </body>
 </html>

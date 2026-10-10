@@ -29,6 +29,32 @@ function getBaseUrl(): string {
     return $protocol . '://' . $host . $path;
 }
 
+/** Site setting saved in the admin (table site_settings). Empty string when unset or the patch is not applied yet. */
+function siteSetting(string $key): string {
+    static $all = null;
+    if ($all === null) {
+        $all = [];
+        try {
+            foreach (getDb()->query("SELECT skey, svalue FROM site_settings") as $r) $all[$r['skey']] = (string)$r['svalue'];
+        } catch (\Throwable $e) {
+        }
+    }
+    return $all[$key] ?? '';
+}
+
+/** Custom code from the admin for a slot (head_code, body_code, footer_code). Not printed for logged-in admins, so their visits are not tracked. */
+function customCode(string $slot): string {
+    return isAdminVisitor() ? '' : siteSetting($slot);
+}
+
+/** GA4 measurement ID: admin setting, then config.php GA4_ID, then the built-in default. 'kapat' in the admin turns it off. */
+function ga4Id(): string {
+    $v = trim(siteSetting('ga4_id'));
+    if (strtolower($v) === 'kapat') return '';
+    if (preg_match('/^G-[A-Z0-9]{4,20}$/', $v)) return $v;
+    return defined('GA4_ID') ? GA4_ID : 'G-QN9G5K8F63';
+}
+
 /**
  * Get all offices
  */

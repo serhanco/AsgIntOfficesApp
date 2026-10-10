@@ -49,5 +49,6 @@
             </div>
         </div>
     </footer>
+    <?= customCode('footer_code') ?>
 </body>
 </html>

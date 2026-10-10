@@ -28,6 +28,7 @@ $drafts = array_values(array_filter($events, fn($e) => !$e['is_published']));
 $todo = [];
 if (!$ready) $todo[] = ['Etkinlik veritabanı yaması bekliyor', 'Yamayı uygula', '../apply_update.php', 'amber'];
 if (!$hasWhatsapp) $todo[] = ['WhatsApp alanı için veritabanı yaması bekliyor', 'Yamayı uygula', '../apply_update.php', 'amber'];
+if (!$db->query("SHOW TABLES LIKE 'site_settings'")->fetchColumn()) $todo[] = ['Ayarlar ekranı için veritabanı yaması bekliyor', 'Yamayı uygula', '../apply_update.php', 'amber'];
 if ($hasWhatsapp) {
     $n = $one("SELECT COUNT(*) FROM offices WHERE is_active = 1 AND (whatsapp IS NULL OR whatsapp = '')");
     if ($n > 0) $todo[] = [$n . ' ofiste WhatsApp numarası boş (butonu görünmez)', 'Ofisler', 'offices.php', 'blue'];
@@ -39,7 +40,7 @@ $undated = count(array_filter($upcoming, fn($e) => !$e['start']));
 if ($undated > 0) $todo[] = [$undated . ' etkinliğin tarihi yok', 'Etkinlikler', 'events.php', 'blue'];
 
 $fmt = fn($d) => $d ? date('d.m.Y', strtotime($d)) : 'Tarih yok';
-$nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => 'Ekipler', 'events.php' => 'Etkinlikler'];
+$nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => 'Ekipler', 'events.php' => 'Etkinlikler', 'settings.php' => 'Ayarlar'];
 $h = fn($v) => htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
 ?>
 <!DOCTYPE html>
