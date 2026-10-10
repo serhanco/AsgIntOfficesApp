@@ -2,6 +2,7 @@
 /** New design: home page with the nearest-office finder. Data comes from index.php. */
 $countryCount = count(array_unique(array_column($offices, 'country')));
 $institutions = require __DIR__ . '/../../institutions.php';
+$pageTitle = __('home_v2_meta');
 $extraHead = '<link rel="preload" as="image" href="' . getBaseUrl() . '/assets/images/home-hero.webp" fetchpriority="high">'
            . '<link rel="stylesheet" href="' . asset('assets/css/finder.css') . '">'
            . '<link rel="stylesheet" href="' . asset('assets/css/finder-v2.css') . '">';
@@ -29,19 +30,28 @@ $homeEvents = array_slice($homeEvents, 0, 6);
     <div class="hero__glow -top-40 end-[-10rem]"></div>
 
     <div class="wrap relative pt-10 pb-14 sm:pt-14 lg:pt-16 lg:pb-24">
-        <!-- Intro -->
+        <!-- Intro: the site's two pillars, offices and events -->
         <div class="text-center max-w-3xl mx-auto">
             <p class="eyebrow eyebrow--light rise justify-center"><?= __('site_name') ?></p>
-            <h1 class="rise mt-4 text-[2.15rem] leading-[1.08] sm:text-5xl xl:text-[3.4rem]" style="--d:.08s">
-                <span class="text-gradient"><?= __('home_title') ?></span>
+            <h1 class="rise mt-4 text-[1.95rem] leading-[1.08] sm:text-5xl xl:text-[3.4rem]" style="--d:.08s">
+                <span class="block text-gradient"><?= __('home_v2_title_a') ?></span>
+                <span class="hero__accent block"><?= __('home_v2_title_b') ?></span>
             </h1>
-            <p class="hero__lead rise mt-4 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed" style="--d:.16s">
-                <?= __('home_subtitle', count($offices), $countryCount) ?>
+            <p class="hero__lead rise mt-5 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed" style="--d:.16s">
+                <?= __('home_v2_lead', count($offices), $countryCount) ?>
             </p>
-            <!-- Phones: jump to either section -->
-            <div class="rise mt-6 grid grid-cols-2 gap-2 lg:hidden" style="--d:.2s">
-                <a href="#panel-offices" class="btn btn--ghost btn--sm"><i class="ph-fill ph-buildings" aria-hidden="true"></i><?= __('home_offices_h') ?></a>
-                <a href="#panel-events" class="btn btn--ghost btn--sm"><i class="ph-fill ph-calendar-star" aria-hidden="true"></i><?= __('nav_events') ?></a>
+            <!-- Jump to either pillar, with live counts -->
+            <div class="hero-pillars rise mt-7" style="--d:.2s">
+                <a href="#panel-offices" class="hero-pillar">
+                    <span class="hero-pillar__icon"><i class="ph-fill ph-buildings" aria-hidden="true"></i></span>
+                    <span class="hero-pillar__l"><?= __('home_offices_h') ?></span>
+                    <span class="hero-pillar__n"><?= count($offices) ?></span>
+                </a>
+                <a href="#panel-events" class="hero-pillar">
+                    <span class="hero-pillar__icon hero-pillar__icon--coral"><i class="ph-fill ph-calendar-star" aria-hidden="true"></i></span>
+                    <span class="hero-pillar__l"><?= __('nav_events') ?></span>
+                    <?php if ($upcomingCount): ?><span class="hero-pillar__n"><?= $upcomingCount ?></span><?php endif; ?>
+                </a>
             </div>
         </div>
 
