@@ -9,10 +9,10 @@ if (is_admin_logged_in()) {
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'] ?? '';
-    $password = $_POST['password'] ?? '';
+    $username = is_string($_POST['username'] ?? null) ? trim($_POST['username']) : '';
+    $password = is_string($_POST['password'] ?? null) ? $_POST['password'] : '';
 
-    if (is_login_locked()) {
+    if (is_login_locked($username)) {
         $error = 'Çok fazla hatalı deneme. Lütfen 15 dakika sonra tekrar deneyin.';
     } elseif (admin_login($username, $password)) {
         header('Location: index.php');
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yönetici Girişi - Acıbadem Int. Offices</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../assets/css/tailwind.css?v=<?= @filemtime(__DIR__ . '/../assets/css/tailwind.css') ?>">
 </head>
 <body class="bg-gray-50 flex items-center justify-center min-h-screen">
     <div class="max-w-md w-full bg-white rounded-lg shadow-md p-8">

@@ -37,7 +37,7 @@ $msg = $_GET['msg'] ?? '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Etkinlik Yönetimi - Yönetim Paneli</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../assets/css/tailwind.css?v=<?= @filemtime(__DIR__ . '/../assets/css/tailwind.css') ?>">
 </head>
 <body class="bg-gray-100 flex min-h-screen">
     <!-- Sidebar -->

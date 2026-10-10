@@ -186,7 +186,7 @@ $hqMail = 'international@acibadem.com';
 </div>
 <?php endif; ?>
 
-<!-- Request an event: opens WhatsApp or e-mail with the message filled in (nothing is stored on the site) -->
+<!-- Request an event: stored for the admin (Talepler) and/or sent through WhatsApp / e-mail with the message filled in -->
 <section id="request" class="pb-16 sm:pb-24 scroll-mt-28">
     <div class="wrap">
         <div class="dark-card p-6 sm:p-10 grid lg:grid-cols-2 gap-8 items-center">
@@ -195,12 +195,12 @@ $hqMail = 'international@acibadem.com';
                 <h2 class="mt-5 text-2xl sm:text-3xl font-extrabold"><?= __('events_req_h') ?></h2>
                 <p class="mt-3 text-[#cfdcef] max-w-md"><?= __('events_req_p') ?></p>
             </div>
-            <form id="req-form" class="space-y-3" onsubmit="return false" data-msg="<?= e(__('events_req_msg')) ?>">
+            <form id="req-form" class="space-y-3" novalidate data-msg="<?= e(__('events_req_msg')) ?>" data-ok="<?= e(__('events_req_thanks')) ?>" data-err="<?= e(__('events_req_err')) ?>" data-url="<?= e(getBaseUrl()) ?>/api/event-request">
                 <div class="relative">
                     <label for="req-type" class="sr-only"><?= __('events_req_type') ?></label>
                     <select id="req-type" class="field !bg-white/10 !text-white !border-white/25">
                         <?php foreach (EVENT_TYPES as $k => $_): ?>
-                        <option value="<?= e(__($k)) ?>" class="text-ink"><?= __($k) ?></option>
+                        <option value="<?= e($k) ?>" class="text-ink"><?= __($k) ?></option>
                         <?php endforeach; ?>
                     </select>
                     <i class="ph ph-caret-down absolute end-5 top-1/2 -translate-y-1/2 text-white/70 pointer-events-none" aria-hidden="true"></i>
@@ -209,8 +209,16 @@ $hqMail = 'international@acibadem.com';
                     <label for="req-where" class="sr-only"><?= __('events_req_where') ?></label>
                     <input type="text" id="req-where" class="field !bg-white/10 !text-white !border-white/25 placeholder:!text-white/60" placeholder="<?= e(__('events_req_where')) ?>" autocomplete="off">
                 </div>
+                <div>
+                    <label for="req-contact" class="sr-only"><?= __('events_req_contact') ?></label>
+                    <input type="text" id="req-contact" class="field !bg-white/10 !text-white !border-white/25 placeholder:!text-white/60" placeholder="<?= e(__('events_req_contact')) ?>" autocomplete="email" maxlength="200">
+                </div>
+                <input type="text" name="website" id="req-website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+                <button type="submit" class="btn btn--primary w-full !mt-4" data-req-send><i class="ph-fill ph-paper-plane-tilt" aria-hidden="true"></i><span><?= __('events_req_send') ?></span></button>
+                <p class="text-xs text-[#9fb3d1]"><?= __('events_req_note') ?></p>
+                <p id="req-status" class="text-sm font-semibold hidden" role="status" aria-live="polite"></p>
                 <div class="grid sm:grid-cols-2 gap-3 pt-1">
-                    <a href="<?= e($hqWa) ?>" data-req-wa target="_blank" rel="noopener" class="btn btn--primary"><i class="ph-fill ph-whatsapp-logo" aria-hidden="true"></i><?= __('js_whatsapp') ?></a>
+                    <a href="<?= e($hqWa) ?>" data-req-wa target="_blank" rel="noopener" class="btn btn--ghost"><i class="ph-fill ph-whatsapp-logo" aria-hidden="true"></i><?= __('js_whatsapp') ?></a>
                     <a href="mailto:<?= e($hqMail) ?>" data-req-mail class="btn btn--ghost"><i class="ph-fill ph-envelope-simple" aria-hidden="true"></i><?= __('js_email') ?></a>
                 </div>
             </form>
@@ -398,22 +406,61 @@ $hqMail = 'international@acibadem.com';
     calStart();
     document.addEventListener('DOMContentLoaded', function () { show(state.view); });
 
-    // ---- request an event: fills the message into WhatsApp / e-mail links
+    // ---- request an event: stored for the admin, and the message is filled into the WhatsApp / e-mail links
     var form = $('#req-form');
     if (form) {
-        var type = $('#req-type'), where = $('#req-where'), wa = $('[data-req-wa]'), mail = $('[data-req-mail]');
+        var type = $('#req-type'), where = $('#req-where'), contact = $('#req-contact'), wa = $('[data-req-wa]'), mail = $('[data-req-mail]');
+        var status = $('#req-status'), send = $('[data-req-send]');
+        function label() { return type.options[type.selectedIndex].text; }
         function msg() {
             var place = where.value.trim() || '…';
             return form.dataset.msg
-                .replace('%1$s', function () { return type.value; }).replace('%2$s', function () { return place; })
-                .replace('%s', function () { return type.value; }).replace('%s', function () { return place; });
+                .replace('%1$s', function () { return label(); }).replace('%2$s', function () { return place; })
+                .replace('%s', function () { return label(); }).replace('%s', function () { return place; });
         }
         function update() {
             var m = encodeURIComponent(msg());
             wa.href = 'https://wa.me/905359650466?text=' + m;
-            mail.href = 'mailto:international@acibadem.com?subject=' + encodeURIComponent(type.value) + '&body=' + m;
+            mail.href = 'mailto:international@acibadem.com?subject=' + encodeURIComponent(label()) + '&body=' + m;
+        }
+        function payload(channel) {
+            return JSON.stringify({ type: type.value, place: where.value, contact: contact.value, channel: channel, website: $('#req-website').value });
+        }
+        function say(text, ok) {
+            status.textContent = text;
+            status.classList.remove('hidden');
+            status.style.color = ok ? '#7ef0a8' : '#ffb4a6';
         }
         type.addEventListener('change', update); where.addEventListener('input', update); update();
+
+        // Opening WhatsApp or e-mail is also noted for the admin (nothing is lost if this fails)
+        ['wa', 'mail'].forEach(function (k) {
+            var a = k === 'wa' ? wa : mail;
+            a.addEventListener('click', function () {
+                try {
+                    var blob = new Blob([payload(k === 'wa' ? 'whatsapp' : 'email')], { type: 'application/json' });
+                    if (!(navigator.sendBeacon && navigator.sendBeacon(form.dataset.url, blob))) {
+                        fetch(form.dataset.url, { method: 'POST', body: blob, keepalive: true });
+                    }
+                } catch (e) {}
+            });
+        });
+
+        form.addEventListener('submit', function (ev) {
+            ev.preventDefault();
+            var digits = contact.value.replace(/\D/g, '');
+            var okContact = contact.value.indexOf('@') > 0 ? /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(contact.value.trim()) : digits.length >= 6;
+            if (!okContact) { contact.focus(); contact.setAttribute('aria-invalid', 'true'); say(contact.placeholder, false); return; }
+            contact.removeAttribute('aria-invalid');
+            send.disabled = true;
+            fetch(form.dataset.url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload('form') })
+                .then(function (r) { return r.json().then(function (j) { return r.ok && j.ok; }); })
+                .then(function (ok) {
+                    if (ok) { say(form.dataset.ok, true); send.style.display = 'none'; where.value = ''; contact.value = ''; update(); }
+                    else { say(form.dataset.err, false); send.disabled = false; }
+                })
+                .catch(function () { say(form.dataset.err, false); send.disabled = false; });
+        });
     }
 })();
 </script>

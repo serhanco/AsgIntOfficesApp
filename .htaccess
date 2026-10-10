@@ -11,6 +11,7 @@ RewriteRule ^event/([a-z0-9-]+)/?$ event.php?slug=$1 [L,QSA]
 RewriteRule ^nearest-beta/?$ / [R=301,L]
 RewriteRule ^contracted-institutions/?$ contracted-institutions.php [L,QSA]
 RewriteRule ^api/offices/?$ api.php [L,QSA]
+RewriteRule ^api/event-request/?$ event_request.php [L,QSA]
 
 # Block direct access to config and private directories
 RewriteRule ^(config\.php|includes/|database/|backups/|admin/includes/|scripts/|node_modules/) - [F,L]
@@ -28,6 +29,8 @@ ErrorDocument 404 /404.php
 Header set X-Content-Type-Options "nosniff"
 Header set X-Frame-Options "SAMEORIGIN"
 Header set X-XSS-Protection "1; mode=block"
+Header set Referrer-Policy "strict-origin-when-cross-origin"
+Header set Permissions-Policy "geolocation=(self), camera=(), microphone=(), payment=()"
 
 # Prevent directory listing
 Options -Indexes

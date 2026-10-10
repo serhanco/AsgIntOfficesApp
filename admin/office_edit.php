@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $is_edit ? 'Ofis Düzenle' : 'Yeni Ofis Ekle' ?> - Yönetim Paneli</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../assets/css/tailwind.css?v=<?= @filemtime(__DIR__ . '/../assets/css/tailwind.css') ?>">
 </head>
 <body class="bg-gray-100 flex min-h-screen">
     <!-- Sidebar -->
@@ -116,6 +116,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <a href="offices.php" class="block px-4 py-2 rounded-md bg-gray-800 text-white">Ofisler</a>
             <a href="teams.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Ekipler</a>
             <a href="events.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Etkinlikler</a>
+            <a href="event_requests.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Talepler</a>
+            <a href="settings.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Ayarlar</a>
+            <a href="admins.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Yöneticiler</a>
+            <a href="../apply_update.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Güncellemeler</a>
+            <a href="../" target="_blank" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Siteyi gör ↗</a>
         </nav>
     </aside>
 

@@ -15,7 +15,7 @@ return [
 
     // Home page
     'home_title'          => 'Find Nearest ACIBADEM',
-    'home_subtitle'       => 'Our global network of %d+ information offices across %d countries is here to assist you.',
+    'home_subtitle'       => 'Our global network of %d information offices across %d countries is here to assist you.',
     'btn_locate'          => 'Locate Nearest Acibadem',
     'btn_map'             => 'See Acibadem on World Map',
     'loading_nearest'     => 'Finding nearest office...',
@@ -228,5 +228,14 @@ return [
     'events_req_type'         => 'Event type',
     'events_req_where'        => 'City or country',
     'events_req_msg'          => 'Hello, I would like to request an event (%s) in %s.',
+    'events_req_contact'       => 'Your phone or e-mail',
+    'events_req_send'          => 'Send request',
+    'events_req_note'          => 'We use your contact details only to reply to this request.',
+    'events_req_thanks'        => 'Thank you! Your request reached our team and we will contact you soon.',
+    'events_req_err'           => 'Could not send the request. Please use WhatsApp or e-mail.',
+    'cookie_text'              => 'We use cookies for statistics and to improve this site. You can accept or decline them.',
+    'cookie_accept'            => 'Accept',
+    'cookie_decline'           => 'Decline',
+    'cookie_manage'            => 'Cookie preferences',
     'event_wa_msg'            => 'Hello, I would like to know more about this event: %s',
 ];

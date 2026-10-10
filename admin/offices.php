@@ -34,7 +34,7 @@ $msg = $_GET['msg'] ?? '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ofis Yönetimi - Yönetim Paneli</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../assets/css/tailwind.css?v=<?= @filemtime(__DIR__ . '/../assets/css/tailwind.css') ?>">
 </head>
 <body class="bg-gray-100 flex min-h-screen">
     <!-- Sidebar -->
@@ -47,10 +47,15 @@ $msg = $_GET['msg'] ?? '';
             <a href="offices.php" class="block px-4 py-2 rounded-md bg-gray-800 text-white">Ofisler</a>
             <a href="teams.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">Ekipler</a>
             <a href="events.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">Etkinlikler</a>
+            <a href="event_requests.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">Talepler</a>
+            <a href="settings.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">Ayarlar</a>
+            <a href="admins.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">Yöneticiler</a>
+            <a href="../apply_update.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">Güncellemeler</a>
+            <a href="../" target="_blank" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">Siteyi gör ↗</a>
         </nav>
         <div class="p-4 border-t border-gray-800">
             <div class="text-sm text-gray-400 mb-2">Giriş yapan: <?= htmlspecialchars($_SESSION['admin_username']) ?></div>
-            <a href="index.php?action=logout" class="block w-full text-center px-4 py-2 border border-gray-600 rounded-md text-sm text-gray-300 hover:bg-gray-800 hover:text-white">Çıkış Yap</a>
+            <form method="POST" action="index.php"><?= csrf_field() ?><input type="hidden" name="action" value="logout"><button type="submit" class="block w-full text-center px-4 py-2 border border-gray-600 rounded-md text-sm text-gray-300 hover:bg-gray-800 hover:text-white">Çıkış Yap</button></form>
         </div>
     </aside>
 

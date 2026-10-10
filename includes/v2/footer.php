@@ -42,12 +42,14 @@
 
         <div class="border-t border-white/10">
             <div class="wrap py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-                <p><?= __('footer_copyright') ?></p>
+                <p><?= __('footer_copyright') ?><?php if (showConsentUi()): ?> · <a href="#" data-consent-open class="underline underline-offset-2"><?= __('cookie_manage') ?></a><?php endif; ?></p>
                 <p class="flex items-center gap-4">
                     <a href="<?= getBaseUrl() ?>/api/offices" target="_blank" class="inline-flex items-center gap-1 opacity-70"><i class="ph-fill ph-code" aria-hidden="true"></i> API</a>
                 </p>
             </div>
         </div>
     </footer>
+    <?php require __DIR__ . '/../consent-banner.php'; ?>
+    <?= customCode('footer_code') ?>
 </body>
 </html>

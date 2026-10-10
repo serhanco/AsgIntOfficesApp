@@ -29,6 +29,118 @@ function getBaseUrl(): string {
     return $protocol . '://' . $host . $path;
 }
 
+/** Is $ip inside the CIDR range? Works for IPv4 and IPv6. */
+function ip_in_cidr(string $ip, string $cidr): bool {
+    [$net, $bits] = explode('/', $cidr) + [1 => null];
+    $ipBin = @inet_pton($ip);
+    $netBin = @inet_pton($net);
+    if ($ipBin === false || $netBin === false || strlen($ipBin) !== strlen($netBin)) return false;
+    $bits = (int)$bits;
+    $bytes = intdiv($bits, 8);
+    if ($bytes && substr($ipBin, 0, $bytes) !== substr($netBin, 0, $bytes)) return false;
+    $rest = $bits % 8;
+    if ($rest === 0) return true;
+    $mask = (0xFF << (8 - $rest)) & 0xFF;
+    return (ord($ipBin[$bytes]) & $mask) === (ord($netBin[$bytes]) & $mask);
+}
+
+/**
+ * The visitor's real IP. Behind Cloudflare every request arrives from a Cloudflare address,
+ * so CF-Connecting-IP is trusted only when the connection really comes from Cloudflare.
+ */
+function client_ip(): string {
+    $remote = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $cf = $_SERVER['HTTP_CF_CONNECTING_IP'] ?? '';
+    if ($cf === '' || filter_var($cf, FILTER_VALIDATE_IP) === false) return $remote;
+    $cloudflare = [
+        '173.245.48.0/20', '103.21.244.0/22', '103.22.200.0/22', '103.31.4.0/22', '141.101.64.0/18',
+        '108.162.192.0/18', '190.93.240.0/20', '188.114.96.0/20', '197.234.240.0/22', '198.41.128.0/17',
+        '162.158.0.0/15', '104.16.0.0/13', '104.24.0.0/14', '172.64.0.0/13', '131.0.72.0/22',
+        '2400:cb00::/32', '2606:4700::/32', '2803:f800::/32', '2405:b500::/32', '2405:8100::/32',
+        '2a06:98c0::/29', '2c0f:f248::/32',
+    ];
+    foreach ($cloudflare as $range) if (ip_in_cidr($remote, $range)) return $cf;
+    return $remote;
+}
+
+/** Site setting saved in the admin (table site_settings). Empty string when unset or the patch is not applied yet. */
+function siteSetting(string $key): string {
+    static $all = null;
+    if ($all === null) {
+        $all = [];
+        try {
+            foreach (getDb()->query("SELECT skey, svalue FROM site_settings") as $r) $all[$r['skey']] = (string)$r['svalue'];
+        } catch (\Throwable $e) {
+        }
+    }
+    return $all[$key] ?? '';
+}
+
+/**
+ * Cookie consent: visitors from the EU/EEA, UK, Switzerland and Russia (country from Cloudflare) must accept
+ * before statistics and the custom codes from the admin load. Unknown country counts as "needs consent".
+ * Edit CONSENT_COUNTRIES to add or remove countries (e.g. 'TR').
+ */
+const CONSENT_COUNTRIES = [
+    'AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE',
+    'IS','LI','NO','GB','CH','RU',
+];
+
+function consentRegion(): bool {
+    $cc = strtoupper(trim($_SERVER['HTTP_CF_IPCOUNTRY'] ?? ''));
+    if (!preg_match('/^[A-Z]{2}$/', $cc) || $cc === 'XX' || $cc === 'T1') return true;
+    return in_array($cc, CONSENT_COUNTRIES, true);
+}
+
+/** 'yes', 'no' or '' (not chosen yet) */
+function consentChoice(): string {
+    $v = $_COOKIE['asg_consent'] ?? '';
+    return $v === 'yes' || $v === 'no' ? $v : '';
+}
+
+/** 'basic': nothing loads before consent. 'advanced': Google tags load in denied mode and switch on after consent (Consent Mode v2). */
+function consentMode(): string {
+    return siteSetting('consent_mode') === 'advanced' ? 'advanced' : 'basic';
+}
+
+/** May statistics and custom codes load for this visitor? */
+function analyticsAllowed(): bool {
+    return !consentRegion() || consentMode() === 'advanced' || consentChoice() === 'yes';
+}
+
+/** Google Consent Mode v2 default state, printed before any Google tag. Only for visitors who are asked for consent. */
+function consentDefaultScript(): string {
+    if (!showConsentUi()) return '';
+    $v = consentChoice() === 'yes' ? 'granted' : 'denied';
+    return '<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}'
+        . "gtag('consent','default',{ad_storage:'$v',ad_user_data:'$v',ad_personalization:'$v',analytics_storage:'$v',functionality_storage:'granted',security_storage:'granted',wait_for_update:500});</script>\n";
+}
+
+/** Number for the "countries served" tile: [number, suffix]. Admin setting, default 90+. */
+function statServed(): array {
+    $v = trim(siteSetting('stat_served'));
+    if (!preg_match('/^(\d{1,5})(\+?)$/', $v, $m)) return [90, '+'];
+    return [(int)$m[1], $m[2]];
+}
+
+/** Show the cookie bar / preferences link to this visitor? */
+function showConsentUi(): bool {
+    return consentRegion() && !isAdminVisitor();
+}
+
+/** Custom code from the admin for a slot (head_code, body_code, footer_code). Not printed for logged-in admins (their visits are not tracked) or before consent. */
+function customCode(string $slot): string {
+    return isAdminVisitor() || !analyticsAllowed() ? '' : siteSetting($slot);
+}
+
+/** GA4 measurement ID: admin setting, then config.php GA4_ID, then the built-in default. 'kapat' in the admin turns it off. */
+function ga4Id(): string {
+    $v = trim(siteSetting('ga4_id'));
+    if (strtolower($v) === 'kapat') return '';
+    if (preg_match('/^G-[A-Z0-9]{4,20}$/', $v)) return $v;
+    return defined('GA4_ID') ? GA4_ID : 'G-QN9G5K8F63';
+}
+
 /**
  * Get all offices
  */

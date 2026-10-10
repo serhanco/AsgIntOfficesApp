@@ -80,8 +80,14 @@ function out(string $html): void {
     echo $isCli ? html_entity_decode(strip_tags($html)) . PHP_EOL : $html;
 }
 
+// Link back to the admin home (shown to logged-in admins, top and bottom of every state of this page)
+$backLink = $isAdmin
+    ? '<p><a href="admin/index.php" style="display:inline-block;padding:8px 16px;background:#1f2937;color:#fff;border-radius:6px;text-decoration:none;font-size:14px">← Admin ana sayfasına dön</a></p>'
+    : '';
+
 if (!$isCli) {
     echo '<div style="font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 40px;">';
+    echo $backLink;
     echo '<h2>⚙️ System Update & Backup</h2><hr><br>';
 }
 
@@ -101,13 +107,13 @@ if (!$shouldRun) {
         }
         echo '</ul>';
     }
-    echo '</div>';
+    echo '<br><hr>' . $backLink . '</div>';
     exit;
 }
 
 if (!$toRun) {
     out('<p>✅ Uygulanacak yeni patch yok. Veritabanı güncel.</p>');
-    if (!$isCli) echo '</div>';
+    if (!$isCli) echo '<br><hr>' . $backLink . '</div>';
     exit;
 }
 
@@ -128,7 +134,7 @@ try {
     $backupFile = $backupDir . '/db_backup_' . $timestamp . '_' . bin2hex(random_bytes(4)) . '.json';
 
     $backupData = [];
-    foreach (['offices', 'office_teams', 'office_activities', 'events', 'event_locations'] as $table) {
+    foreach (['offices', 'office_teams', 'office_activities', 'events', 'event_locations', 'event_requests', 'site_settings'] as $table) {
         try {
             $backupData[$table] = $db->query("SELECT * FROM `$table`")->fetchAll(PDO::FETCH_ASSOC);
         } catch (\Throwable $e) {} // Ignore if table doesn't exist yet
@@ -174,4 +180,4 @@ try {
     out("<p style='color: red;'>❌ <b>Critical Error:</b> " . htmlspecialchars($e->getMessage()) . "</p>");
 }
 
-if (!$isCli) echo '<br><hr></div>';
+if (!$isCli) echo '<br><hr>' . $backLink . '</div>';

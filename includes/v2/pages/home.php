@@ -119,10 +119,10 @@ $homeEvents = array_slice($homeEvents, 0, 6);
 
         <!-- Stats -->
         <dl class="rise mt-10 lg:mt-14 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto" style="--d:.36s">
-            <div class="stat-tile"><dt class="sr-only"><?= __('stat_offices') ?></dt><dd><span class="stat-tile__n block" data-count="<?= count($offices) ?>" data-suffix="+"><?= count($offices) ?>+</span><span class="stat-tile__l block" aria-hidden="true"><?= __('stat_offices') ?></span></dd></div>
+            <div class="stat-tile"><dt class="sr-only"><?= __('stat_offices') ?></dt><dd><span class="stat-tile__n block" data-count="<?= count($offices) ?>"><?= count($offices) ?></span><span class="stat-tile__l block" aria-hidden="true"><?= __('stat_offices') ?></span></dd></div>
             <div class="stat-tile"><dt class="sr-only"><?= __('stat_countries') ?></dt><dd><span class="stat-tile__n block" data-count="<?= $countryCount ?>"><?= $countryCount ?></span><span class="stat-tile__l block" aria-hidden="true"><?= __('stat_countries') ?></span></dd></div>
             <div class="stat-tile"><dt class="sr-only"><?= __('stat_support') ?></dt><dd><span class="stat-tile__n block">24/7</span><span class="stat-tile__l block" aria-hidden="true"><?= __('stat_support') ?></span></dd></div>
-            <div class="stat-tile"><dt class="sr-only"><?= __('stat_served') ?></dt><dd><span class="stat-tile__n block" data-count="90" data-suffix="+">90+</span><span class="stat-tile__l block" aria-hidden="true"><?= __('stat_served') ?></span></dd></div>
+            <div class="stat-tile"><dt class="sr-only"><?= __('stat_served') ?></dt><dd><span class="stat-tile__n block" data-count="<?= statServed()[0] ?>"<?= statServed()[1] !== '' ? ' data-suffix="+"' : '' ?>><?= statServed()[0] . statServed()[1] ?></span><span class="stat-tile__l block" aria-hidden="true"><?= __('stat_served') ?></span></dd></div>
         </dl>
     </div>
 </section>
