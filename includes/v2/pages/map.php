@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const padding = () => {
         if (wide()) return { paddingTopLeft: [rtl ? 40 : 420, 40], paddingBottomRight: [rtl ? 420 : 40, 40] };
         const top = document.querySelector('[data-map-panel]'), sheet = document.querySelector('[data-nf-panel]');
-        return { paddingTopLeft: [30, (top ? top.offsetHeight : 160) + 30], paddingBottomRight: [30, (sheet && !sheet.hidden ? sheet.offsetHeight : 0) + 30] };
+        return { paddingTopLeft: [30, (top && top.offsetParent ? top.offsetHeight : 0) + 30], paddingBottomRight: [30, (sheet && !sheet.hidden ? sheet.offsetHeight : 0) + 30] };
     };
     if (map && offices.length && wide()) {
         map.fitBounds(offices.map((o) => [o.lat, o.lon]), Object.assign(padding(), { maxZoom: 5 }));
@@ -78,6 +78,12 @@ document.addEventListener('DOMContentLoaded', function () {
         else if (pts.length) map.flyTo(pts[0], d.position ? 7 : 6, { duration: 1.2 });
     });
     document.addEventListener('nf:close', () => { if (me) { me.remove(); me = null; } });
+    // Phones: while the answer is open the intro panel steps aside, so the map and the answer fit the screen
+    const intro = document.querySelector('[data-map-panel]'), sheet = document.querySelector('[data-nf-panel]');
+    if (intro && sheet && 'MutationObserver' in window) {
+        const sync = () => intro.classList.toggle('max-sm:hidden', !sheet.hidden);
+        new MutationObserver(sync).observe(sheet, { attributes: true, attributeFilter: ['hidden'] });
+    }
 });
 </script>
 <script>window.NF_CONFIG = <?= json_encode($finderConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) ?>;</script>

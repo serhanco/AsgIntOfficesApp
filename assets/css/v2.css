@@ -431,8 +431,9 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 .nf-sheet__close { position: absolute; top: .6rem; inset-inline-end: .6rem; z-index: 2; width: 34px; height: 34px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: #fff; color: var(--navy); border: 1px solid var(--line); box-shadow: 0 2px 8px rgba(9,44,116,.12); }
 .nf-sheet__close:hover { background: var(--navy); color: #fff; }
 /* Map: floats over the map, bottom sheet on phones, left column on wide screens */
-.nf-sheet--map { position: absolute; z-index: 1000; inset-inline: .75rem; bottom: .75rem; max-height: 58%; overflow-y: auto; border-radius: 28px; box-shadow: var(--shadow-lift, 0 24px 60px rgba(9,44,116,.28)); }
+.nf-sheet--map { position: absolute; z-index: 1000; inset-inline: .75rem; bottom: .75rem; max-height: 68%; overflow-y: auto; border-radius: 28px; box-shadow: var(--shadow-lift, 0 24px 60px rgba(9,44,116,.28)); }
 @media (min-width: 640px) { .nf-sheet--map { inset-inline: 1.5rem auto; bottom: 1.5rem; width: 24rem; max-height: calc(100% - 20rem); min-height: 14rem; } }
 .nf-sheet--page { margin-bottom: 2rem; }
 .near-km { flex-shrink: 0; font-size: .75rem; font-weight: 700; color: var(--azure); background: #e6f5fc; border-radius: 999px; padding: .15rem .5rem; font-variant-numeric: tabular-nums; }
 .office-card.is-near { background: #e6f5fc; }
+@media (max-width: 639px) { .max-sm\:hidden { display: none; } .nf-sheet--map .nf-card { padding: 1.1rem .95rem; } .nf-sheet--map .nf-skeleton { min-height: 6rem; } .nf-sheet--map .nf-empty__icon { display: none; } .nf-sheet--map .nf-empty__h { font-size: 1.15rem; line-height: 1.25; margin-top: .25rem; } .nf-sheet--map .nf-empty__p { font-size: .85rem; margin-top: .35rem; } .nf-sheet--map .nf-name { font-size: 1.5rem; } }
