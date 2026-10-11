@@ -131,7 +131,7 @@ function v2EventRow(array $ev, bool $hidden = false): string {
                 <span class="mt-1.5 flex flex-wrap gap-1.5"><?= v2StopChips($ev, 3) ?></span>
             </span>
         </a>
-        <a href="<?= e(v2EventWa($ev)) ?>" target="_blank" rel="noopener" class="ev-row__wa" aria-label="<?= e(__('js_whatsapp')) ?>"><i class="ph-fill ph-whatsapp-logo" aria-hidden="true"></i></a>
+        <a href="<?= e($ev['url']) ?>" class="ev-row__go" aria-label="<?= e(__('result_view_details')) ?>" title="<?= e(__('result_view_details')) ?>"><i class="ph ph-arrow-right arrow" aria-hidden="true"></i></a>
     </li>
     <?php
     return ob_get_clean();

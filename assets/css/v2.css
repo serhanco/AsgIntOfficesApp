@@ -432,3 +432,7 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 .ev-panel .btn--navy:hover { background: #e8573b; box-shadow: 0 20px 38px rgba(242,107,80,.4); }
 .ev-panel .btn--line:hover { background: var(--coral); border-color: var(--coral); }
 .panel-head__link--coral:hover { border-color: #ff9b85; }
+
+/* Event row on the home page: round arrow to the event page (coral, like everything events) */
+.ev-row__go { align-self: center; flex-shrink: 0; width: 46px; height: 46px; margin-inline-end: .7rem; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1.3rem; color: #fff; background: linear-gradient(135deg, #f58a73, var(--coral)); box-shadow: 0 8px 18px rgba(242,107,80,.3); transition: transform .25s var(--ease), box-shadow .25s var(--ease); }
+.ev-row__go:hover, .ev-row:hover .ev-row__go { transform: scale(1.08); box-shadow: 0 12px 24px rgba(242,107,80,.42); }
