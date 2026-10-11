@@ -2,6 +2,7 @@
 /** New design: all offices, grouped by country. Data comes from offices.php. */
 require __DIR__ . '/../header.php';
 ?>
+<div class="of-theme">
 
 <section class="page-head">
     <div class="wrap py-12 sm:py-16 flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -79,4 +80,5 @@ require __DIR__ . '/../header.php';
     </div>
 </div>
 
+</div>
 <?php require __DIR__ . '/../footer.php'; ?>

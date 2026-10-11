@@ -460,3 +460,13 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 .ev-theme .count-pill { background: #fff1ed; color: var(--coral-ink, #c8452c); }
 .ev-theme .group:hover .arrow { color: var(--coral); }
 .ev-theme .event-card:hover { border-color: #ffc9bc; }
+
+/* Office pages (list, detail, map) in blue: events stay coral */
+.of-theme .page-head::after { content: ''; position: absolute; inset-inline: 0; bottom: 0; height: 4px; background: linear-gradient(90deg, var(--aqua), var(--aqua-deep)); }
+.of-theme .eyebrow--light { color: #7fd0f3; }
+.of-theme .stat-tile__n { color: #7fd0f3; }
+.of-theme .count-pill { background: #e6f5fc; color: var(--aqua-deep); }
+.of-theme .group:hover .arrow { color: var(--aqua-deep); }
+.of-theme .filter-pill[aria-pressed="true"] { background: var(--aqua-deep); border-color: var(--aqua-deep); }
+.btn--wa { background: linear-gradient(135deg, #3fe07f, #1fb85a); color: #fff; box-shadow: 0 12px 26px rgba(31,184,90,.35); }
+.btn--wa:hover { background: #1fb85a; transform: translateY(-3px); box-shadow: 0 20px 38px rgba(31,184,90,.4); }

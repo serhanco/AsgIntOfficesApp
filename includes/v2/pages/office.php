@@ -25,6 +25,7 @@ $tagStyle = [
     'act_tag_webinar'      => ['icon' => 'ph-video-camera',       'chip' => 'from-coral-light to-coral-ink', 'text' => 'text-coral-ink'],
 ];
 ?>
+<div class="of-theme">
 
 <!-- Hero -->
 <section class="hero">
@@ -44,7 +45,7 @@ $tagStyle = [
         <div class="rise mt-8 grid grid-cols-2 sm:flex sm:flex-wrap gap-3" style="--d:.2s" data-dock-anchor>
             <?php foreach ($actions as $i => $a): ?>
             <a href="<?= e($a['href']) ?>"<?= $a['ext'] ? ' target="_blank" rel="noopener"' : '' ?>
-               class="btn <?= $i === 0 ? 'btn--primary' : ($a['cls'] === 'is-wa' ? 'btn--ghost !border-wa/60 hover:!bg-wa hover:!border-wa' : 'btn--ghost') ?>">
+               class="btn <?= $i === 0 ? 'btn--primary' : ($a['cls'] === 'is-wa' ? 'btn--wa' : 'btn--ghost') ?>">
                 <i class="ph-fill <?= $a['icon'] ?>" aria-hidden="true"></i><?= $a['label'] ?>
             </a>
             <?php endforeach; ?>
@@ -313,4 +314,5 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
+</div>
 <?php require __DIR__ . '/../footer.php'; ?>

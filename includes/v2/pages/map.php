@@ -3,6 +3,7 @@
 require __DIR__ . '/../header.php';
 $countryCount = count(array_unique(array_column($offices, 'country')));
 ?>
+<div class="of-theme">
 
 <div class="relative">
     <div id="global-map" class="w-full z-0" style="height: calc(100vh - var(--header-h)); height: calc(100dvh - var(--header-h));"></div>
