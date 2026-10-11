@@ -108,6 +108,7 @@ return [
 
     // Nearest-office finder (test page)
     'nf_detecting'             => 'ვეძებთ თქვენთან უახლოეს ოფისს…',
+    'nf_close'             => 'დახურვა',
     'nf_locating'              => 'თქვენი მდებარეობა დგინდება…',
     'nf_seems_in'              => 'როგორც ჩანს, იმყოფებით აქ: %s',
     'nf_by_location'           => 'თქვენი მდებარეობის მიხედვით',

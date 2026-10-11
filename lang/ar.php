@@ -108,6 +108,7 @@ return [
 
     // Nearest-office finder (test page)
     'nf_detecting'             => 'نبحث عن أقرب مكتب إليك…',
+    'nf_close'             => 'إغلاق',
     'nf_locating'              => 'جارٍ تحديد موقعك…',
     'nf_seems_in'              => 'يبدو أنك في %s',
     'nf_by_location'           => 'بحسب موقعك',

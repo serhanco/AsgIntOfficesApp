@@ -1,5 +1,9 @@
 <?php
 /** New design: all offices, grouped by country. Data comes from offices.php. */
+require_once __DIR__ . '/../../finder-config.php';
+$finderConfig = finderConfig($offices);
+$extraHead = '<link rel="stylesheet" href="' . asset('assets/css/finder.css') . '">'
+           . '<link rel="stylesheet" href="' . asset('assets/css/finder-v2.css') . '">';
 require __DIR__ . '/../header.php';
 ?>
 
@@ -41,8 +45,13 @@ require __DIR__ . '/../header.php';
 </div>
 
 <div class="wrap py-10 sm:py-14">
-    <!-- Filled in after "Nearest Office" is pressed (assets/js/v2.js) -->
-    <div class="near-result near-result--page card mb-8" data-near-result aria-live="polite" hidden></div>
+    <!-- Nearest Office answer (same rules as the home page: country with offices, no office, Türkiye) -->
+    <div class="nf-sheet nf-sheet--page" data-nf-panel hidden>
+        <button type="button" class="nf-sheet__close" data-nf-close aria-label="<?= e(__('nf_close')) ?>"><i class="ph ph-x" aria-hidden="true"></i></button>
+        <section id="nf-card" class="nf-card" aria-live="polite">
+        <div class="nf-skeleton"><span><?= __('nf_detecting') ?></span></div>
+    </section>
+    </div>
 
     <div id="no-results" class="hidden text-center py-16">
         <span class="icon-chip mx-auto w-16 h-16 rounded-2xl text-3xl"><i class="ph-fill ph-magnifying-glass-minus" aria-hidden="true"></i></span>
@@ -83,25 +92,26 @@ require __DIR__ . '/../header.php';
     </div>
 </div>
 
+<script>window.NF_CONFIG = <?= json_encode($finderConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) ?>;</script>
+<script src="<?= asset('assets/js/tz-countries.js') ?>" defer></script>
+<script src="<?= asset('assets/js/nearest-finder.js') ?>" defer></script>
 <script>
-window.NEAR_OFFICES = <?= json_encode(array_map(fn($o) => [
-    'lat' => $o['latitude'] !== null ? (float)$o['latitude'] : null, 'lon' => $o['longitude'] !== null ? (float)$o['longitude'] : null,
-    'name' => $o['display_name'], 'country' => $o['country'], 'url' => officeUrl($o['slug']),
-], array_merge(...array_values($grouped))), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
-// After "Nearest Office": the distance on every office in the list, and a jump to the result
-document.addEventListener('v2:nearest', function (e) {
+// After "Nearest Office" with a location: the distance on every office card, the chosen one highlighted
+document.addEventListener('nf:focus', function (e) {
+    var pos = e.detail.position, offices = (window.NF_CONFIG || {}).offices || [];
     var byUrl = {};
-    e.detail.list.forEach(function (o) { byUrl[o.url] = o.distance; });
+    if (pos) offices.forEach(function (o) { byUrl[o.url] = calculateDistance(pos.lat, pos.lon, o.lat, o.lon); });
     document.querySelectorAll('.office-card[data-url]').forEach(function (card) {
-        var d = byUrl[card.dataset.url];
-        if (d == null) return;
-        var tag = card.querySelector('.near-km') || card.insertBefore(document.createElement('span'), card.lastElementChild);
-        tag.className = 'near-km';
-        tag.dir = 'ltr';
+        var d = byUrl[card.dataset.url], tag = card.querySelector('.near-km');
+        card.classList.toggle('is-near', !!e.detail.office && e.detail.office.url === card.dataset.url);
+        if (d == null) { if (tag) tag.remove(); return; }
+        if (!tag) { tag = document.createElement('span'); tag.className = 'near-km'; tag.dir = 'ltr'; card.insertBefore(tag, card.lastElementChild); }
         tag.textContent = (d < 1 ? '<1' : Math.round(d).toLocaleString('en-US')) + ' km';
     });
-    var box = document.querySelector('[data-near-result]');
-    if (box) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+document.addEventListener('nf:close', function () {
+    document.querySelectorAll('.office-card .near-km').forEach(function (t) { t.remove(); });
+    document.querySelectorAll('.office-card.is-near').forEach(function (c) { c.classList.remove('is-near'); });
 });
 </script>
 

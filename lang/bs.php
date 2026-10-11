@@ -108,6 +108,7 @@ return [
 
     // Nearest-office finder (test page)
     'nf_detecting'             => 'Tražimo vama najbliži ured…',
+    'nf_close'             => 'Zatvori',
     'nf_locating'              => 'Utvrđujemo vašu lokaciju…',
     'nf_seems_in'              => 'Izgleda da se nalazite u: %s',
     'nf_by_location'           => 'Prema vašoj lokaciji',

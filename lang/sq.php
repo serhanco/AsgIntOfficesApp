@@ -108,6 +108,7 @@ return [
 
     // Nearest-office finder (test page)
     'nf_detecting'             => 'Po kërkojmë zyrën më të afërt…',
+    'nf_close'             => 'Mbyll',
     'nf_locating'              => 'Po përcaktojmë vendndodhjen tuaj…',
     'nf_seems_in'              => 'Duket se ndodheni në: %s',
     'nf_by_location'           => 'Sipas vendndodhjes suaj',

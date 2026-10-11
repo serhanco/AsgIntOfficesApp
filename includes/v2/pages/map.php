@@ -1,5 +1,9 @@
 <?php
 /** New design: world map of all offices. Data comes from map.php. */
+require_once __DIR__ . '/../../finder-config.php';
+$finderConfig = finderConfig($offices);
+$extraHead = '<link rel="stylesheet" href="' . asset('assets/css/finder.css') . '">'
+           . '<link rel="stylesheet" href="' . asset('assets/css/finder-v2.css') . '">';
 require __DIR__ . '/../header.php';
 $countryCount = count(array_unique(array_column($offices, 'country')));
 ?>
@@ -24,8 +28,15 @@ $countryCount = count(array_unique(array_column($offices, 'country')));
                     <i class="ph-fill ph-list-dashes" aria-hidden="true"></i><?= __('map_list_view') ?>
                 </a>
             </div>
-            <div class="near-result" data-near-result aria-live="polite" hidden></div>
         </div>
+    </div>
+
+    <!-- Nearest Office answer (same rules as the home page: country with offices, no office, Türkiye) -->
+    <div class="nf-sheet nf-sheet--map" data-nf-panel hidden>
+        <button type="button" class="nf-sheet__close" data-nf-close aria-label="<?= e(__('nf_close')) ?>"><i class="ph ph-x" aria-hidden="true"></i></button>
+        <section id="nf-card" class="nf-card" aria-live="polite">
+        <div class="nf-skeleton"><span><?= __('nf_detecting') ?></span></div>
+    </section>
     </div>
 </div>
 
@@ -41,31 +52,37 @@ document.addEventListener('DOMContentLoaded', function () {
     ], $offices), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) ?>;
     const map = initMap('global-map', offices, { markerHtml: '<div class="map-pin"><i class="ph-fill ph-buildings"></i></div>' });
     const rtl = document.documentElement.dir === 'rtl'; // the info panel sits on the start side
-    // Keep what we zoom to out from under the info panel (beside it on wide screens, below it on phones)
+    const wide = () => window.innerWidth >= 640;
+    // Keep what we zoom to clear of the info panel (beside it on wide screens, above/below on phones)
     const padding = () => {
-        if (window.innerWidth >= 640) return { paddingTopLeft: [rtl ? 40 : 420, 40], paddingBottomRight: [rtl ? 420 : 40, 40] };
-        const panel = document.querySelector('[data-map-panel]');
-        return { paddingTopLeft: [30, (panel ? panel.offsetHeight : 200) + 40], paddingBottomRight: [30, 30] };
+        if (wide()) return { paddingTopLeft: [rtl ? 40 : 420, 40], paddingBottomRight: [rtl ? 420 : 40, 40] };
+        const top = document.querySelector('[data-map-panel]'), sheet = document.querySelector('[data-nf-panel]');
+        return { paddingTopLeft: [30, (top ? top.offsetHeight : 160) + 30], paddingBottomRight: [30, (sheet && !sheet.hidden ? sheet.offsetHeight : 0) + 30] };
     };
-    if (map && offices.length && window.innerWidth >= 640) {
+    if (map && offices.length && wide()) {
         map.fitBounds(offices.map((o) => [o.lat, o.lon]), Object.assign(padding(), { maxZoom: 5 }));
     }
 
-    // "Nearest Office": mark the visitor and zoom to them and the closest office
+    // Nearest Office: mark the visitor and zoom to them and the office the finder picked
     let me = null;
-    document.addEventListener('v2:nearest', (e) => {
-        const d = e.detail, near = d.list[0];
-        if (!map || !near) return;
-        if (me) me.remove();
-        me = L.marker([d.lat, d.lon], { icon: L.divIcon({ className: 'bg-transparent', html: '<span class="map-me"></span>', iconSize: [22, 22], iconAnchor: [11, 11] }), zIndexOffset: 1000, keyboard: false }).addTo(map);
-        map.flyToBounds([[d.lat, d.lon], [near.lat, near.lon]], Object.assign(padding(), { maxZoom: 11, duration: 1.2 }));
+    document.addEventListener('nf:focus', (e) => {
+        if (!map) return;
+        const d = e.detail, pts = [];
+        if (me) { me.remove(); me = null; }
+        if (d.position) {
+            me = L.marker([d.position.lat, d.position.lon], { icon: L.divIcon({ className: 'bg-transparent', html: '<span class="map-me"></span>', iconSize: [22, 22], iconAnchor: [11, 11] }), zIndexOffset: 1000, keyboard: false }).addTo(map);
+            pts.push([d.position.lat, d.position.lon]);
+        }
+        if (d.office && d.office.lat != null) pts.push([d.office.lat, d.office.lon]);
+        if (pts.length > 1) map.flyToBounds(pts, Object.assign(padding(), { maxZoom: 11, duration: 1.2 }));
+        else if (pts.length) map.flyTo(pts[0], d.position ? 7 : 6, { duration: 1.2 });
     });
+    document.addEventListener('nf:close', () => { if (me) { me.remove(); me = null; } });
 });
-window.NEAR_OFFICES = <?= json_encode(array_map(fn($o) => [
-    'lat' => $o['latitude'] !== null ? (float)$o['latitude'] : null, 'lon' => $o['longitude'] !== null ? (float)$o['longitude'] : null,
-    'name' => $o['display_name'], 'country' => $o['country'], 'url' => officeUrl($o['slug']),
-], $offices), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 </script>
+<script>window.NF_CONFIG = <?= json_encode($finderConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) ?>;</script>
+<script src="<?= asset('assets/js/tz-countries.js') ?>" defer></script>
+<script src="<?= asset('assets/js/nearest-finder.js') ?>" defer></script>
 </main>
 </body>
 </html>

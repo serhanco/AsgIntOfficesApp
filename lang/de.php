@@ -106,6 +106,7 @@ return [
 
     // Nearest-office finder (test page)
     'nf_detecting'             => 'Wir suchen das nächstgelegene Büro…',
+    'nf_close'             => 'Schließen',
     'nf_locating'              => 'Ihr Standort wird ermittelt…',
     'nf_seems_in'              => 'Sie befinden sich offenbar in: %s',
     'nf_by_location'           => 'Basierend auf Ihrem Standort',

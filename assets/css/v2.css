@@ -423,23 +423,16 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 @media (min-width:480px){.logo-side{display:flex}.logo-side i{display:none}}
 @media (min-width:1024px){.logo-side i{display:block}.logo-side b{font-size:11px}.logo-side i{font-size:10px}}
 
-/* "Nearest Office" on the map and the office list (assets/js/v2.js) */
+/* "Nearest Office" on the map and the office list: the finder card (finder.css) in a panel */
 .near-btn.is-locating i { animation: nearSpin 1.2s linear infinite; }
 @keyframes nearSpin { to { transform: rotate(360deg); } }
-.near-result { margin-top: .9rem; padding-top: .9rem; border-top: 1px solid var(--line); display: grid; gap: .35rem; }
-.near-result[hidden] { display: none; }
-.near-result--page { margin-top: 0; padding: .9rem; border-top: 0; }
-.near-result__h { display: flex; align-items: center; gap: .4rem; margin: 0 0 .2rem; padding-inline: .35rem; font-size: .72rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--coral); }
-.near-row { display: flex; align-items: center; gap: .75rem; padding: .55rem .6rem; border-radius: 16px; color: var(--ink); transition: background-color .2s; }
-.near-row:hover { background: var(--surface); }
-.near-row--main { background: #e6f5fc; }
-.near-row--main:hover { background: #d8effa; }
-.near-row__icon { flex-shrink: 0; width: 38px; height: 38px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; background: #fff; color: var(--azure); box-shadow: 0 2px 6px rgba(9,44,116,.08); }
-.near-row--main .near-row__icon { background: linear-gradient(135deg, var(--aqua), var(--aqua-deep)); color: #fff; }
-.near-row__text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.near-row__text b { font-weight: 700; color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.near-row__text small { font-size: .78rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.near-row__km { flex-shrink: 0; font-size: .8rem; font-weight: 700; color: var(--azure); font-variant-numeric: tabular-nums; }
-.near-row .arrow { color: var(--muted); }
-@media (min-width: 768px) { .near-result--page { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; } .near-result--page .near-result__h { grid-column: 1 / -1; } }
+.nf-sheet { position: relative; }
+.nf-sheet[hidden] { display: none; }
+.nf-sheet__close { position: absolute; top: .6rem; inset-inline-end: .6rem; z-index: 2; width: 34px; height: 34px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: #fff; color: var(--navy); border: 1px solid var(--line); box-shadow: 0 2px 8px rgba(9,44,116,.12); }
+.nf-sheet__close:hover { background: var(--navy); color: #fff; }
+/* Map: floats over the map, bottom sheet on phones, left column on wide screens */
+.nf-sheet--map { position: absolute; z-index: 1000; inset-inline: .75rem; bottom: .75rem; max-height: 58%; overflow-y: auto; border-radius: 28px; box-shadow: var(--shadow-lift, 0 24px 60px rgba(9,44,116,.28)); }
+@media (min-width: 640px) { .nf-sheet--map { inset-inline: 1.5rem auto; bottom: 1.5rem; width: 24rem; max-height: calc(100% - 20rem); min-height: 14rem; } }
+.nf-sheet--page { margin-bottom: 2rem; }
 .near-km { flex-shrink: 0; font-size: .75rem; font-weight: 700; color: var(--azure); background: #e6f5fc; border-radius: 999px; padding: .15rem .5rem; font-variant-numeric: tabular-nums; }
+.office-card.is-near { background: #e6f5fc; }

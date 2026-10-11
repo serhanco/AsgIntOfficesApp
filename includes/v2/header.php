@@ -105,8 +105,6 @@ $navItems = [
         'geoUnsupported' => __('js_geo_unsupported'),
         'geoDenied'      => __('js_geo_denied'),
         'viewDetails'    => __('map_view_details'),
-        'locating'       => __('nf_locating'),
-        'nearest'        => __('nav_nearest'),
     ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) ?>;</script>
     <script defer src="<?= asset('assets/js/app.js') ?>"></script>
     <script defer src="<?= asset('assets/js/v2.js') ?>"></script>

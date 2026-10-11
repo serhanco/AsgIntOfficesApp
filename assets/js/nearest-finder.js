@@ -9,6 +9,11 @@
  * 3. "Find nearest" asks for location; offices in the visitor's country come first.
  *    Refused or failed     -> short message, countdown to the world map (cancellable).
  * 4. Search box: offices by city or country name, any language.
+ *
+ * The map and office list pages of the new design use the same rules: their "Nearest Office" button
+ * ([data-near-me]) opens the card in a panel ([data-nf-panel]) and starts the location search. There a
+ * refusal only shows a message (no redirect to the map) and the page gets 'nf:focus'
+ * ({ position, office, approx }) so it can zoom the map / show distances.
  */
 (function () {
   'use strict';
@@ -25,6 +30,9 @@
   // Time zones shared by more than one country we serve. The browser language picks
   // the country when it can; otherwise the card names no country and shows the region.
   const SHARED_ZONES = { 'Europe/Belgrade': { codes: ['rs', 'xk'], byLang: { sr: 'rs', sq: 'xk' } } };
+
+  const panel = card.closest('[data-nf-panel]');   // map / office list pages
+  let panelOpen = false;                            // panel opened by the visitor: tell the page about results
 
   const state = {
     country: null,      // ISO code, lowercase
@@ -255,26 +263,34 @@
 
   function render() {
     announceCountry();
-    let html;
+    let html, focus = null;   // focus: the office the page should point at
     if (state.selected) {
       html = officeCard(state.selected, [], T.selectedLabel);
+      focus = state.selected;
     } else if (state.country === HQ_COUNTRY && !officesIn([HQ_COUNTRY]).length) {
       html = hqCard();
     } else if (state.country && officesIn([state.country]).length) {
       const list = byDistance(officesIn([state.country]));
       html = officeCard(list[0], list.slice(1), T.nearestLabel);
+      focus = list[0];
     } else if (state.country) {
       html = noOfficeCard();
+      focus = nearestOffice();
     } else if (state.position) {
       const near = byDistance(offices)[0];
-      html = near && near.distance <= FAR_KM
-        ? officeCard(near, byDistance(officesIn([near.cc])).filter((o) => o.url !== near.url), T.nearestLabel)
-        : noOfficeCard();
+      if (near && near.distance <= FAR_KM) {
+        html = officeCard(near, byDistance(officesIn([near.cc])).filter((o) => o.url !== near.url), T.nearestLabel);
+        focus = near;
+      } else {
+        html = noOfficeCard();
+        focus = nearestOffice();
+      }
     } else if (state.region && officesIn(state.region).length) {
       // Country with the most offices first
       const count = (cc) => officesIn([cc]).length;
       const list = officesIn(state.region).sort((a, b) => count(b.cc) - count(a.cc));
       html = officeCard(list[0], list.slice(1), T.regionLabel);
+      focus = list[0];
     } else {
       html = unknownCard();
     }
@@ -283,15 +299,16 @@
     void card.offsetWidth; // restart the entrance animation
     card.classList.add('nf-card--in');
     setLocating(state.locating);
+    if (panelOpen) document.dispatchEvent(new CustomEvent('nf:focus', { detail: { position: state.position, office: focus, approx: !!(focus && focus.approx) } }));
   }
 
   // ---------- location ----------
   function setLocating(on) {
     state.locating = on;
-    document.querySelectorAll('[data-nf-locate]').forEach((b) => {
+    document.querySelectorAll('[data-nf-locate], [data-near-me]').forEach((b) => {
       b.classList.toggle('is-locating', on);
       b.disabled = on;
-      const label = b.querySelector('[data-nf-locate-label]');
+      const label = b.querySelector('[data-nf-locate-label], [data-near-me-label]');
       if (label) {
         if (!label.dataset.idle) label.dataset.idle = label.textContent;
         label.textContent = on ? T.locating : label.dataset.idle;
@@ -304,11 +321,17 @@
     state.position = { lat, lon };
     state.selected = null;
     render();
-    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (!card.closest('.nf-sheet')) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
   function onLocationError() {
     setLocating(false);
+    if (panel) {
+      // Map / list pages: keep the answer for the guessed country and say why it is not exact
+      const msg = (window.APP_I18N || {}).geoDenied;
+      if (msg && typeof showToast === 'function') showToast(msg, 4000);
+      return;
+    }
     startCountdown();
   }
 
@@ -419,7 +442,7 @@
     if (!o) return;
     stopCountdown();
     state.selected = state.position ? { ...o, distance: distanceKm(state.position.lat, state.position.lon, o.lat, o.lon) } : o;
-    input.value = o.name;
+    if (input) input.value = o.name;
     closeList();
     render();
     card.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -448,10 +471,23 @@
     document.addEventListener('click', (e) => { if (!e.target.closest('#nf-search')) closeList(); });
   }
 
+  // ---------- panel (map and office list pages) ----------
+  function openPanel() {
+    if (!panel) return;
+    panel.hidden = false;
+    panelOpen = true;
+    render();   // show the answer for the guessed country at once, location refines it
+    if (!panel.classList.contains('nf-sheet')) panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  function closePanel() { if (panel) { panel.hidden = true; panelOpen = false; stopCountdown(); document.dispatchEvent(new CustomEvent('nf:close')); } }
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && panel && !panel.hidden) closePanel(); });
+
   // ---------- wiring ----------
   document.addEventListener('click', (e) => {
+    if (e.target.closest('[data-near-me]')) { openPanel(); locate(); return; }
+    if (e.target.closest('[data-nf-close]')) { closePanel(); return; }
     if (e.target.closest('[data-nf-locate]')) { locate(); return; }
-    if (e.target.closest('[data-nf-stay]')) { stopCountdown(); input && input.focus(); return; }
+    if (e.target.closest('[data-nf-stay]')) { stopCountdown(); if (input) input.focus(); return; }
     const pick = e.target.closest('[data-nf-pick]');
     if (pick) {
       const o = offices.find((x) => x.url === pick.dataset.nfPick);
@@ -462,5 +498,5 @@
   Object.assign(state, guessCountry());
   render();
   // The menu link "En Yakın Ofis" opens the home page with ?find=1
-  if (/[?&]find=1(&|$)/.test(window.location.search)) locate();
+  if (!panel && /[?&]find=1(&|$)/.test(window.location.search)) locate();
 })();
