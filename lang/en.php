@@ -158,7 +158,6 @@ return [
 
     // Nearest-office finder (test page)
     'nf_detecting'             => 'Finding the office nearest to you…',
-    'nf_close'             => 'Close',
     'nf_locating'              => 'Finding your location…',
     'nf_seems_in'              => 'Looks like you are in %s',
     'nf_by_location'           => 'Based on your location',

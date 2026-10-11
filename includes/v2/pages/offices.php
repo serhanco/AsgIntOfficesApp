@@ -1,9 +1,5 @@
 <?php
 /** New design: all offices, grouped by country. Data comes from offices.php. */
-require_once __DIR__ . '/../../finder-config.php';
-$finderConfig = finderConfig($offices);
-$extraHead = '<link rel="stylesheet" href="' . asset('assets/css/finder.css') . '">'
-           . '<link rel="stylesheet" href="' . asset('assets/css/finder-v2.css') . '">';
 require __DIR__ . '/../header.php';
 ?>
 
@@ -15,9 +11,9 @@ require __DIR__ . '/../header.php';
             <p class="mt-3 text-[#cfdcef] text-base sm:text-lg"><?= __('offices_subtitle', $totalOffices, $totalCountries) ?></p>
         </div>
         <div class="rise flex flex-wrap gap-2.5 self-start md:self-auto" style="--d:.1s">
-            <button type="button" class="btn btn--primary near-btn" data-near-me>
-                <i class="ph-fill ph-crosshair" aria-hidden="true"></i><span data-near-me-label><?= __('nav_nearest') ?></span>
-            </button>
+            <a href="<?= getBaseUrl() ?>/nearest?find=1" class="btn btn--primary">
+                <i class="ph-fill ph-crosshair" aria-hidden="true"></i><?= __('nav_nearest') ?>
+            </a>
             <a href="<?= getBaseUrl() ?>/map" class="btn btn--ghost">
                 <i class="ph-fill ph-map-trifold" aria-hidden="true"></i><?= __('offices_view_map') ?>
             </a>
@@ -45,14 +41,6 @@ require __DIR__ . '/../header.php';
 </div>
 
 <div class="wrap py-10 sm:py-14">
-    <!-- Nearest Office answer (same rules as the home page: country with offices, no office, Türkiye) -->
-    <div class="nf-sheet nf-sheet--page" data-nf-panel hidden>
-        <button type="button" class="nf-sheet__close" data-nf-close aria-label="<?= e(__('nf_close')) ?>"><i class="ph ph-x" aria-hidden="true"></i></button>
-        <section id="nf-card" class="nf-card" aria-live="polite">
-        <div class="nf-skeleton"><span><?= __('nf_detecting') ?></span></div>
-    </section>
-    </div>
-
     <div id="no-results" class="hidden text-center py-16">
         <span class="icon-chip mx-auto w-16 h-16 rounded-2xl text-3xl"><i class="ph-fill ph-magnifying-glass-minus" aria-hidden="true"></i></span>
         <h3 class="mt-5 text-xl font-bold text-navy"><?= __('offices_no_results_h') ?></h3>
@@ -76,8 +64,7 @@ require __DIR__ . '/../header.php';
                class="office-card group flex items-center gap-3.5 p-3 rounded-2xl hover:bg-surface transition-colors"
                data-name="<?= strtolower(e($o['display_name'])) ?>"
                data-country="<?= strtolower(e($o['country'])) ?>"
-               data-address="<?= strtolower(e($o['address'])) ?>"
-               data-url="<?= e(officeUrl($o['slug'])) ?>">
+               data-address="<?= strtolower(e($o['address'])) ?>">
                 <span class="icon-chip w-11 h-11 text-xl rounded-xl"><i class="ph-fill ph-buildings" aria-hidden="true"></i></span>
                 <span class="flex-1 min-w-0">
                     <span class="block font-bold text-ink leading-tight group-hover:text-navy transition-colors line-clamp-1"><bdi><?= e($o['display_name']) ?></bdi></span>
@@ -91,28 +78,5 @@ require __DIR__ . '/../header.php';
     <?php endforeach; ?>
     </div>
 </div>
-
-<script>window.NF_CONFIG = <?= json_encode($finderConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) ?>;</script>
-<script src="<?= asset('assets/js/tz-countries.js') ?>" defer></script>
-<script src="<?= asset('assets/js/nearest-finder.js') ?>" defer></script>
-<script>
-// After "Nearest Office" with a location: the distance on every office card, the chosen one highlighted
-document.addEventListener('nf:focus', function (e) {
-    var pos = e.detail.position, offices = (window.NF_CONFIG || {}).offices || [];
-    var byUrl = {};
-    if (pos) offices.forEach(function (o) { byUrl[o.url] = calculateDistance(pos.lat, pos.lon, o.lat, o.lon); });
-    document.querySelectorAll('.office-card[data-url]').forEach(function (card) {
-        var d = byUrl[card.dataset.url], tag = card.querySelector('.near-km');
-        card.classList.toggle('is-near', !!e.detail.office && e.detail.office.url === card.dataset.url);
-        if (d == null) { if (tag) tag.remove(); return; }
-        if (!tag) { tag = document.createElement('span'); tag.className = 'near-km'; tag.dir = 'ltr'; card.insertBefore(tag, card.lastElementChild); }
-        tag.textContent = (d < 1 ? '<1' : Math.round(d).toLocaleString('en-US')) + ' km';
-    });
-});
-document.addEventListener('nf:close', function () {
-    document.querySelectorAll('.office-card .near-km').forEach(function (t) { t.remove(); });
-    document.querySelectorAll('.office-card.is-near').forEach(function (c) { c.classList.remove('is-near'); });
-});
-</script>
 
 <?php require __DIR__ . '/../footer.php'; ?>

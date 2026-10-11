@@ -108,7 +108,6 @@ return [
 
     // Nearest-office finder (test page)
     'nf_detecting'             => 'در حال یافتن نزدیک‌ترین دفتر به شما…',
-    'nf_close'             => 'بستن',
     'nf_locating'              => 'در حال یافتن موقعیت شما…',
     'nf_seems_in'              => 'به نظر می‌رسد در %s هستید',
     'nf_by_location'           => 'بر اساس موقعیت شما',

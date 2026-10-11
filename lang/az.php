@@ -108,7 +108,6 @@ return [
 
     // Nearest-office finder (test page)
     'nf_detecting'             => 'Sizə ən yaxın ofisi axtarırıq…',
-    'nf_close'             => 'Bağla',
     'nf_locating'              => 'Məkanınız müəyyən edilir…',
     'nf_seems_in'              => 'Görünür, olduğunuz ölkə: %s',
     'nf_by_location'           => 'Məkanınıza görə',

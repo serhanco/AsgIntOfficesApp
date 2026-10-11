@@ -108,7 +108,6 @@ return [
 
     // Nearest-office finder (test page)
     'nf_detecting'             => 'Căutăm cel mai apropiat birou…',
-    'nf_close'             => 'Închide',
     'nf_locating'              => 'Vă determinăm locația…',
     'nf_seems_in'              => 'Se pare că vă aflați în: %s',
     'nf_by_location'           => 'În funcție de locația dvs.',

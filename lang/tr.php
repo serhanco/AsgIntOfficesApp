@@ -106,7 +106,6 @@ return [
 
     // Nearest-office finder (test page)
     'nf_detecting'             => 'Size en yakın ofisi buluyoruz…',
-    'nf_close'             => 'Kapat',
     'nf_locating'              => 'Konumunuz alınıyor…',
     'nf_seems_in'              => 'Görünüşe göre bulunduğunuz ülke: %s',
     'nf_by_location'           => 'Konumunuza göre',
