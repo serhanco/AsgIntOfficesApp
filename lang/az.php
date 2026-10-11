@@ -120,6 +120,7 @@ return [
     'nf_no_office_p'           => 'Amma sizdən cəmi bir klik uzaqdayıq. Beynəlxalq pasiyent komandamız suallarınızı cavablandırmağa hazırdır.',
     'nf_hq_name'               => 'Acıbadem Baş Ofisi · İstanbul',
     'nf_hq_label'              => 'Sizə ən yaxın əlaqə nöqtəmiz baş ofisimizdir',
+    'nf_hq_short'              => 'Mərkəz ofis',
     'nf_nearest_physical'      => 'Ən yaxın ofisimiz: %s',
     'nf_see_world'             => 'Acıbadem Dünyasına bax',
     'nf_see_list'              => 'Əlaqə ofislərinin siyahısı',

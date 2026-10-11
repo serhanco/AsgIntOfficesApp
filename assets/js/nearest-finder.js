@@ -195,7 +195,45 @@
       </div>`;
   }
 
+  // New design: head office and nearest office as two panels built the same way, told apart by colour and label
+  function officePanel(kind, label, o, extra, link) {
+    return `<section class="nf-panel nf-panel--${kind}">
+      <p class="nf-label">${esc(label)}</p>
+      <p class="nf-country">${flag(o.cc)}<span>${esc(countryName(o.cc))}</span></p>
+      <h3 class="nf-name nf-name--sm">${esc(o.name)}</h3>
+      <p class="nf-address"><i class="ph-fill ph-map-pin"></i><span dir="auto">${esc(o.address)}</span></p>
+      ${extra}
+      ${actionsHtml(o)}
+      <div class="nf-footer">${link}</div>
+    </section>`;
+  }
+
+  function noOfficeCardV2() {
+    const hq = hqOffice();
+    const h = state.country ? fill(T.noOfficeH, `<span class="nf-nowrap">${esc(countryName(state.country))}</span>`) : esc(T.noOfficeRegionH);
+    const near = nearestOffice();
+    const hqLink = `<a href="${esc(C.mapUrl)}" class="nf-details"><i class="ph-fill ph-globe-hemisphere-west"></i> ${esc(T.seeWorld)} <i class="ph ph-arrow-right nf-arrow"></i></a>`;
+    const nearPanel = near ? officePanel('near', T.nearestLabel, near,
+      `<span class="nf-distance">${near.approx ? '≈ ' : ''}${esc(kmText(near.distance))}</span>`,
+      `<a href="${esc(near.url)}" class="nf-details">${esc(T.details)} <i class="ph ph-arrow-right nf-arrow"></i></a>`) : '';
+    return `${contextLine()}
+      <div class="nf-empty">
+        <div class="nf-empty__icon" aria-hidden="true"><i class="ph-fill ph-globe-hemisphere-east"></i></div>
+        <h2 class="nf-empty__h">${h}</h2>
+        <p class="nf-empty__p">${esc(T.noOfficeP)}</p>
+      </div>
+      <div class="nf-duo${near ? '' : ' nf-duo--one'}">
+        ${officePanel('hq', T.hqShort, hq, '', hqLink)}
+        ${nearPanel}
+      </div>
+      <div class="nf-links">
+        <a href="${esc(C.listUrl)}" class="nf-link"><i class="ph-fill ph-list-dashes"></i>${esc(T.seeList)}</a>
+      </div>
+      <div class="nf-footer nf-footer--center">${refineBtn()}</div>`;
+  }
+
   function noOfficeCard() {
+    if (C.v2) return noOfficeCardV2();
     const hq = hqOffice();
     const h = state.country ? fill(T.noOfficeH, `<span class="nf-nowrap">${esc(countryName(state.country))}</span>`) : esc(T.noOfficeRegionH);
     const near = nearestOffice();

@@ -120,6 +120,7 @@ return [
     'nf_no_office_p'           => 'Por jemi vetëm një klik larg. Ekipi ynë për pacientët ndërkombëtarë është gati t\'u përgjigjet pyetjeve tuaja.',
     'nf_hq_name'               => 'Zyra Qendrore e Acıbadem · Stamboll',
     'nf_hq_label'              => 'Pika juaj më e afërt e kontaktit është zyra jonë qendrore',
+    'nf_hq_short'              => 'Qendra',
     'nf_nearest_physical'      => 'Zyra jonë më e afërt: %s',
     'nf_see_world'             => 'Shihni Botën Acıbadem',
     'nf_see_list'              => 'Lista e zyrave të kontaktit',

@@ -120,6 +120,7 @@ return [
     'nf_no_office_p'           => 'Dar suntem la doar un clic distanță. Echipa noastră pentru pacienți internaționali vă răspunde cu drag la întrebări.',
     'nf_hq_name'               => 'Sediul central Acıbadem · Istanbul',
     'nf_hq_label'              => 'Cel mai apropiat punct de contact este sediul nostru central',
+    'nf_hq_short'              => 'Sediul central',
     'nf_nearest_physical'      => 'Cel mai apropiat birou al nostru: %s',
     'nf_see_world'             => 'Vezi Lumea Acıbadem',
     'nf_see_list'              => 'Lista birourilor de contact',

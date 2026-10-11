@@ -118,6 +118,7 @@ return [
     'nf_no_office_p'           => 'Aber wir sind nur einen Klick entfernt. Unser internationales Patiententeam beantwortet gerne Ihre Fragen.',
     'nf_hq_name'               => 'Acıbadem Hauptsitz · Istanbul',
     'nf_hq_label'              => 'Ihr nächster Ansprechpartner ist unser Hauptsitz',
+    'nf_hq_short'              => 'Hauptsitz',
     'nf_nearest_physical'      => 'Unser nächstgelegenes Büro: %s',
     'nf_see_world'             => 'Die Acıbadem-Welt ansehen',
     'nf_see_list'              => 'Liste der Kontaktbüros',

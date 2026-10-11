@@ -31,7 +31,7 @@ function finderConfig(array $offices): array {
         'country_code' => 'tr',
     ];
 
-    return [
+    $config = [
         'lang'          => LANGUAGES[$GLOBALS['current_lang']]['html'] ?? 'en',
         'serverCountry' => $serverCountry,
         'testCountry'   => $testCountry,
@@ -84,4 +84,10 @@ function finderConfig(array $offices): array {
             'route'          => __('js_route'),
         ],
     ];
+    // New design only (the old home page keeps its markup and output exactly as before)
+    if (designV2()) {
+        $config['v2'] = true;
+        $config['t']['hqShort'] = __('nf_hq_short');
+    }
+    return $config;
 }

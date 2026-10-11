@@ -118,6 +118,7 @@ return [
     'nf_no_office_p'           => 'Ama size sadece bir tıklama kadar uzaktayız. Uluslararası hasta ekibimiz sorularınızı yanıtlamaya hazır.',
     'nf_hq_name'               => 'Acıbadem Genel Merkez · İstanbul',
     'nf_hq_label'              => 'Size en yakın iletişim noktamız genel merkezimiz',
+    'nf_hq_short'              => 'Genel Merkez',
     'nf_nearest_physical'      => 'En yakın ofisimiz: %s',
     'nf_see_world'             => 'Acıbadem Dünyasını Gör',
     'nf_see_list'              => 'İrtibat Ofisleri Listesi',
