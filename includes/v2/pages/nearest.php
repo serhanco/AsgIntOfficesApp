@@ -13,9 +13,9 @@ require __DIR__ . '/../header.php';
             <p class="mt-3 text-[#cfdcef] text-base sm:text-lg"><?= __('home_offices_p') ?></p>
         </div>
 
-        <div class="max-w-3xl mx-auto mt-8 sm:mt-10 rise" style="--d:.1s">
+        <div class="max-w-4xl mx-auto mt-8 sm:mt-10 rise" style="--d:.1s">
             <!-- Filled in by assets/js/nearest-finder.js (same rules as the home page). ?find=1 starts the location search on load. -->
-            <section id="nf-card" class="nf-card" aria-live="polite">
+            <section id="nf-card" class="nf-card nf-card--wide" aria-live="polite">
                 <div class="nf-skeleton">
                     <span class="nf-radar nf-radar--dark" aria-hidden="true"><i class="ph-fill ph-navigation-arrow"></i></span>
                     <span><?= __('nf_detecting') ?></span>

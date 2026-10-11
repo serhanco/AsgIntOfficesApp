@@ -96,3 +96,28 @@
 /* Hero locate button: radar in white */
 .nf-locate-btn .nf-radar { color: #fff; }
 .nf-locate-btn.is-locating { transform: none !important; }
+
+/* Finder card on a wide page (/nearest): details on the left, the four contact buttons on the right,
+   so the card does not stretch a phone-sized layout over a desktop-sized box */
+@media (min-width: 900px) {
+  .nf-card--wide:has(> .nf-main) { display: grid; grid-template-columns: minmax(0, 1fr) 21rem; column-gap: 2.25rem; align-items: start; }
+  .nf-card--wide:has(> .nf-main) > * { grid-column: 1; }
+  .nf-card--wide:has(> .nf-main) > .nf-context { grid-column: 1 / -1; justify-self: start; }
+  .nf-card--wide:has(> .nf-main) > .nf-main { display: contents; }
+  .nf-card--wide:has(> .nf-main) .nf-main__info { grid-column: 1; grid-row: 2; }
+  .nf-card--wide:has(> .nf-main) .nf-actions { grid-column: 2; grid-row: 2 / span 3; align-self: center; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: .75rem; }
+  .nf-card--wide:has(> .nf-main) .nf-action { padding-block: 1.05rem; font-size: .9rem; }
+  .nf-card--wide:has(> .nf-main) .nf-action i { font-size: 1.6rem; }
+  .nf-card--wide:has(> .nf-main) > .nf-footer { border-top: 0; padding-top: 0; margin-top: 1.25rem; justify-content: flex-start; }
+  .nf-card--wide:has(> .nf-main) > .nf-footer .nf-details { margin-inline-start: 0; }
+}
+
+/* Country without an office, wide page: head office and nearest office side by side */
+@media (min-width: 900px) {
+  .nf-card--wide:has(> .nf-hq) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1.75rem; align-items: stretch; }
+  .nf-card--wide:has(> .nf-hq) > * { grid-column: 1 / -1; }
+  .nf-card--wide:has(> .nf-hq) > .nf-hq { grid-column: 1; margin-top: 1.5rem; align-self: start; }
+  .nf-card--wide:has(> .nf-hq) > .nf-near { grid-column: 2; margin-top: 1.5rem; padding-top: 0; border-top: 0; }
+  .nf-card--wide:has(> .nf-hq) > .nf-near .nf-actions { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .nf-card--wide:has(> .nf-hq) > .nf-hq .nf-actions { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
