@@ -118,6 +118,7 @@ return [
     'nf_no_office_p'           => 'Mais nous ne sommes qu\'à un clic. Notre équipe patients internationaux est prête à répondre à vos questions.',
     'nf_hq_name'               => 'Siège d\'Acıbadem · Istanbul',
     'nf_hq_label'              => 'Votre interlocuteur le plus proche est notre siège',
+    'nf_hq_short'              => 'Siège',
     'nf_nearest_physical'      => 'Notre bureau le plus proche : %s',
     'nf_see_world'             => 'Voir le monde Acıbadem',
     'nf_see_list'              => 'Liste des bureaux de contact',

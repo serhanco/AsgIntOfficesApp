@@ -120,6 +120,7 @@ return [
     'nf_no_office_p'           => 'Ali udaljeni smo samo jedan klik. Naš tim za međunarodne pacijente spreman je da odgovori na vaša pitanja.',
     'nf_hq_name'               => 'Sedište Acıbadem · Istanbul',
     'nf_hq_label'              => 'Vaša najbliža kontakt tačka je naše sedište',
+    'nf_hq_short'              => 'Centrala',
     'nf_nearest_physical'      => 'Naša najbliža kancelarija: %s',
     'nf_see_world'             => 'Pogledajte svet Acıbadem',
     'nf_see_list'              => 'Spisak kontakt kancelarija',

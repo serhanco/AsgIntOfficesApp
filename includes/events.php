@@ -263,6 +263,11 @@ function getEvents(bool $publishedOnly = true, string $scope = 'listed'): array 
     return $cache[$key] = $out;
 }
 
+/** Listed events that have not ended yet (menu badge, home page counts). */
+function upcomingEventCount(): int {
+    return count(array_filter(getEvents(), fn($e) => $e['status'] === 'upcoming'));
+}
+
 /**
  * Upcoming first, past after. Among upcoming events, featured ones (rank 1, 2, 3) come first, then by date
  * (soonest first, undated last). Past events never get a boost: most recent first.

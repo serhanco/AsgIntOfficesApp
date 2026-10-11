@@ -25,6 +25,22 @@
       window.addEventListener('resize', onScroll);
       onScroll();
       window.addEventListener('scroll', onScroll, { passive: true });
+
+      // Long menu labels (some languages) + count badges can crowd the logo: drop the menu icons first,
+      // then the logo's side text, then shrink the logo, only as far as needed
+      const logo = header.querySelector('.site-header__bar > a');
+      const steps = ['fit-1', 'fit-2', 'fit-3'];
+      const fit = () => {
+        if (!logo) return;
+        header.classList.remove(...steps);
+        for (const step of steps) {
+          if (logo.scrollWidth <= logo.clientWidth + 1) break;
+          header.classList.add(step);
+        }
+      };
+      fit();
+      window.addEventListener('resize', fit);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
     }
 
     // Sticky search bar under the header: its height is added to the scroll offset of in-page jumps

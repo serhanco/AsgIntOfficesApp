@@ -10,9 +10,14 @@ require __DIR__ . '/../header.php';
             <h1 class="mt-3 text-3xl sm:text-5xl font-extrabold"><?= __('offices_title') ?></h1>
             <p class="mt-3 text-[#cfdcef] text-base sm:text-lg"><?= __('offices_subtitle', $totalOffices, $totalCountries) ?></p>
         </div>
-        <a href="<?= getBaseUrl() ?>/map" class="btn btn--ghost rise self-start md:self-auto" style="--d:.1s">
-            <i class="ph-fill ph-map-trifold" aria-hidden="true"></i><?= __('offices_view_map') ?>
-        </a>
+        <div class="rise flex flex-wrap gap-2.5 self-start md:self-auto" style="--d:.1s">
+            <a href="<?= getBaseUrl() ?>/nearest?find=1" class="btn btn--primary">
+                <i class="ph-fill ph-crosshair" aria-hidden="true"></i><?= __('nav_nearest') ?>
+            </a>
+            <a href="<?= getBaseUrl() ?>/map" class="btn btn--ghost">
+                <i class="ph-fill ph-map-trifold" aria-hidden="true"></i><?= __('offices_view_map') ?>
+            </a>
+        </div>
     </div>
 </section>
 

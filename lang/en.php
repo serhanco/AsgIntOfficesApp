@@ -170,6 +170,7 @@ return [
     'nf_no_office_p'           => 'But we are only one click away. Our international patient team is ready to answer your questions.',
     'nf_hq_name'               => 'Acıbadem Head Office · Istanbul',
     'nf_hq_label'              => 'Your closest point of contact is our head office',
+    'nf_hq_short'              => 'Headquarters',
     'nf_nearest_physical'      => 'Our nearest office: %s',
     'nf_see_world'             => 'See the Acıbadem World',
     'nf_see_list'              => 'List of Contact Offices',

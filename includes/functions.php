@@ -153,6 +153,19 @@ function getAllOffices(bool $activeOnly = true): array {
     return $stmt->fetchAll();
 }
 
+/** Number of active offices (menu badge). */
+function activeOfficeCount(): int {
+    static $n = null;
+    if ($n === null) {
+        try {
+            $n = (int)getDb()->query('SELECT COUNT(*) FROM offices WHERE is_active = 1')->fetchColumn();
+        } catch (\Throwable $e) {
+            $n = 0;
+        }
+    }
+    return $n;
+}
+
 /**
  * WhatsApp number of an office, digits only ('' = none, the button is hidden).
  * Before the whatsapp column exists (patch not applied yet) the phone number is used, as before.

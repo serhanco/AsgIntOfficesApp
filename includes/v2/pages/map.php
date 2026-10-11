@@ -12,10 +12,15 @@ $countryCount = count(array_unique(array_column($offices, 'country')));
             <p class="eyebrow"><?= __('site_name') ?></p>
             <h1 class="mt-2 text-2xl font-extrabold text-navy"><?= __('map_floating_h') ?></h1>
             <p class="mt-1 text-sm text-muted"><?= __('map_floating_p') ?></p>
-            <div class="mt-4 flex items-center gap-2">
+            <div class="mt-4 flex flex-wrap items-center gap-2">
                 <span class="count-pill"><?= count($offices) ?> <?= __('stat_offices') ?></span>
                 <span class="count-pill"><?= $countryCount ?> <?= __('stat_countries') ?></span>
-                <a href="<?= getBaseUrl() ?>/offices" class="btn btn--navy btn--sm ms-auto">
+            </div>
+            <div class="mt-3 grid grid-cols-2 gap-2">
+                <a href="<?= getBaseUrl() ?>/nearest?find=1" class="btn btn--primary btn--sm">
+                    <i class="ph-fill ph-crosshair" aria-hidden="true"></i><?= __('nav_nearest') ?>
+                </a>
+                <a href="<?= getBaseUrl() ?>/offices" class="btn btn--navy btn--sm">
                     <i class="ph-fill ph-list-dashes" aria-hidden="true"></i><?= __('map_list_view') ?>
                 </a>
             </div>

@@ -96,3 +96,33 @@
 /* Hero locate button: radar in white */
 .nf-locate-btn .nf-radar { color: #fff; }
 .nf-locate-btn.is-locating { transform: none !important; }
+
+/* Finder card on a wide page (/nearest): details on the left, the four contact buttons on the right,
+   so the card does not stretch a phone-sized layout over a desktop-sized box */
+@media (min-width: 900px) {
+  .nf-card--wide:has(> .nf-main) { display: grid; grid-template-columns: minmax(0, 1fr) 21rem; column-gap: 2.25rem; align-items: start; }
+  .nf-card--wide:has(> .nf-main) > * { grid-column: 1; }
+  .nf-card--wide:has(> .nf-main) > .nf-context { grid-column: 1 / -1; justify-self: start; }
+  .nf-card--wide:has(> .nf-main) > .nf-main { display: contents; }
+  .nf-card--wide:has(> .nf-main) .nf-main__info { grid-column: 1; grid-row: 2; }
+  .nf-card--wide:has(> .nf-main) .nf-actions { grid-column: 2; grid-row: 2 / span 3; align-self: center; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: .75rem; }
+  .nf-card--wide:has(> .nf-main) .nf-action { padding-block: 1.05rem; font-size: .9rem; }
+  .nf-card--wide:has(> .nf-main) .nf-action i { font-size: 1.6rem; }
+  .nf-card--wide:has(> .nf-main) > .nf-footer { border-top: 0; padding-top: 0; margin-top: 1.25rem; justify-content: flex-start; }
+  .nf-card--wide:has(> .nf-main) > .nf-footer .nf-details { margin-inline-start: 0; }
+}
+
+/* Country without an office: head office and nearest office as two panels of the same design */
+.nf-duo { margin-top: 1.5rem; display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { .nf-card--wide .nf-duo:not(.nf-duo--one) { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; } }
+.nf-panel { display: flex; flex-direction: column; gap: .35rem; border-radius: 22px; padding: 1.35rem; border: 1px solid var(--line); border-top-width: 4px; }
+.nf-panel .nf-name { margin: 0; }
+.nf-panel .nf-address { margin: .15rem 0 0; }
+.nf-panel .nf-distance { align-self: flex-start; margin-top: .6rem; }
+.nf-panel .nf-actions { margin-top: auto; padding-top: 1.1rem; }
+.nf-panel .nf-footer { margin-top: 1rem; padding-top: 0; border-top: 0; justify-content: flex-start; }
+.nf-panel .nf-details { margin-inline-start: 0; }
+.nf-panel--hq { background: #eef2fa; border-color: #d7e0f0; border-top-color: var(--navy); }
+.nf-panel--hq .nf-label { color: var(--navy); }
+.nf-panel--near { background: #eaf7fd; border-color: #cfe9f6; border-top-color: var(--aqua); }
+.nf-panel--near .nf-label { color: var(--azure); }
