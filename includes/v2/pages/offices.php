@@ -10,9 +10,14 @@ require __DIR__ . '/../header.php';
             <h1 class="mt-3 text-3xl sm:text-5xl font-extrabold"><?= __('offices_title') ?></h1>
             <p class="mt-3 text-[#cfdcef] text-base sm:text-lg"><?= __('offices_subtitle', $totalOffices, $totalCountries) ?></p>
         </div>
-        <a href="<?= getBaseUrl() ?>/map" class="btn btn--ghost rise self-start md:self-auto" style="--d:.1s">
-            <i class="ph-fill ph-map-trifold" aria-hidden="true"></i><?= __('offices_view_map') ?>
-        </a>
+        <div class="rise flex flex-wrap gap-2.5 self-start md:self-auto" style="--d:.1s">
+            <button type="button" class="btn btn--primary near-btn" data-near-me>
+                <i class="ph-fill ph-crosshair" aria-hidden="true"></i><span data-near-me-label><?= __('nav_nearest') ?></span>
+            </button>
+            <a href="<?= getBaseUrl() ?>/map" class="btn btn--ghost">
+                <i class="ph-fill ph-map-trifold" aria-hidden="true"></i><?= __('offices_view_map') ?>
+            </a>
+        </div>
     </div>
 </section>
 
@@ -36,6 +41,9 @@ require __DIR__ . '/../header.php';
 </div>
 
 <div class="wrap py-10 sm:py-14">
+    <!-- Filled in after "Nearest Office" is pressed (assets/js/v2.js) -->
+    <div class="near-result near-result--page card mb-8" data-near-result aria-live="polite" hidden></div>
+
     <div id="no-results" class="hidden text-center py-16">
         <span class="icon-chip mx-auto w-16 h-16 rounded-2xl text-3xl"><i class="ph-fill ph-magnifying-glass-minus" aria-hidden="true"></i></span>
         <h3 class="mt-5 text-xl font-bold text-navy"><?= __('offices_no_results_h') ?></h3>
@@ -59,7 +67,8 @@ require __DIR__ . '/../header.php';
                class="office-card group flex items-center gap-3.5 p-3 rounded-2xl hover:bg-surface transition-colors"
                data-name="<?= strtolower(e($o['display_name'])) ?>"
                data-country="<?= strtolower(e($o['country'])) ?>"
-               data-address="<?= strtolower(e($o['address'])) ?>">
+               data-address="<?= strtolower(e($o['address'])) ?>"
+               data-url="<?= e(officeUrl($o['slug'])) ?>">
                 <span class="icon-chip w-11 h-11 text-xl rounded-xl"><i class="ph-fill ph-buildings" aria-hidden="true"></i></span>
                 <span class="flex-1 min-w-0">
                     <span class="block font-bold text-ink leading-tight group-hover:text-navy transition-colors line-clamp-1"><bdi><?= e($o['display_name']) ?></bdi></span>
@@ -73,5 +82,27 @@ require __DIR__ . '/../header.php';
     <?php endforeach; ?>
     </div>
 </div>
+
+<script>
+window.NEAR_OFFICES = <?= json_encode(array_map(fn($o) => [
+    'lat' => $o['latitude'] !== null ? (float)$o['latitude'] : null, 'lon' => $o['longitude'] !== null ? (float)$o['longitude'] : null,
+    'name' => $o['display_name'], 'country' => $o['country'], 'url' => officeUrl($o['slug']),
+], array_merge(...array_values($grouped))), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+// After "Nearest Office": the distance on every office in the list, and a jump to the result
+document.addEventListener('v2:nearest', function (e) {
+    var byUrl = {};
+    e.detail.list.forEach(function (o) { byUrl[o.url] = o.distance; });
+    document.querySelectorAll('.office-card[data-url]').forEach(function (card) {
+        var d = byUrl[card.dataset.url];
+        if (d == null) return;
+        var tag = card.querySelector('.near-km') || card.insertBefore(document.createElement('span'), card.lastElementChild);
+        tag.className = 'near-km';
+        tag.dir = 'ltr';
+        tag.textContent = (d < 1 ? '<1' : Math.round(d).toLocaleString('en-US')) + ' km';
+    });
+    var box = document.querySelector('[data-near-result]');
+    if (box) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+</script>
 
 <?php require __DIR__ . '/../footer.php'; ?>
