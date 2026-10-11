@@ -25,6 +25,7 @@ $tagStyle = [
     'act_tag_webinar'      => ['icon' => 'ph-video-camera',       'chip' => 'from-coral-light to-coral-ink', 'text' => 'text-coral-ink'],
 ];
 ?>
+<div class="of-theme">
 
 <!-- Hero -->
 <section class="hero">
@@ -313,4 +314,5 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
+</div>
 <?php require __DIR__ . '/../footer.php'; ?>
