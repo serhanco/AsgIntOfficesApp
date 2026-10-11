@@ -469,9 +469,10 @@
     input.removeAttribute('aria-activedescendant');
   }
 
-  function choose(o) {
+  function choose(o, fromSearch) {
     if (!o) return;
     stopCountdown();
+    if (fromSearch && C.v2) { input.value = o.name; closeList(); window.location.href = o.url; return; }
     state.selected = state.position ? { ...o, distance: distanceKm(state.position.lat, state.position.lon, o.lat, o.lon) } : o;
     input.value = o.name;
     closeList();
@@ -492,12 +493,12 @@
     input.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowDown') { e.preventDefault(); moveActive(1); }
       else if (e.key === 'ArrowUp') { e.preventDefault(); moveActive(-1); }
-      else if (e.key === 'Enter') { e.preventDefault(); choose(results[active]); }
+      else if (e.key === 'Enter') { e.preventDefault(); choose(results[active], true); }
       else if (e.key === 'Escape') closeList();
     });
     list.addEventListener('mousedown', (e) => {
       const li = e.target.closest('[data-i]');
-      if (li) { e.preventDefault(); choose(results[+li.dataset.i]); }
+      if (li) { e.preventDefault(); choose(results[+li.dataset.i], true); }
     });
     document.addEventListener('click', (e) => { if (!e.target.closest('#nf-search')) closeList(); });
   }
