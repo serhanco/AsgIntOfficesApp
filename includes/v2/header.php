@@ -48,9 +48,9 @@ function v2LangMenu(string $id): void {
 // Main menu. Offices and Events carry a small count badge (live from the database; 0 = no badge).
 // The nearest-office finder is no longer a menu item: it lives on the home page, the map and the office list.
 $navItems = [
-    ['url' => getBaseUrl() . '/map',     'icon' => 'ph-globe-hemisphere-west', 'label' => __('nav_map'),         'active' => $currentPage === 'map',                                   'count' => 0],
-    ['url' => getBaseUrl() . '/offices', 'icon' => 'ph-buildings',             'label' => __('nav_all_offices'), 'active' => in_array($currentPage, ['offices', 'office'], true), 'count' => activeOfficeCount()],
-    ['url' => getBaseUrl() . '/events',  'icon' => 'ph-calendar-star',         'label' => __('nav_events'),      'active' => $currentPage === 'events',                                'count' => upcomingEventCount()],
+    ['url' => getBaseUrl() . '/map',     'icon' => 'ph-globe-hemisphere-west', 'label' => __('nav_map'),         'active' => $currentPage === 'map',                                   'count' => 0, 'tone' => ''],
+    ['url' => getBaseUrl() . '/offices', 'icon' => 'ph-buildings',             'label' => __('nav_all_offices'), 'active' => in_array($currentPage, ['offices', 'office'], true), 'count' => activeOfficeCount(), 'tone' => 'office'],
+    ['url' => getBaseUrl() . '/events',  'icon' => 'ph-calendar-star',         'label' => __('nav_events'),      'active' => $currentPage === 'events',                                'count' => upcomingEventCount(), 'tone' => 'event'],
 ];
 ?>
 <!DOCTYPE html>
@@ -131,9 +131,9 @@ $navItems = [
 
             <nav class="hidden lg:flex items-center gap-1" aria-label="Main">
                 <?php foreach ($navItems as $n): ?>
-                <a href="<?= e($n['url']) ?>" class="nav-link"<?= $n['active'] ? ' aria-current="page"' : '' ?>>
+                <a href="<?= e($n['url']) ?>" class="nav-link<?= $n['tone'] ? ' nav-link--' . $n['tone'] : '' ?>"<?= $n['active'] ? ' aria-current="page"' : '' ?>>
                     <i class="ph <?= $n['icon'] ?>" aria-hidden="true"></i><?= $n['label'] ?>
-                    <?php if ($n['count']): ?><span class="nav-badge"><?= $n['count'] ?></span><?php endif; ?>
+                    <?php if ($n['count']): ?><span class="nav-badge<?= $n['tone'] ? ' nav-badge--' . $n['tone'] : '' ?>"><?= $n['count'] ?></span><?php endif; ?>
                 </a>
                 <?php endforeach; ?>
             </nav>
@@ -149,10 +149,10 @@ $navItems = [
         <div class="drawer__panel">
             <nav class="grid gap-2" aria-label="Main">
                 <?php foreach ($navItems as $n): ?>
-                <a href="<?= e($n['url']) ?>" class="drawer__tile"<?= $n['active'] ? ' aria-current="page"' : '' ?>>
+                <a href="<?= e($n['url']) ?>" class="drawer__tile<?= $n['tone'] === 'event' ? ' drawer__tile--event' : '' ?>"<?= $n['active'] ? ' aria-current="page"' : '' ?>>
                     <i class="ph-fill <?= $n['icon'] ?>" aria-hidden="true"></i>
                     <span class="flex-1"><?= $n['label'] ?></span>
-                    <?php if ($n['count']): ?><span class="nav-badge"><?= $n['count'] ?></span><?php endif; ?>
+                    <?php if ($n['count']): ?><span class="nav-badge<?= $n['tone'] ? ' nav-badge--' . $n['tone'] : '' ?>"><?= $n['count'] ?></span><?php endif; ?>
                     <i class="ph ph-arrow-right arrow text-white/50" aria-hidden="true"></i>
                 </a>
                 <?php endforeach; ?>

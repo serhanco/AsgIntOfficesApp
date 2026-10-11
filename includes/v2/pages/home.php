@@ -90,7 +90,7 @@ $homeEvents = array_slice($homeEvents, 0, 6);
             <!-- Events -->
             <div id="panel-events" class="rise scroll-mt-28" style="--d:.3s">
                 <div class="panel-head">
-                    <span class="panel-head__icon"><i class="ph-fill ph-calendar-star" aria-hidden="true"></i></span>
+                    <span class="panel-head__icon panel-head__icon--coral"><i class="ph-fill ph-calendar-star" aria-hidden="true"></i></span>
                     <div class="min-w-0 flex-1">
                         <h2><?= __('nav_events') ?></h2>
                         <p><?= __('home_events_p') ?></p>

@@ -191,8 +191,17 @@
         ${actionsHtml(hq)}
       </div>
       <div class="nf-footer">
+        ${C.v2 ? findNearestBtn() : ''}
         <a href="${esc(C.mapUrl)}" class="nf-details"><i class="ph-fill ph-globe-hemisphere-west"></i> ${esc(T.seeWorld)} <i class="ph ph-arrow-right nf-arrow"></i></a>
       </div>`;
+  }
+
+  // New design: "Nearest Office" button next to the other footer link of a card
+  function findNearestBtn() {
+    if (state.position || state.selected) return '';
+    return `<button type="button" class="nf-refine" data-nf-locate>
+      <span class="nf-radar nf-radar--dark" aria-hidden="true"><i class="ph-fill ph-crosshair"></i></span>
+      <span data-nf-locate-label>${esc(T.findNearest)}</span></button>`;
   }
 
   // New design: head office and nearest office as two panels built the same way, told apart by colour and label
@@ -297,7 +306,14 @@
     if (state.selected) {
       html = officeCard(state.selected, [], T.selectedLabel);
     } else if (state.country === HQ_COUNTRY && !officesIn([HQ_COUNTRY]).length) {
-      html = hqCard();
+      // New design: a visitor who shared the location gets the office nearest to them when one is within reach
+      const near = C.v2 && state.position ? byDistance(offices)[0] : null;
+      if (near && near.distance <= FAR_KM) {
+        html = officeCard(near, byDistance(officesIn([near.cc])).filter((o) => o.url !== near.url), T.nearestLabel);
+        focus = near;
+      } else {
+        html = hqCard();
+      }
     } else if (state.country && officesIn([state.country]).length) {
       const list = byDistance(officesIn([state.country]));
       html = officeCard(list[0], list.slice(1), T.nearestLabel);
@@ -453,9 +469,10 @@
     input.removeAttribute('aria-activedescendant');
   }
 
-  function choose(o) {
+  function choose(o, fromSearch) {
     if (!o) return;
     stopCountdown();
+    if (fromSearch && C.v2) { input.value = o.name; closeList(); window.location.href = o.url; return; }
     state.selected = state.position ? { ...o, distance: distanceKm(state.position.lat, state.position.lon, o.lat, o.lon) } : o;
     input.value = o.name;
     closeList();
@@ -476,12 +493,12 @@
     input.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowDown') { e.preventDefault(); moveActive(1); }
       else if (e.key === 'ArrowUp') { e.preventDefault(); moveActive(-1); }
-      else if (e.key === 'Enter') { e.preventDefault(); choose(results[active]); }
+      else if (e.key === 'Enter') { e.preventDefault(); choose(results[active], true); }
       else if (e.key === 'Escape') closeList();
     });
     list.addEventListener('mousedown', (e) => {
       const li = e.target.closest('[data-i]');
-      if (li) { e.preventDefault(); choose(results[+li.dataset.i]); }
+      if (li) { e.preventDefault(); choose(results[+li.dataset.i], true); }
     });
     document.addEventListener('click', (e) => { if (!e.target.closest('#nf-search')) closeList(); });
   }

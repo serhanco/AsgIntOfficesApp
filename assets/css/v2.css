@@ -62,6 +62,10 @@ body.v2 :focus-visible { outline: 3px solid rgba(37, 170, 225, .55); outline-off
   border-radius: 50%; background: var(--aqua); box-shadow: 0 0 10px var(--aqua);
 }
 .nav-link i { font-size: 1.1rem; }
+/* Offices are blue, events are coral: icons and count badges of the menu follow */
+.nav-link--office > i { color: #6fcdf5; }
+.nav-link--event > i { color: #ff9b85; }
+.nav-badge.nav-badge--office { background: var(--aqua-deep); }
 /* Small count next to Offices / Events in the menu */
 .nav-badge {
   display: inline-flex; align-items: center; justify-content: center; min-width: 1.45rem; height: 1.3rem; padding-inline: .42rem;
@@ -72,6 +76,7 @@ body.v2 :focus-visible { outline: 3px solid rgba(37, 170, 225, .55); outline-off
 .site-header.fit-1 .nav-link { padding-inline: .8rem; }
 .site-header.fit-2 .logo-side { display: none; }
 .site-header.fit-3 .site-header__bar > a img { height: 1.5rem; }
+.drawer__tile--event i:first-child { background: rgba(242,107,80,.22); color: #ff9b85; }
 .drawer__tile .nav-badge { min-width: 1.7rem; height: 1.5rem; font-size: .8rem; }
 
 .burger { width: 44px; height: 44px; border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; color: #fff; transition: background-color .2s; }
@@ -418,3 +423,16 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 .logo-side i{font-style:normal;font-size:8.5px;font-weight:500;letter-spacing:.2em;color:#7fd0f3}
 @media (min-width:480px){.logo-side{display:flex}.logo-side i{display:none}}
 @media (min-width:1024px){.logo-side i{display:block}.logo-side b{font-size:11px}.logo-side i{font-size:10px}}
+
+/* Events side of the home page in coral (offices stay blue) */
+.panel-head__icon--coral { background: linear-gradient(135deg, #f58a73, var(--coral)); box-shadow: 0 10px 22px rgba(242,107,80,.35); }
+.nf-card.ev-panel::before { background: linear-gradient(90deg, #f58a73, var(--coral)); }
+.ev-panel .nf-label { color: #d4492f; }
+.ev-panel .btn--navy { background: linear-gradient(135deg, #f58a73, var(--coral)); box-shadow: 0 12px 26px rgba(242,107,80,.3); }
+.ev-panel .btn--navy:hover { background: #e8573b; box-shadow: 0 20px 38px rgba(242,107,80,.4); }
+.ev-panel .btn--line:hover { background: var(--coral); border-color: var(--coral); }
+.panel-head__link--coral:hover { border-color: #ff9b85; }
+
+/* Event row on the home page: round arrow to the event page (coral, like everything events) */
+.ev-row__go { align-self: center; flex-shrink: 0; width: 46px; height: 46px; margin-inline-end: .7rem; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1.3rem; color: #fff; background: linear-gradient(135deg, #f58a73, var(--coral)); box-shadow: 0 8px 18px rgba(242,107,80,.3); transition: transform .25s var(--ease), box-shadow .25s var(--ease); }
+.ev-row__go:hover, .ev-row:hover .ev-row__go { transform: scale(1.08); box-shadow: 0 12px 24px rgba(242,107,80,.42); }
