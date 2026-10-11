@@ -51,6 +51,7 @@ require __DIR__ . '/includes/v2/header.php';
 $hqWa = 'https://wa.me/905359650466';
 $hqMail = 'international@acibadem.com';
 ?>
+<div class="ev-theme">
 
 <section class="page-head">
     <div class="wrap py-12 sm:py-16 flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -480,4 +481,5 @@ $hqMail = 'international@acibadem.com';
 })();
 </script>
 
+</div>
 <?php require __DIR__ . '/includes/v2/footer.php'; ?>

@@ -436,3 +436,27 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 /* Event row on the home page: round arrow to the event page (coral, like everything events) */
 .ev-row__go { align-self: center; flex-shrink: 0; width: 46px; height: 46px; margin-inline-end: .7rem; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1.3rem; color: #fff; background: linear-gradient(135deg, #f58a73, var(--coral)); box-shadow: 0 8px 18px rgba(242,107,80,.3); transition: transform .25s var(--ease), box-shadow .25s var(--ease); }
 .ev-row__go:hover, .ev-row:hover .ev-row__go { transform: scale(1.08); box-shadow: 0 12px 24px rgba(242,107,80,.42); }
+
+/* Events pages (list, calendar, detail) in coral: offices stay blue */
+.ev-theme .page-head::after { content: ''; position: absolute; inset-inline: 0; bottom: 0; height: 4px; background: linear-gradient(90deg, #f58a73, var(--coral)); }
+.ev-theme .eyebrow--light { color: #ffb4a3; }
+.ev-theme .stat-tile__n { color: #ffb4a3; }
+.ev-theme .btn--primary { background: linear-gradient(135deg, #f58a73, var(--coral)); box-shadow: 0 12px 26px rgba(242,107,80,.35); }
+.ev-theme .btn--primary:hover { background: #e8573b; }
+.ev-theme .filter-pill i, .ev-theme .text-aqua { color: var(--coral); }
+.ev-theme .filter-pill:hover, .ev-theme .hover\:border-aqua:hover { border-color: var(--coral); }
+.ev-theme .filter-pill[aria-pressed="true"] { background: var(--coral); border-color: var(--coral); }
+.ev-theme .filter-pill[aria-pressed="true"] i { color: #fff; }
+.ev-theme .seg button[aria-pressed="true"] { background: var(--coral); }
+.ev-theme .field:focus { border-color: var(--coral); box-shadow: 0 0 0 5px rgba(242,107,80,.15), var(--shadow-sm); }
+.ev-theme .cal__day.is-today { box-shadow: inset 0 0 0 2px var(--coral); }
+.ev-theme .cal__day.has-ev:hover { background: #fff1ed; }
+.ev-theme .cal__day.is-sel { background: var(--coral) !important; }
+.ev-theme .cal__dots i { background: var(--coral); }
+.ev-theme .cal__dots i[data-t="act_tag_presentation"] { background: #7c3aed; }
+.ev-theme .cal__dots i[data-t="act_tag_exhibition"] { background: #10b981; }
+.ev-theme .cal__dots i[data-t="act_tag_doctor"] { background: var(--aqua); }
+.ev-theme .cal__day.is-sel .cal__dots i { background: #fff; }
+.ev-theme .count-pill { background: #fff1ed; color: var(--coral-ink, #c8452c); }
+.ev-theme .group:hover .arrow { color: var(--coral); }
+.ev-theme .event-card:hover { border-color: #ffc9bc; }

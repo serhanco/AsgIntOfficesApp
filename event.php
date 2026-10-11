@@ -58,6 +58,7 @@ if ($heroImg !== '') {
 
 require __DIR__ . '/includes/v2/header.php';
 ?>
+<div class="ev-theme">
 
 <section class="page-head<?= $heroImg ? ' page-head--img' : '' ?>">
     <?php if ($heroImg): ?><img src="<?= e($heroImg) ?>" alt="" class="hero__img opacity-40" fetchpriority="high" decoding="async"><?php endif; ?>
@@ -305,4 +306,5 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 <?php endif; ?>
 
+</div>
 <?php require __DIR__ . '/includes/v2/footer.php'; ?>
