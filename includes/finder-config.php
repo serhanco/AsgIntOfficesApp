@@ -88,6 +88,7 @@ function finderConfig(array $offices): array {
     if (designV2()) {
         $config['v2'] = true;
         $config['t']['hqShort'] = __('nf_hq_short');
+        $config['t']['findNearest'] = __('nav_nearest');
     }
     return $config;
 }
