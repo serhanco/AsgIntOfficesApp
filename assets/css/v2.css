@@ -548,6 +548,23 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 .proof__title { margin-top: .9rem; font-size: clamp(2rem, 4.6vw, 3.3rem); font-weight: 800; line-height: 1.08; color: var(--navy); }
 .proof__title span { background: linear-gradient(120deg, var(--aqua) 0%, var(--aqua-deep) 45%, var(--navy) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .proof__lead { margin-top: 1.1rem; font-size: clamp(1rem, 1.4vw, 1.12rem); line-height: 1.7; color: var(--muted); }
+/* Smiling people of all ages: a staggered photo row between the heading and the stories */
+.proof__people { display: flex; align-items: center; justify-content: center; gap: clamp(.5rem, 1.6vw, 1.25rem); margin-top: clamp(2rem, 4.5vw, 3.25rem); }
+.proof__person { --h: 210px; position: relative; flex: 1 1 0; max-width: 210px; height: var(--h); overflow: hidden; border-radius: 26px; border: 4px solid #fff; background: #e6eef8; box-shadow: var(--shadow); transition: transform .6s var(--ease), box-shadow .6s var(--ease); }
+.proof__person:nth-child(2), .proof__person:nth-child(4) { --h: 255px; }
+.proof__person:nth-child(3) { --h: 300px; max-width: 240px; }
+.proof__person::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 60%, rgba(9,44,116,.18)); pointer-events: none; }
+.proof__person img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+.proof__person:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+.proof__person:hover img { transform: scale(1.06); }
+.js-anim .proof__people.reveal .proof__person { opacity: 0; transform: translateY(24px); }
+.js-anim .proof__people.reveal.in .proof__person { opacity: 1; transform: none; transition: opacity .8s var(--ease), transform .8s var(--ease); transition-delay: calc(var(--k) * 90ms); }
+@media (max-width: 639px) {
+  .proof__person:nth-child(2), .proof__person:nth-child(5) { display: none; }
+  .proof__person, .proof__person:nth-child(4) { --h: 170px; border-radius: 20px; border-width: 3px; }
+  .proof__person:nth-child(3) { --h: 205px; }
+  .proof__person:nth-child(3) img { object-position: 30% center; }
+}
 .proof__grid { display: grid; gap: 1.25rem; margin-top: clamp(2.5rem, 5vw, 3.75rem); }
 @media (min-width: 1024px) { .proof__grid { grid-template-columns: 1.6fr 1fr; gap: 1.5rem; } }
 
@@ -556,8 +573,8 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 .proof__stage::after { content: ''; position: absolute; z-index: -1; inset: 0; border-radius: inherit; background: radial-gradient(rgba(255,255,255,.09) 1px, transparent 1.2px) 0 0 / 18px 18px; -webkit-mask-image: linear-gradient(160deg, #000, transparent 55%); mask-image: linear-gradient(160deg, #000, transparent 55%); }
 .proof__mark { display: block; margin-bottom: 1.1rem; font-size: clamp(2.6rem, 4vw, 3.4rem); line-height: 1; color: var(--aqua); filter: drop-shadow(0 8px 18px rgba(37,170,225,.35)); }
 .proof__slides { flex: 1; display: grid; }
-.proof__slide { grid-area: 1 / 1; display: flex; flex-direction: column; justify-content: space-between; gap: 2rem; opacity: 0; visibility: hidden; transform: translateY(14px); transition: opacity .7s var(--ease), transform .7s var(--ease), visibility 0s .7s; }
-.proof__slide.is-on { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.proof__slide { grid-area: 1 / 1; display: flex; flex-direction: column; justify-content: space-between; gap: 2rem; opacity: 0; visibility: hidden; transform: translateY(10px); transition: opacity .3s ease, transform .3s ease, visibility 0s .3s; }
+.proof__slide.is-on { opacity: 1; visibility: visible; transform: none; transition: opacity .6s var(--ease) .3s, transform .6s var(--ease) .3s, visibility 0s .3s; }
 .proof__quote { margin: 0; max-width: 40ch; font-size: clamp(1.2rem, 2.1vw, 1.7rem); font-weight: 600; line-height: 1.5; letter-spacing: -.01em; color: #fff; }
 .proof__who { display: flex; align-items: center; gap: 14px; }
 .proof__avatar { flex-shrink: 0; width: 54px; height: 54px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1.05rem; font-weight: 800; letter-spacing: .02em; color: #fff; background: linear-gradient(135deg, var(--aqua) 0%, var(--navy) 100%); box-shadow: 0 0 0 3px rgba(255,255,255,.14), 0 10px 24px rgba(3,16,43,.35); }
@@ -607,5 +624,7 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 }
 @media (prefers-reduced-motion: reduce) {
   .proof__slide { transition: none; transform: none; }
-  .proof__metric, .proof__metric::after, .proof__seal-ring { transition: none; }
+  .proof__metric, .proof__metric::after, .proof__seal-ring, .proof__person, .proof__person img { transition: none; }
+  .js-anim .proof__people.reveal .proof__person { opacity: 1; transform: none; }
 }
+.js-anim .proof__people.reveal.in .proof__person:hover { transform: translateY(-6px); transition-delay: 0s; }

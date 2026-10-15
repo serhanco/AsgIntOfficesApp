@@ -5,38 +5,51 @@
  * Edit the three lists below; the markup needs no change. Set $proofDraft = false once the content is real.
  */
 $proofDraft = true;
-$proofLang  = 'tr'; // the texts below are written in this language; other page languages show them as is
+$proofLang  = 'en'; // the texts below are written in this language; other page languages show them as is
 
 $proofQuotes = [
-    ['q' => 'Bakü ofisindeki ekip ilk görüşmeden ameliyat sonrası kontrollere kadar her adımda yanımdaydı. Kendimi bir an bile yabancı hissetmedim.',
-     'name' => 'Leyla M.', 'cc' => 'az', 'country' => 'Azerbaycan', 'topic' => 'Ortopedi'],
-    ['q' => 'Uçuştan tercümana kadar her şey tek bir kişi üzerinden planlandı. Bana sadece iyileşmek kaldı.',
-     'name' => 'Giorgi K.', 'cc' => 'ge', 'country' => 'Gürcistan', 'topic' => 'Kardiyoloji'],
-    ['q' => 'Eve döndükten sonra raporlarımı Acıbadem Online üzerinden takip edebilmek içimi çok rahatlattı.',
-     'name' => 'Elena P.', 'cc' => 'ro', 'country' => 'Romanya', 'topic' => 'Onkoloji'],
+    ['q' => 'From my first call to my check-ups after surgery, the Baku team was with me at every step. I never felt like a stranger.',
+     'name' => 'Leyla M.', 'cc' => 'az', 'country' => 'Azerbaijan', 'topic' => 'Orthopaedics'],
+    ['q' => 'Everything from flights to interpreters was arranged by one person. All I had to do was get better.',
+     'name' => 'Giorgi K.', 'cc' => 'ge', 'country' => 'Georgia', 'topic' => 'Cardiology'],
+    ['q' => 'Following my reports on Acıbadem Online after I flew home gave me real peace of mind.',
+     'name' => 'Elena P.', 'cc' => 'ro', 'country' => 'Romania', 'topic' => 'Oncology'],
 ];
 
 $proofMetrics = [
-    ['n' => 98, 'pre' => '%', 'suf' => '',  'l' => 'Hasta memnuniyeti',            'icon' => 'ph-heart'],
-    ['n' => 35, 'pre' => '',  'suf' => '+', 'l' => 'Yıllık sağlık deneyimi',       'icon' => 'ph-medal'],
-    ['n' => 24, 'pre' => '',  'suf' => '/7', 'l' => 'Uluslararası hasta desteği', 'icon' => 'ph-headset'],
+    ['n' => 30, 'pre' => '', 'suf' => '+',  'l' => 'Languages spoken by our teams', 'icon' => 'ph-translate'],
+    ['n' => 35, 'pre' => '', 'suf' => '+',  'l' => 'Years of healthcare experience', 'icon' => 'ph-medal'],
+    ['n' => 24, 'pre' => '', 'suf' => '/7', 'l' => 'International patient support', 'icon' => 'ph-headset'],
 ];
 
 $proofSeals = [
-    ['icon' => 'ph-seal-check',   'h' => 'JCI',              'p' => 'Uluslararası akreditasyon'],
-    ['icon' => 'ph-certificate',  'h' => 'ISO 9001',         'p' => 'Kalite yönetimi'],
-    ['icon' => 'ph-shield-check', 'h' => 'Yetki Belgesi',    'p' => 'Sağlık turizmi'],
-    ['icon' => 'ph-trophy',       'h' => 'Ödüller',          'p' => 'Hasta deneyimi'],
+    ['icon' => 'ph-seal-check',   'h' => 'JCI',                    'p' => 'International accreditation'],
+    ['icon' => 'ph-certificate',  'h' => 'ISO 9001',               'p' => 'Quality management'],
+    ['icon' => 'ph-shield-check', 'h' => 'Licensed',               'p' => 'Health tourism authorisation'],
+    ['icon' => 'ph-trophy',       'h' => 'Awards',                 'p' => 'Patient experience'],
 ];
+
+// Smiling people of all ages (Unsplash License stock: atmosphere only, never paired with a quote)
+$proofPeople = ['assets/images/proof/people-1.webp', 'assets/images/proof/people-2.webp', 'assets/images/proof/people-3.webp',
+                'assets/images/proof/people-4.webp', 'assets/images/proof/people-5.webp'];
+$proofPeople = array_values(array_filter($proofPeople, fn($f) => is_file(__DIR__ . '/../../' . $f)));
 ?>
 <section class="proof" aria-labelledby="proof-h"<?= $proofLang !== ($GLOBALS['current_lang'] ?? '') ? ' lang="' . $proofLang . '" dir="ltr"' : '' ?>>
     <div class="wrap">
         <div class="proof__head reveal">
-            <?php if ($proofDraft): ?><span class="proof__draft">Taslak · örnek içerik</span><?php endif; ?>
-            <p class="eyebrow justify-center">Hastalarımız anlatıyor</p>
-            <h2 id="proof-h" class="proof__title">Sağlığınız için <span>doğru adres.</span></h2>
-            <p class="proof__lead">Dünyanın dört bir yanından hastalar, ilk görüşmeden tedavi sonrası takibe kadar Acıbadem'in yanlarında olduğunu biliyor.</p>
+            <?php if ($proofDraft): ?><span class="proof__draft">Draft · sample content</span><?php endif; ?>
+            <p class="eyebrow justify-center">In our patients' words</p>
+            <h2 id="proof-h" class="proof__title">The right address <span>for your health.</span></h2>
+            <p class="proof__lead">Patients from all over the world know Acıbadem is by their side, from the very first conversation to follow-up after treatment.</p>
         </div>
+
+        <?php if ($proofPeople): ?>
+        <div class="proof__people reveal" aria-hidden="true">
+            <?php foreach ($proofPeople as $k => $f): ?>
+            <span class="proof__person" style="--k:<?= $k ?>"><img src="<?= asset($f) ?>" alt="" width="480" height="600" loading="lazy" decoding="async"></span>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
 
         <div class="proof__grid">
             <!-- Rotating patient stories -->
@@ -50,7 +63,7 @@ $proofSeals = [
                         <figcaption class="proof__who">
                             <span class="proof__avatar" aria-hidden="true"><?= e($ini) ?></span>
                             <span class="min-w-0">
-                                <b class="proof__name"><?= e($t['name']) ?><?php if ($proofDraft): ?> <em>örnek</em><?php endif; ?></b>
+                                <b class="proof__name"><?= e($t['name']) ?><?php if ($proofDraft): ?> <em>sample</em><?php endif; ?></b>
                                 <span class="proof__from">
                                     <img src="<?= e(getFlagUrl($t['cc'])) ?>" alt="" width="20" height="20" loading="lazy" decoding="async">
                                     <?= e($t['country']) ?> · <?= e($t['topic']) ?>
@@ -61,14 +74,14 @@ $proofSeals = [
                     <?php endforeach; ?>
                 </div>
                 <div class="proof__nav">
-                    <div class="proof__bars" role="tablist" aria-label="Hasta yorumları">
+                    <div class="proof__bars" role="tablist" aria-label="Patient stories">
                         <?php foreach ($proofQuotes as $k => $t): ?>
                         <button type="button" class="proof__bar<?= $k === 0 ? ' is-on' : '' ?>" role="tab" aria-selected="<?= $k === 0 ? 'true' : 'false' ?>" aria-label="<?= $k + 1 ?> / <?= count($proofQuotes) ?>" data-go="<?= $k ?>"><i></i></button>
                         <?php endforeach; ?>
                     </div>
                     <div class="proof__arrows">
-                        <button type="button" class="proof__arrow" data-step="-1" aria-label="Önceki"><i class="ph ph-arrow-left" aria-hidden="true"></i></button>
-                        <button type="button" class="proof__arrow" data-step="1" aria-label="Sonraki"><i class="ph ph-arrow-right" aria-hidden="true"></i></button>
+                        <button type="button" class="proof__arrow" data-step="-1" aria-label="Previous"><i class="ph ph-arrow-left" aria-hidden="true"></i></button>
+                        <button type="button" class="proof__arrow" data-step="1" aria-label="Next"><i class="ph ph-arrow-right" aria-hidden="true"></i></button>
                     </div>
                 </div>
             </figure>
