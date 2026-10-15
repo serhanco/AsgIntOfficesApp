@@ -345,6 +345,8 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 .hero-pillar__n { flex-shrink: 0; min-width: 1.9rem; height: 1.9rem; padding-inline: .5rem; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; font-size: .82rem; background: #fff; color: var(--navy); font-variant-numeric: tabular-nums; }
 @media (max-width: 639px) { .hero-pillar { border-radius: 18px; gap: .5rem; padding: .5rem; font-size: .84rem; } .hero-pillar__icon { width: 32px; height: 32px; font-size: 1rem; } .hero-pillar__n { min-width: 1.7rem; height: 1.7rem; font-size: .76rem; } }
 @media (max-width: 399px) { .hero-pillar { padding-inline-start: .9rem; } .hero-pillar__icon { display: none; } }
+/* Jump buttons only where the two panels stack (phones, tablets); side by side they are redundant */
+@media (min-width: 1024px) { .hero-pillars { display: none; } }
 
 .panel-head { display: flex; align-items: center; gap: .85rem; margin-bottom: 1rem; color: #fff; }
 .panel-head__icon { width: 46px; height: 46px; border-radius: 14px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.45rem; background: linear-gradient(135deg, var(--aqua), var(--aqua-deep)); box-shadow: 0 10px 22px rgba(37,170,225,.35); }
