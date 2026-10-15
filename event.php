@@ -43,7 +43,7 @@ $program  = $event['program'];
 $contact  = eventContact($event, strtolower((string)($_SERVER['HTTP_CF_IPCOUNTRY'] ?? '')));
 // A finished external event keeps the visitor here: office contact instead of the (often closed) outside page
 $needContact = ($past && $event['external']) || (!$past && ($event['relates_hq'] || !array_filter($stops, fn($l) => $l['office'])));
-$link     = $event['link_url'] && preg_match('#^https?://#i', $event['link_url']) && !($past && $event['external']) ? $event['link_url'] : '';
+$link     = $event['link_url'] && preg_match('#^https?://#i', $event['link_url']) ? $event['link_url'] : '';
 
 // Other upcoming events, the ones sharing a country first
 $others = array_values(array_filter(sortEvents(getEvents()), fn($e) => $e['id'] !== $event['id'] && $e['status'] === 'upcoming'));
