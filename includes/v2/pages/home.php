@@ -192,7 +192,9 @@ document.addEventListener('nf:country', function (e) {
             <?php foreach ($explore as $i => $c): ?>
             <a href="<?= e($c['url']) ?>"<?= $c['ext'] ? ' target="_blank" rel="noopener noreferrer"' : '' ?>
                class="card card--hover xcard group relative overflow-hidden flex flex-col reveal" style="--d:<?= $i * 0.08 ?>s">
-                <div class="xcard__visual xcard__visual--<?= $c['v'] ?>" aria-hidden="true">
+                <?php $photo = 'assets/images/explore-' . $c['v'] . '.webp'; $hasPhoto = is_file(__DIR__ . '/../../../' . $photo); ?>
+                <div class="xcard__visual xcard__visual--<?= $c['v'] ?><?= $hasPhoto ? ' has-photo' : '' ?>" aria-hidden="true">
+                    <?php if ($hasPhoto): ?><img class="xcard__photo" src="<?= asset($photo) ?>" alt="" width="800" height="400" loading="lazy" decoding="async"><?php endif; ?>
                     <span class="xcard__num">0<?= $i + 1 ?></span>
                     <?php if ($c['v'] === 'offices'): ?>
                     <div class="xflags">
