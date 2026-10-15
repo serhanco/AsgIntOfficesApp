@@ -7,13 +7,16 @@
 $proofDraft = true;
 $proofLang  = 'en'; // the texts below are written in this language; other page languages show them as is
 
+// Each story is written in the patient's own language ('lang'); country and topic labels stay in the page's draft language
 $proofQuotes = [
-    ['q' => 'From my first call to my check-ups after surgery, the Baku team was with me at every step. I never felt like a stranger.',
+    ['lang' => 'az', 'q' => 'İlk zəngdən əməliyyatdan sonrakı yoxlamalara qədər Bakı komandası hər addımda yanımda idi. Özümü bir an belə yad hiss etmədim.',
      'name' => 'Leyla M.', 'cc' => 'az', 'country' => 'Azerbaijan', 'topic' => 'Orthopaedics'],
-    ['q' => 'Everything from flights to interpreters was arranged by one person. All I had to do was get better.',
+    ['lang' => 'ka', 'q' => 'ფრენიდან თარჯიმნამდე ყველაფერს ერთი ადამიანი აგვარებდა. ჩემი ერთადერთი საქმე გამოჯანმრთელება იყო.',
      'name' => 'Giorgi K.', 'cc' => 'ge', 'country' => 'Georgia', 'topic' => 'Cardiology'],
-    ['q' => 'Following my reports on Acıbadem Online after I flew home gave me real peace of mind.',
+    ['lang' => 'ro', 'q' => 'După ce m-am întors acasă, faptul că îmi puteam urmări rapoartele prin Acıbadem Online mi-a adus o liniște enormă.',
      'name' => 'Elena P.', 'cc' => 'ro', 'country' => 'Romania', 'topic' => 'Oncology'],
+    ['lang' => 'en', 'q' => 'I flew in for a full check-up on a Monday and by Wednesday I had every result and a clear plan from my doctor. It was the most organised health visit I have ever had.',
+     'name' => 'Michael R.', 'cc' => 'us', 'country' => 'United States', 'topic' => 'Executive check-up'],
 ];
 
 $proofMetrics = [
@@ -58,7 +61,7 @@ $proofPeople = array_values(array_filter($proofPeople, fn($f) => is_file(__DIR__
                 <div class="proof__slides" aria-live="polite">
                     <?php foreach ($proofQuotes as $k => $t):
                         $ini = implode('', array_map(fn($w) => mb_substr($w, 0, 1), array_slice(preg_split('/\s+/', $t['name']), 0, 2))); ?>
-                    <div class="proof__slide<?= $k === 0 ? ' is-on' : '' ?>" data-slide<?= $k === 0 ? '' : ' aria-hidden="true"' ?>>
+                    <div class="proof__slide<?= $k === 0 ? ' is-on' : '' ?>" lang="<?= e($t['lang']) ?>" data-slide<?= $k === 0 ? '' : ' aria-hidden="true"' ?>>
                         <blockquote class="proof__quote"><?= e($t['q']) ?></blockquote>
                         <figcaption class="proof__who">
                             <span class="proof__avatar" aria-hidden="true"><?= e($ini) ?></span>

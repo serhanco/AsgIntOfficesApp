@@ -484,15 +484,16 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 .xcard__photo { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease); }
 .group:hover .xcard__photo { transform: scale(1.06); }
 .xcard__visual.has-photo { background: none; }
-.xcard__visual--offices.has-photo::before, .xcard__visual--map.has-photo::before { opacity: 1; background: linear-gradient(180deg, rgba(6,26,71,.55), rgba(3,16,43,.85)); }
-.xcard__visual--online.has-photo::before { opacity: 1; background: linear-gradient(135deg, rgba(37,170,225,.55), rgba(20,121,168,.8)); }
+.xcard__visual.has-photo::before { opacity: 1; background: linear-gradient(180deg, rgba(37,170,225,.42), rgba(20,121,168,.72)); } /* one sky-blue veil for all three photos */
 /* With a photo: smaller flags in one row, and a small glass badge instead of the drawings */
 .has-photo .xflags { max-width: none; flex-wrap: nowrap; }
 .has-photo .xflags > * { width: 28px; height: 28px; margin: 0 -3px; border-width: 2px; }
-.xbadge { display: inline-flex; align-items: center; gap: .4rem; padding: .45rem 1rem; border-radius: 999px; font-size: .82rem; font-weight: 600; color: #e6eefa; background: rgba(3,16,43,.45); border: 1px solid rgba(255,255,255,.22); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: transform .45s var(--ease); }
+.has-photo .xflags > * { border-color: rgba(255,255,255,.92); }
+.has-photo .xstats span { background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.34); color: #fff; }
+.xbadge { display: inline-flex; align-items: center; gap: .4rem; padding: .45rem 1rem; border-radius: 999px; font-size: .82rem; font-weight: 600; color: #e6eefa; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.34); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: transform .45s var(--ease); }
 .xbadge b { color: #fff; font-weight: 800; }
 .xbadge .ph-map-pin { color: var(--coral); font-size: 1rem; }
-.xbadge--live { gap: .7rem; font-size: 1.05rem; color: #fff; background: rgba(20,121,168,.45); }
+.xbadge--live { gap: .7rem; font-size: 1.05rem; color: #fff; }
 .group:hover .xbadge { transform: translateY(-3px); }
 .xcard__num { position: absolute; top: 12px; inset-inline-end: 18px; font-size: 2.6rem; font-weight: 800; line-height: 1; color: rgba(255,255,255,.14); transition: color .5s; }
 .group:hover .xcard__num { color: rgba(255,255,255,.3); }
@@ -552,7 +553,7 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 .proof__people { display: flex; align-items: center; justify-content: center; gap: clamp(.5rem, 1.6vw, 1.25rem); margin-top: clamp(2rem, 4.5vw, 3.25rem); }
 .proof__person { --h: 210px; position: relative; flex: 1 1 0; max-width: 210px; height: var(--h); overflow: hidden; border-radius: 26px; border: 4px solid #fff; background: #e6eef8; box-shadow: var(--shadow); transition: transform .6s var(--ease), box-shadow .6s var(--ease); }
 .proof__person:nth-child(2), .proof__person:nth-child(4) { --h: 255px; }
-.proof__person:nth-child(3) { --h: 300px; max-width: 240px; }
+.proof__person:nth-child(3) { --h: 300px; max-width: 350px; flex-grow: 1.7; }
 .proof__person::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 60%, rgba(9,44,116,.18)); pointer-events: none; }
 .proof__person img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
 .proof__person:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
@@ -562,8 +563,7 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 @media (max-width: 639px) {
   .proof__person:nth-child(2), .proof__person:nth-child(5) { display: none; }
   .proof__person, .proof__person:nth-child(4) { --h: 170px; border-radius: 20px; border-width: 3px; }
-  .proof__person:nth-child(3) { --h: 205px; }
-  .proof__person:nth-child(3) img { object-position: 30% center; }
+  .proof__person:nth-child(3) { --h: 170px; flex-grow: 1.9; }
 }
 .proof__grid { display: grid; gap: 1.25rem; margin-top: clamp(2.5rem, 5vw, 3.75rem); }
 @media (min-width: 1024px) { .proof__grid { grid-template-columns: 1.6fr 1fr; gap: 1.5rem; } }
