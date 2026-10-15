@@ -162,24 +162,82 @@ document.addEventListener('nf:country', function (e) {
 
         <?php
         $explore = [
-            ['url' => getBaseUrl() . '/offices', 'icon' => 'ph-list-dashes',     'h' => __('explore_offices_h'), 'p' => __('explore_offices_p'), 'ext' => false],
-            ['url' => getBaseUrl() . '/map',     'icon' => 'ph-map-trifold',     'h' => __('explore_map_h'),     'p' => __('explore_map_p'),     'ext' => false],
-            ['url' => 'https://www.acibadem.com.tr/acibademonline/#/login', 'icon' => 'ph-desktop-tower', 'h' => __('explore_online_h'), 'p' => __('explore_online_p'), 'ext' => true],
+            ['url' => getBaseUrl() . '/offices', 'icon' => 'ph-list-dashes',     'h' => __('explore_offices_h'), 'p' => __('explore_offices_p'), 'ext' => false, 'v' => 'offices'],
+            ['url' => getBaseUrl() . '/map',     'icon' => 'ph-map-trifold',     'h' => __('explore_map_h'),     'p' => __('explore_map_p'),     'ext' => false, 'v' => 'map'],
+            ['url' => 'https://www.acibadem.com.tr/acibademonline/#/login', 'icon' => 'ph-desktop-tower', 'h' => __('explore_online_h'), 'p' => __('explore_online_p'), 'ext' => true, 'v' => 'online'],
         ];
+
+        // Offices card: one flag per country, most offices first
+        $flagCodes = array_count_values(array_filter(array_map(fn($o) => strtolower((string)($o['country_code'] ?? '')), $offices)));
+        arsort($flagCodes);
+        $flagCodes = array_keys($flagCodes);
+        $flagShown = array_slice($flagCodes, 0, 11);
+        $flagMore  = count($flagCodes) - count($flagShown);
+
+        // Map card: every office on a small map, linked to the Istanbul head office (all from the DB)
+        $hq = ['lat' => 41.0082, 'lng' => 28.9784];
+        $pts = array_values(array_filter(array_map(fn($o) => ['lat' => (float)$o['latitude'], 'lng' => (float)$o['longitude']], $offices),
+            fn($p) => $p['lat'] != 0 || $p['lng'] != 0));
+        $all = array_merge($pts, [$hq]);
+        $W = 400; $H = 190; $pad = 18;
+        $lats = array_column($all, 'lat'); $lngs = array_column($all, 'lng');
+        $kx = cos(deg2rad((min($lats) + max($lats)) / 2));
+        $spanX = max(1, (max($lngs) - min($lngs)) * $kx); $spanY = max(1, max($lats) - min($lats));
+        $sc = min(($W - 2 * $pad) / $spanX, ($H - 2 * $pad) / $spanY);
+        $ox = ($W - $spanX * $sc) / 2; $oy = ($H - $spanY * $sc) / 2;
+        $proj = fn($p) => [round($ox + ($p['lng'] - min($lngs)) * $kx * $sc, 1), round($oy + (max($lats) - $p['lat']) * $sc, 1)];
+        [$hx, $hy] = $proj($hq);
         ?>
         <div class="grid gap-5 md:grid-cols-3">
             <?php foreach ($explore as $i => $c): ?>
             <a href="<?= e($c['url']) ?>"<?= $c['ext'] ? ' target="_blank" rel="noopener noreferrer"' : '' ?>
-               class="card card--hover group relative overflow-hidden p-7 sm:p-8 flex flex-col reveal" style="--d:<?= $i * 0.08 ?>s">
-                <span class="absolute top-6 end-7 text-5xl font-extrabold text-surface-2 select-none transition-colors duration-500 group-hover:text-aqua-soft" aria-hidden="true">0<?= $i + 1 ?></span>
-                <span class="icon-chip relative"><i class="ph-fill <?= $c['icon'] ?>" aria-hidden="true"></i></span>
-                <h3 class="relative mt-6 text-xl font-bold text-ink group-hover:text-navy transition-colors"><?= $c['h'] ?></h3>
-                <p class="relative mt-2 text-sm text-muted leading-relaxed flex-1"><?= $c['p'] ?></p>
-                <span class="relative mt-6 inline-flex items-center gap-2 text-sm font-bold text-azure">
-                    <span class="h-9 w-9 rounded-full bg-aqua-soft inline-flex items-center justify-center transition-colors duration-300 group-hover:bg-aqua group-hover:text-white">
-                        <i class="ph <?= $c['ext'] ? 'ph-arrow-up-right' : 'ph-arrow-right arrow' ?>" aria-hidden="true"></i>
+               class="card card--hover xcard group relative overflow-hidden flex flex-col reveal" style="--d:<?= $i * 0.08 ?>s">
+                <div class="xcard__visual xcard__visual--<?= $c['v'] ?>" aria-hidden="true">
+                    <span class="xcard__num">0<?= $i + 1 ?></span>
+                    <?php if ($c['v'] === 'offices'): ?>
+                    <div class="xflags">
+                        <?php foreach ($flagShown as $k => $cc): ?>
+                        <img src="<?= e(getFlagUrl($cc)) ?>" alt="" width="40" height="40" loading="lazy" decoding="async" style="--k:<?= $k ?>">
+                        <?php endforeach; ?>
+                        <?php if ($flagMore > 0): ?><span style="--k:<?= count($flagShown) ?>">+<?= $flagMore ?></span><?php endif; ?>
+                    </div>
+                    <div class="xstats">
+                        <span><b><?= count($offices) ?></b> <?= __('stat_offices') ?></span>
+                        <span><b><?= $countryCount ?></b> <?= __('stat_countries') ?></span>
+                    </div>
+                    <?php elseif ($c['v'] === 'map'): ?>
+                    <svg class="xnet" viewBox="0 0 <?= $W ?> <?= $H ?>" preserveAspectRatio="xMidYMid meet">
+                        <?php foreach ($pts as $k => $p): [$x, $y] = $proj($p);
+                            $mx = ($hx + $x) / 2; $my = ($hy + $y) / 2 - hypot($x - $hx, $y - $hy) * .25; ?>
+                        <path class="xnet__arc" pathLength="1" style="--k:<?= $k ?>" d="M<?= $hx ?> <?= $hy ?>Q<?= round($mx, 1) ?> <?= round($my, 1) ?> <?= $x ?> <?= $y ?>"/>
+                        <?php endforeach; ?>
+                        <?php foreach ($pts as $p): [$x, $y] = $proj($p); ?>
+                        <circle class="xnet__dot" cx="<?= $x ?>" cy="<?= $y ?>" r="2.6"/>
+                        <?php endforeach; ?>
+                        <circle class="xnet__pulse" cx="<?= $hx ?>" cy="<?= $hy ?>" r="6"/>
+                        <circle class="xnet__hq" cx="<?= $hx ?>" cy="<?= $hy ?>" r="5"/>
+                    </svg>
+                    <?php else: ?>
+                    <div class="xcall">
+                        <div class="xcall__bar"><i></i><i></i><i></i></div>
+                        <div class="xcall__body">
+                            <span class="xcall__doc"><i class="ph-fill ph-stethoscope"></i><em></em></span>
+                            <span class="xcall__lines"><i></i><i></i><i></i></span>
+                        </div>
+                        <div class="xcall__tools"><span><i class="ph-fill ph-video-camera"></i></span><span><i class="ph-fill ph-phone"></i></span><span class="is-live"><i class="ph-fill ph-heartbeat"></i></span></div>
+                    </div>
+                    <?php endif; ?>
+                </div>
+                <div class="relative flex flex-col flex-1 px-7 pb-7 sm:px-8 sm:pb-8">
+                    <span class="icon-chip xcard__chip"><i class="ph-fill <?= $c['icon'] ?>" aria-hidden="true"></i></span>
+                    <h3 class="mt-5 text-xl font-bold text-ink group-hover:text-navy transition-colors"><?= $c['h'] ?></h3>
+                    <p class="mt-2 text-sm text-muted leading-relaxed flex-1"><?= $c['p'] ?></p>
+                    <span class="mt-6 inline-flex items-center gap-2 text-sm font-bold text-azure">
+                        <span class="h-9 w-9 rounded-full bg-aqua-soft inline-flex items-center justify-center transition-colors duration-300 group-hover:bg-aqua group-hover:text-white">
+                            <i class="ph <?= $c['ext'] ? 'ph-arrow-up-right' : 'ph-arrow-right arrow' ?>" aria-hidden="true"></i>
+                        </span>
                     </span>
-                </span>
+                </div>
             </a>
             <?php endforeach; ?>
         </div>
