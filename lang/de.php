@@ -97,7 +97,7 @@ return [
     '404_btn_home'         => 'Zur Startseite',
     '404_btn_offices'      => 'Alle Büros ansehen',
     'explore_online_h'     => 'Acıbadem Online',
-    'explore_online_p'     => 'Greifen Sie auf Ihre Patientenakte zu, buchen Sie Termine und sprechen Sie online mit Ärzten.',
+    'explore_online_p'     => 'Sehen Sie Ihre Berichte, Untersuchungsergebnisse und medizinischen Dokumente während der Nachsorge online ein.',
     'lang_switcher_label'  => 'Sprache',
     'js_geo_unsupported'   => 'Ihr Browser unterstützt keine Standortbestimmung.',
     'js_geo_denied'        => 'Standortzugriff verweigert. Bitte wählen Sie ein Büro aus der Liste.',

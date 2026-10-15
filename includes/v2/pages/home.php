@@ -196,17 +196,22 @@ document.addEventListener('nf:country', function (e) {
                 <div class="xcard__visual xcard__visual--<?= $c['v'] ?><?= $hasPhoto ? ' has-photo' : '' ?>" aria-hidden="true">
                     <?php if ($hasPhoto): ?><img class="xcard__photo" src="<?= asset($photo) ?>" alt="" width="800" height="400" loading="lazy" decoding="async"><?php endif; ?>
                     <span class="xcard__num">0<?= $i + 1 ?></span>
-                    <?php if ($c['v'] === 'offices'): ?>
+                    <?php if ($c['v'] === 'offices'):
+                        // With a photo behind: one short row of smaller flags so the picture stays visible
+                        $fl = $hasPhoto ? array_slice($flagCodes, 0, 7) : $flagShown;
+                        $flMore = count($flagCodes) - count($fl); ?>
                     <div class="xflags">
-                        <?php foreach ($flagShown as $k => $cc): ?>
+                        <?php foreach ($fl as $k => $cc): ?>
                         <img src="<?= e(getFlagUrl($cc)) ?>" alt="" width="40" height="40" loading="lazy" decoding="async" style="--k:<?= $k ?>">
                         <?php endforeach; ?>
-                        <?php if ($flagMore > 0): ?><span style="--k:<?= count($flagShown) ?>">+<?= $flagMore ?></span><?php endif; ?>
+                        <?php if ($flMore > 0): ?><span style="--k:<?= count($fl) ?>">+<?= $flMore ?></span><?php endif; ?>
                     </div>
                     <div class="xstats">
                         <span><b><?= count($offices) ?></b> <?= __('stat_offices') ?></span>
                         <span><b><?= $countryCount ?></b> <?= __('stat_countries') ?></span>
                     </div>
+                    <?php elseif ($c['v'] === 'map' && $hasPhoto): ?>
+                    <span class="xbadge"><i class="ph-fill ph-map-pin"></i> <b><?= count($offices) ?></b> <?= __('stat_offices') ?> · <b><?= $countryCount ?></b> <?= __('stat_countries') ?></span>
                     <?php elseif ($c['v'] === 'map'): ?>
                     <svg class="xnet" viewBox="0 0 <?= $W ?> <?= $H ?>" preserveAspectRatio="xMidYMid meet">
                         <?php foreach ($pts as $k => $p): [$x, $y] = $proj($p);
@@ -219,6 +224,8 @@ document.addEventListener('nf:country', function (e) {
                         <circle class="xnet__pulse" cx="<?= $hx ?>" cy="<?= $hy ?>" r="6"/>
                         <circle class="xnet__hq" cx="<?= $hx ?>" cy="<?= $hy ?>" r="5"/>
                     </svg>
+                    <?php elseif ($hasPhoto): ?>
+                    <span class="xbadge xbadge--live"><i class="ph-fill ph-file-text"></i><i class="ph-fill ph-folder-open"></i><i class="ph-fill ph-shield-check"></i></span>
                     <?php else: ?>
                     <div class="xcall">
                         <div class="xcall__bar"><i></i><i></i><i></i></div>
@@ -270,6 +277,8 @@ document.addEventListener('nf:country', function (e) {
         </div>
     </div>
 </section>
+
+<?php require __DIR__ . '/../social-proof.php'; ?>
 
 <script>window.NF_CONFIG = <?= json_encode($finderConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) ?>;</script>
 <script src="<?= asset('assets/js/tz-countries.js') ?>" defer></script>

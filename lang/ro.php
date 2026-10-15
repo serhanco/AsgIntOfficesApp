@@ -99,7 +99,7 @@ return [
     '404_btn_home'         => 'Mergeți la pagina principală',
     '404_btn_offices'      => 'Vedeți toate birourile',
     'explore_online_h'     => 'Acıbadem Online',
-    'explore_online_p'     => 'Accesați dosarul medical, programați-vă și consultați medici online.',
+    'explore_online_p'     => 'Vizualizați online rapoartele, rezultatele analizelor și documentele medicale în perioada de monitorizare după tratament.',
     'lang_switcher_label'  => 'Limbă',
     'js_geo_unsupported'   => 'Browserul dumneavoastră nu acceptă geolocalizarea.',
     'js_geo_denied'        => 'Accesul la locație a fost refuzat. Selectați un birou din listă.',
