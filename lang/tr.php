@@ -97,7 +97,7 @@ return [
     '404_btn_home'         => 'Ana Sayfaya Git',
     '404_btn_offices'      => 'Tüm Ofisleri Gör',
     'explore_online_h'     => 'Acıbadem Online',
-    'explore_online_p'     => 'Tıbbi kayıtlarınıza erişin, randevu alın ve doktorlarla online görüşün.',
+    'explore_online_p'     => 'Tedavi sonrası takip sürecinizde raporlarınızı, tetkik sonuçlarınızı ve tıbbi belgelerinizi online görüntüleyin.',
     'lang_switcher_label'  => 'Dil',
     'js_geo_unsupported'   => 'Tarayıcınız konum belirlemeyi desteklemiyor.',
     'js_geo_denied'        => 'Konum izni verilmedi. Lütfen listeden bir ofis seçin.',

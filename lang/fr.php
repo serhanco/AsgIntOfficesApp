@@ -97,7 +97,7 @@ return [
     '404_btn_home'         => 'Aller à l\'accueil',
     '404_btn_offices'      => 'Voir tous les bureaux',
     'explore_online_h'     => 'Acıbadem Online',
-    'explore_online_p'     => 'Accédez à votre dossier médical, prenez rendez-vous et consultez des médecins en ligne.',
+    'explore_online_p'     => 'Consultez en ligne vos rapports, résultats d\'examens et documents médicaux pendant votre suivi après traitement.',
     'lang_switcher_label'  => 'Langue',
     'js_geo_unsupported'   => 'Votre navigateur ne prend pas en charge la géolocalisation.',
     'js_geo_denied'        => 'Accès à la localisation refusé. Veuillez choisir un bureau dans la liste.',

@@ -99,7 +99,7 @@ return [
     '404_btn_home'         => 'Ana səhifəyə keç',
     '404_btn_offices'      => 'Bütün ofislərə bax',
     'explore_online_h'     => 'Acıbadem Online',
-    'explore_online_p'     => 'Tibbi qeydlərinizə daxil olun, qəbula yazılın və həkimlərlə onlayn məsləhətləşin.',
+    'explore_online_p'     => 'Müalicədən sonrakı izləmə dövründə hesabatlarınıza, müayinə nəticələrinizə və tibbi sənədlərinizə onlayn baxın.',
     'lang_switcher_label'  => 'Dil',
     'js_geo_unsupported'   => 'Brauzeriniz yer təyinini dəstəkləmir.',
     'js_geo_denied'        => 'Yerə giriş rədd edildi. Zəhmət olmasa siyahıdan ofis seçin.',

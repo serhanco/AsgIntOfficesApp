@@ -147,7 +147,7 @@ return [
 
     // Explore — Acıbadem Online (replaces API card)
     'explore_online_h'    => 'Acıbadem Online',
-    'explore_online_p'    => 'Access your medical records, book appointments and consult with doctors online.',
+    'explore_online_p'    => 'View your reports, test results and medical documents online during your follow-up after treatment.',
 
     // Language switcher & JS messages
     'lang_switcher_label' => 'Language',

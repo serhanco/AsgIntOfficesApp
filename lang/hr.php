@@ -99,7 +99,7 @@ return [
     '404_btn_home'         => 'Na početnu stranicu',
     '404_btn_offices'      => 'Pogledajte sve urede',
     'explore_online_h'     => 'Acıbadem Online',
-    'explore_online_p'     => 'Pristupite medicinskoj dokumentaciji, naručite se i savjetujte se s liječnicima online.',
+    'explore_online_p'     => 'Pregledajte online svoje nalaze, rezultate pretraga i medicinsku dokumentaciju tijekom praćenja nakon liječenja.',
     'lang_switcher_label'  => 'Jezik',
     'js_geo_unsupported'   => 'Vaš preglednik ne podržava određivanje lokacije.',
     'js_geo_denied'        => 'Pristup lokaciji je odbijen. Odaberite ured s popisa.',

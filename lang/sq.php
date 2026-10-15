@@ -99,7 +99,7 @@ return [
     '404_btn_home'         => 'Shkoni në faqen kryesore',
     '404_btn_offices'      => 'Shihni të gjitha zyrat',
     'explore_online_h'     => 'Acıbadem Online',
-    'explore_online_p'     => 'Shihni të dhënat tuaja mjekësore, rezervoni takime dhe konsultohuni online me mjekët.',
+    'explore_online_p'     => 'Shikoni online raportet, rezultatet e analizave dhe dokumentet tuaja mjekësore gjatë ndjekjes pas trajtimit.',
     'lang_switcher_label'  => 'Gjuha',
     'js_geo_unsupported'   => 'Shfletuesi juaj nuk e mbështet përcaktimin e vendndodhjes.',
     'js_geo_denied'        => 'Qasja në vendndodhje u refuzua. Ju lutemi zgjidhni një zyrë nga lista.',

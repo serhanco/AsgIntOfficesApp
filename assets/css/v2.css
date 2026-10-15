@@ -493,7 +493,6 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 .xbadge b { color: #fff; font-weight: 800; }
 .xbadge .ph-map-pin { color: var(--coral); font-size: 1rem; }
 .xbadge--live { gap: .7rem; font-size: 1.05rem; color: #fff; background: rgba(20,121,168,.45); }
-.xbadge--live em { width: 9px; height: 9px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.3); }
 .group:hover .xbadge { transform: translateY(-3px); }
 .xcard__num { position: absolute; top: 12px; inset-inline-end: 18px; font-size: 2.6rem; font-weight: 800; line-height: 1; color: rgba(255,255,255,.14); transition: color .5s; }
 .group:hover .xcard__num { color: rgba(255,255,255,.3); }

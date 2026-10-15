@@ -225,7 +225,7 @@ document.addEventListener('nf:country', function (e) {
                         <circle class="xnet__hq" cx="<?= $hx ?>" cy="<?= $hy ?>" r="5"/>
                     </svg>
                     <?php elseif ($hasPhoto): ?>
-                    <span class="xbadge xbadge--live"><em></em><i class="ph-fill ph-video-camera"></i><i class="ph-fill ph-phone"></i><i class="ph-fill ph-heartbeat"></i></span>
+                    <span class="xbadge xbadge--live"><i class="ph-fill ph-file-text"></i><i class="ph-fill ph-folder-open"></i><i class="ph-fill ph-shield-check"></i></span>
                     <?php else: ?>
                     <div class="xcall">
                         <div class="xcall__bar"><i></i><i></i><i></i></div>
