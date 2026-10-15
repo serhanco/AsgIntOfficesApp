@@ -65,7 +65,7 @@ $tagStyle = [
             if (isset($activities[0]['url'])) {
                 $shownActs = array_values(array_filter(array_map(fn($ev) => [
                     'tag_key' => $ev['tag_key'], 'title' => $ev['title'], 'description' => $ev['description'],
-                    'url' => $ev['url'], 'start' => $ev['start'], 'end' => $ev['end'], 'status' => $ev['status'],
+                    'url' => $ev['href'], 'ext' => $ev['href_ext'], 'start' => $ev['start'], 'end' => $ev['end'], 'status' => $ev['status'],
                 ], getEventsForOffice((int)$office['id']))));
                 $upcomingActs = array_values(array_filter($shownActs, fn($a) => $a['status'] === 'upcoming'));
                 $shownActs = $upcomingActs ?: array_slice($shownActs, 0, 3);
@@ -84,7 +84,7 @@ $tagStyle = [
                     $actUrl = $act['url'] ?? '';
                     $tagName = $actUrl ? 'a' : 'div';
                 ?>
-                <<?= $tagName ?><?= $actUrl ? ' href="' . e($actUrl) . '"' : '' ?> dir="<?= $actDir ?>" class="group flex gap-4 p-4 rounded-2xl border border-line bg-white hover:border-transparent hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-300<?= ($act['status'] ?? '') === 'past' ? ' opacity-70' : '' ?>">
+                <<?= $tagName ?><?= $actUrl ? ' href="' . e($actUrl) . '"' . (!empty($act['ext']) ? ' target="_blank" rel="noopener" data-ev-external' : '') : '' ?> dir="<?= $actDir ?>" class="group flex gap-4 p-4 rounded-2xl border border-line bg-white hover:border-transparent hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-300<?= ($act['status'] ?? '') === 'past' ? ' opacity-70' : '' ?>">
                     <?php if ($actUrl): ?>
                     <?= v2DateBadge($act['start'], $act['end'], $act['status'] === 'past') ?>
                     <?php else: ?>
@@ -101,7 +101,7 @@ $tagStyle = [
                         <p class="event-text mt-1 text-sm text-muted line-clamp-2"><?= e($act['description']) ?></p>
                         <?php endif; ?>
                     </div>
-                    <?php if ($actUrl): ?><i class="ph ph-arrow-right arrow self-center text-muted-2 group-hover:text-aqua" aria-hidden="true"></i><?php endif; ?>
+                    <?php if ($actUrl): ?><i class="ph <?= !empty($act['ext']) ? 'ph-arrow-square-out' : 'ph-arrow-right arrow' ?> self-center text-muted-2 group-hover:text-aqua" aria-hidden="true"></i><?php endif; ?>
                 </<?= $tagName ?>>
                 <?php endforeach; ?>
             </div>

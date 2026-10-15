@@ -216,4 +216,5 @@ return [
     'event_role_chair' => 'Sədr',
     'event_role_executive' => 'Rəhbər',
     'event_role_guest' => 'Qonaq',
+    'event_ext_link' => 'Qeydiyyat səhifəsini açır',
 ];

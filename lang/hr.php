@@ -216,4 +216,5 @@ return [
     'event_role_chair' => 'Predsjedatelj',
     'event_role_executive' => 'Rukovoditelj',
     'event_role_guest' => 'Gost',
+    'event_ext_link' => 'Otvara stranicu za prijavu',
 ];

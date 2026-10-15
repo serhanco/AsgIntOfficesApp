@@ -86,6 +86,7 @@ $fmt = fn($d) => $d ? date('d.m.Y', strtotime($d)) : '';
                                         · <?= $ev['audience'] === 'b2b' ? 'Kurumlar' : 'Hastalar' ?>
                                         <?php if ($ev['featured_rank'] > 0): ?>· <span class="font-semibold text-amber-700">Öne çıkan <?= (int)$ev['featured_rank'] ?></span><?php endif; ?>
                                         <?php if ($ev['visibility'] === 'link'): ?>· <span class="text-gray-600">Yalnız linkle</span><?php elseif ($ev['visibility'] === 'internal'): ?>· <span class="text-gray-600">İç kayıt</span><?php endif; ?>
+                                        <?php if ($ev['external']): ?>· <span class="text-gray-600">Dış link ↗</span><?php endif; ?>
                                         <?php if ($ev['is_global']): ?>· <span class="text-gray-600">Konumdan bağımsız</span><?php endif; ?></div>
                                 </td>
                                 <td class="px-4 py-4 text-sm text-gray-700">

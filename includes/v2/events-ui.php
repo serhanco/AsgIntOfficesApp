@@ -86,12 +86,25 @@ function v2EventBadges(array $ev): string {
     return $out;
 }
 
+/** href + target attributes for a link to an event (an upcoming external event opens its outside page in a new tab). */
+function v2EventLinkAttrs(array $ev): string {
+    $href = $ev['href'] ?? $ev['url'];
+    return 'href="' . e($href) . '"' . (!empty($ev['href_ext']) ? ' target="_blank" rel="noopener" data-ev-external' : '');
+}
+
+/** Small "opens outside" icon for upcoming external events. */
+function v2EventExtIcon(array $ev, string $cls = ''): string {
+    return !empty($ev['href_ext'])
+        ? '<i class="ph ph-arrow-square-out ' . $cls . '" aria-label="' . e(__('event_ext_link')) . '" title="' . e(__('event_ext_link')) . '"></i>'
+        : '';
+}
+
 /** Event card used on /events, the home page and office pages. */
 function v2EventCard(array $ev, string $extraClass = ''): string {
     $past = $ev['status'] === 'past';
     $dir = textDir($ev['title'] . ' ' . $ev['description']);
     ob_start(); ?>
-    <a href="<?= e($ev['url']) ?>" class="event-card group card card--hover flex gap-4 p-4 sm:p-5 <?= $past ? 'is-past' : '' ?> <?= $extraClass ?>"
+    <a <?= v2EventLinkAttrs($ev) ?> class="event-card group card card--hover flex gap-4 p-4 sm:p-5 <?= $past ? 'is-past' : '' ?> <?= $extraClass ?>"
        data-type="<?= e($ev['tag_key']) ?>" data-cc="<?= e(implode(' ', $ev['countries'])) ?>">
         <?= v2DateBadge($ev['start'], $ev['end'], $past) ?>
         <div class="flex-1 min-w-0">
@@ -106,7 +119,7 @@ function v2EventCard(array $ev, string $extraClass = ''): string {
             <div class="mt-3 flex flex-wrap gap-1.5"><?= v2StopChips($ev, 3) ?></div>
             <?php endif; ?>
         </div>
-        <i class="ph ph-arrow-right arrow self-center text-xl text-muted-2 group-hover:text-aqua flex-shrink-0" aria-hidden="true"></i>
+        <?= !empty($ev['href_ext']) ? v2EventExtIcon($ev, 'self-center text-xl text-muted-2 group-hover:text-aqua flex-shrink-0') : '<i class="ph ph-arrow-right arrow self-center text-xl text-muted-2 group-hover:text-aqua flex-shrink-0" aria-hidden="true"></i>' ?>
     </a>
     <?php
     return ob_get_clean();
@@ -123,7 +136,7 @@ function v2EventRow(array $ev, bool $hidden = false): string {
     $dir = textDir($ev['title']);
     ob_start(); ?>
     <li class="ev-row" data-cc="<?= e(implode(' ', $ev['countries'])) ?>"<?= $hidden ? ' hidden' : '' ?>>
-        <a href="<?= e($ev['url']) ?>" class="ev-row__main group">
+        <a <?= v2EventLinkAttrs($ev) ?> class="ev-row__main group">
             <?= v2DateBadge($ev['start'], $ev['end']) ?>
             <span class="min-w-0 flex-1">
                 <?= v2EventTag($ev['tag_key']) ?>
@@ -131,7 +144,8 @@ function v2EventRow(array $ev, bool $hidden = false): string {
                 <span class="mt-1.5 flex flex-wrap gap-1.5"><?= v2StopChips($ev, 3) ?></span>
             </span>
         </a>
-        <a href="<?= e($ev['url']) ?>" class="ev-row__go" aria-label="<?= e(__('result_view_details')) ?>" title="<?= e(__('result_view_details')) ?>"><i class="ph ph-arrow-right arrow" aria-hidden="true"></i></a>
+        <?php $goLabel = !empty($ev['href_ext']) ? __('event_ext_link') : __('result_view_details'); ?>
+        <a <?= v2EventLinkAttrs($ev) ?> class="ev-row__go" aria-label="<?= e($goLabel) ?>" title="<?= e($goLabel) ?>"><i class="ph <?= !empty($ev['href_ext']) ? 'ph-arrow-square-out' : 'ph-arrow-right arrow' ?>" aria-hidden="true"></i></a>
     </li>
     <?php
     return ob_get_clean();

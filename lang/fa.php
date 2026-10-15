@@ -216,4 +216,5 @@ return [
     'event_role_chair' => 'رئیس',
     'event_role_executive' => 'مدیر ارشد',
     'event_role_guest' => 'مهمان',
+    'event_ext_link' => 'صفحه ثبت‌نام را باز می‌کند',
 ];

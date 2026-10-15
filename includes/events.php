@@ -81,6 +81,19 @@ function eventsV2Ready(): bool {
     return $ready;
 }
 
+/** Has patch_20261015_events_external.sql been applied (events.external_only)? */
+function eventsExternalReady(): bool {
+    static $ready = null;
+    if ($ready === null) {
+        try {
+            $ready = eventsReady() && (bool)getDb()->query("SHOW COLUMNS FROM events LIKE 'external_only'")->fetchColumn();
+        } catch (\Throwable $e) {
+            $ready = false;
+        }
+    }
+    return $ready;
+}
+
 function eventUrl(string $slug): string {
     return getBaseUrl() . '/event/' . rawurlencode($slug);
 }
@@ -108,7 +121,8 @@ function countryNameFor(?string $code, string $fallback = ''): string {
 
 /**
  * All events with their locations, relations, people and program. Each event:
- *   id, slug, url, tag_key, icon, audience, visibility, featured_rank, relates_hq, title, description, image_url, link_url,
+ *   id, slug, url (our page), href (where links go: the outside page of an upcoming external event, else url), href_ext,
+ *   external (registration on an outside page), tag_key, icon, audience, visibility, featured_rank, relates_hq, title, description, image_url, link_url,
  *   file_url, is_published, start, end (Y-m-d or null), status ('upcoming' | 'past'), countries [codes],
  *   is_global (no place, no office, no country, not head office), office_ids [offices it is linked to],
  *   relations: [{kind: office|country, office (row|null), country_code, country}],
@@ -230,10 +244,17 @@ function getEvents(bool $publishedOnly = true, string $scope = 'listed'): array 
         $hasPlace = (bool)array_filter($locations, fn($l) => !$l['floating']);
         $start = $starts ? min($starts) : null;
         $end = $ends ? max($ends) : $start;
+        $status = ($end === null || $end >= $today) ? 'upcoming' : 'past';
+        // Registration on an outside page: links go there while the event is ahead, our short page after it ends
+        $extLink = preg_match('#^https?://#i', (string)$ev['link_url']) ? (string)$ev['link_url'] : '';
+        $external = $extLink !== '' && !empty($ev['external_only']);
         $out[] = [
             'id'           => (int)$ev['id'],
             'slug'         => $ev['slug'],
             'url'          => eventUrl($ev['slug']),
+            'external'     => $external,
+            'href'         => ($external && $status === 'upcoming') ? $extLink : eventUrl($ev['slug']),
+            'href_ext'     => $external && $status === 'upcoming',
             'tag_key'      => $ev['tag_key'],
             'icon'         => eventIcon($ev['tag_key']),
             'audience'     => $v2 && in_array($ev['audience'], EVENT_AUDIENCES, true) ? $ev['audience'] : 'b2c',
@@ -250,7 +271,7 @@ function getEvents(bool $publishedOnly = true, string $scope = 'listed'): array 
             'start'        => $start,
             'end'          => $end,
             // Undated events stay listed as current; dated ones move to "past" the day after they end
-            'status'       => ($end === null || $end >= $today) ? 'upcoming' : 'past',
+            'status'       => $status,
             'countries'    => array_keys($countries),
             'office_ids'   => array_keys($officeIds),
             'is_global'    => !$countries && !$officeIds && !$hasPlace && !$relatesHq,

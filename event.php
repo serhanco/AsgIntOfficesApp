@@ -24,6 +24,13 @@ if (isset($_GET['ics'])) {
     exit;
 }
 
+// Registration on an outside page: while the event is ahead, our address (QR codes, old links) forwards there.
+// After it ends, this short page opens instead. Admins can still look at our page with ?page=1.
+if ($event['href_ext'] && !(isset($_GET['page']) && isAdminVisitor())) {
+    header('Location: ' . $event['href'], true, 302);
+    exit;
+}
+
 $past     = $event['status'] === 'past';
 $dir      = textDir($event['title'] . ' ' . $event['description']);
 $stops    = $event['locations'];
@@ -34,8 +41,9 @@ $fileUrl  = $event['file_url'] !== '' ? imageUrl($event['file_url']) : '';
 $people   = $event['people'];
 $program  = $event['program'];
 $contact  = eventContact($event, strtolower((string)($_SERVER['HTTP_CF_IPCOUNTRY'] ?? '')));
-$needContact = !$past && ($event['relates_hq'] || !array_filter($stops, fn($l) => $l['office']));
-$link     = $event['link_url'] && preg_match('#^https?://#i', $event['link_url']) ? $event['link_url'] : '';
+// A finished external event keeps the visitor here: office contact instead of the (often closed) outside page
+$needContact = ($past && $event['external']) || (!$past && ($event['relates_hq'] || !array_filter($stops, fn($l) => $l['office'])));
+$link     = $event['link_url'] && preg_match('#^https?://#i', $event['link_url']) && !($past && $event['external']) ? $event['link_url'] : '';
 
 // Other upcoming events, the ones sharing a country first
 $others = array_values(array_filter(sortEvents(getEvents()), fn($e) => $e['id'] !== $event['id'] && $e['status'] === 'upcoming'));
