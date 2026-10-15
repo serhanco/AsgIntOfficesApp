@@ -249,7 +249,7 @@ $tagStyle = [
             </div>
             <span class="inline-flex items-center gap-2 font-bold text-sm"><?= __('inst_card_btn') ?> <i class="ph ph-arrow-right arrow" aria-hidden="true"></i></span>
         </a>
-        <a href="https://partner.acibademinternational.com/<?= e($office['slug']) ?>/" target="_blank" rel="noopener" class="group relative overflow-hidden rounded-[30px] p-7 sm:p-8 flex flex-col justify-between gap-6 text-white bg-gradient-to-br from-coral to-coral-ink shadow-lift reveal transition-transform duration-300 hover:-translate-y-1" style="--d:.08s">
+        <a href="<?= e(partnerUrl($office['slug'])) ?>" target="_blank" rel="noopener" class="group relative overflow-hidden rounded-[30px] p-7 sm:p-8 flex flex-col justify-between gap-6 text-white bg-gradient-to-br from-coral to-coral-ink shadow-lift reveal transition-transform duration-300 hover:-translate-y-1" style="--d:.08s">
             <i class="ph-fill ph-handshake absolute -end-6 -bottom-8 text-[10rem] text-white/10 transition-transform duration-700 group-hover:scale-110 group-hover:-rotate-6 pointer-events-none" aria-hidden="true"></i>
             <div class="relative">
                 <span class="w-12 h-12 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center mb-4"><i class="ph-fill ph-handshake text-2xl" aria-hidden="true"></i></span>
