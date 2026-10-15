@@ -216,4 +216,5 @@ return [
     'event_role_chair' => 'Kryesues',
     'event_role_executive' => 'Drejtues',
     'event_role_guest' => 'I ftuar',
+    'event_ext_link' => 'Hap faqen e regjistrimit',
 ];

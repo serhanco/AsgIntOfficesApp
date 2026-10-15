@@ -317,7 +317,7 @@ function getOfficeActivities(int $officeId): array {
         foreach (getEventsForOffice($officeId) as $ev) {
             $rows[] = ['id' => $ev['id'], 'tag_key' => $ev['tag_key'], 'title' => $ev['title'], 'description' => $ev['description'],
                        'activity_date' => $ev['start'], 'sort_order' => $ev['sort_order'],
-                       'url' => $ev['url'], 'start' => $ev['start'], 'end' => $ev['end'], 'status' => $ev['status']];
+                       'url' => $ev['href'], 'ext' => $ev['href_ext'], 'start' => $ev['start'], 'end' => $ev['end'], 'status' => $ev['status']];
         }
         usort($rows, fn($a, $b) => [$a['sort_order'], $a['id']] <=> [$b['sort_order'], $b['id']]);
         return $rows;

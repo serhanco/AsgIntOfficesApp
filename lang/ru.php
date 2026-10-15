@@ -266,4 +266,5 @@ return [
     'event_role_chair' => 'Председатель',
     'event_role_executive' => 'Руководитель',
     'event_role_guest' => 'Гость',
+    'event_ext_link' => 'Открывает страницу регистрации',
 ];

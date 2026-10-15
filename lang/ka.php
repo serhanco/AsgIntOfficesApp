@@ -216,4 +216,5 @@ return [
     'event_role_chair' => 'თავმჯდომარე',
     'event_role_executive' => 'ხელმძღვანელი',
     'event_role_guest' => 'სტუმარი',
+    'event_ext_link' => 'ხსნის რეგისტრაციის გვერდს',
 ];

@@ -214,4 +214,5 @@ return [
     'event_role_chair' => 'Başkan',
     'event_role_executive' => 'Yönetici',
     'event_role_guest' => 'Konuk',
+    'event_ext_link' => 'Kayıt sayfasını açar',
 ];

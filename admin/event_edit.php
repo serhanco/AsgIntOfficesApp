@@ -18,6 +18,7 @@ $isEdit = $id > 0;
 $offices = $db->query("SELECT id, display_name, country, country_code FROM offices ORDER BY country ASC, display_name ASC")->fetchAll();
 $typeLabels = eventTypeLabelsTr();
 $v2 = eventsV2Ready(); // stage 1 columns and tables (patch_20261011_events_relations.sql)
+$extReady = eventsExternalReady(); // events.external_only (patch_20261015_events_external.sql)
 
 // Countries that have an office (a country relation means all of its offices)
 $countries = [];
@@ -25,7 +26,7 @@ foreach ($offices as $o) if ($o['country_code'] !== '') $countries[strtolower($o
 asort($countries);
 
 $event = ['title' => '', 'slug' => '', 'tag_key' => 'act_tag_doctor', 'audience' => 'b2c', 'visibility' => 'listed', 'featured_rank' => 0, 'relates_hq' => 0,
-          'description' => '', 'image_url' => '', 'link_url' => '', 'file_url' => '', 'is_published' => 1, 'sort_order' => 0];
+          'description' => '', 'image_url' => '', 'link_url' => '', 'external_only' => 0, 'file_url' => '', 'is_published' => 1, 'sort_order' => 0];
 $blankStop = ['kind' => 'office', 'office_id' => '', 'venue_name' => '', 'city' => '', 'country_code' => '', 'address' => '', 'coords' => '',
               'starts_on' => '', 'ends_on' => '', 'start_time' => '', 'end_time' => ''];
 $blankPerson = ['person_id' => '', 'role' => 'speaker', 'name' => '', 'title' => '', 'specialty' => '', 'organization' => '', 'photo_url' => '', 'is_acibadem' => '1'];
@@ -79,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $event['description'] = trim($_POST['description'] ?? '');
     $event['image_url'] = trim($_POST['image_url'] ?? '');
     $event['link_url'] = trim($_POST['link_url'] ?? '');
+    if ($extReady) $event['external_only'] = ($_POST['where'] ?? '') === 'external' ? 1 : 0;
     $event['is_published'] = isset($_POST['is_published']) ? 1 : 0;
     $event['sort_order'] = (int)($_POST['sort_order'] ?? 0);
     if ($v2) {
@@ -131,6 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$error && $event['title'] === '') $error = 'Başlık zorunludur.';
     if (!$error && !$stops) $error = 'En az bir lokasyon ekleyin (ofis, ofis dışı mekân, online ya da konumdan bağımsız tarih).';
     if (!$error && $event['link_url'] !== '' && !preg_match('#^https?://#i', $event['link_url'])) $error = 'Kayıt/bilgi linki http:// veya https:// ile başlamalı.';
+    if (!$error && $event['external_only'] && $event['link_url'] === '') $error = 'Kayıt dış linkte ise dış link adresini girin.';
     foreach ($stops as $i => $s) {
         if ($error) break;
         $n = $i + 1;
@@ -163,6 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $db->beginTransaction();
             $cols = ['slug' => $event['slug'], 'tag_key' => $event['tag_key'], 'title' => $event['title'], 'description' => $event['description'],
                      'image_url' => $event['image_url'] ?: null, 'link_url' => $event['link_url'] ?: null, 'is_published' => $event['is_published'], 'sort_order' => $event['sort_order']];
+            if ($extReady) $cols['external_only'] = (int)$event['external_only'];
             if ($v2) {
                 $cols += ['audience' => $event['audience'], 'visibility' => $event['visibility'], 'featured_rank' => $event['featured_rank'],
                           'relates_hq' => $event['relates_hq'], 'file_url' => $event['file_url'] ?: null];
@@ -354,7 +358,7 @@ function sessionRow(int $i, array $r, callable $h, string $input): string {
         <header class="h-16 bg-white shadow-sm flex items-center px-4 md:px-8 gap-4">
             <a href="events.php" class="text-gray-500 hover:text-gray-700">← Geri</a>
             <h2 class="text-xl font-semibold text-gray-800"><?= $isEdit ? 'Etkinlik Düzenle' : 'Yeni Etkinlik' ?></h2>
-            <?php if ($isEdit): ?><a href="<?= $h(eventUrl($event['slug'])) ?>" target="_blank" class="ml-auto text-sm text-blue-600 hover:underline">Sitede gör ↗</a><?php endif; ?>
+            <?php if ($isEdit): ?><a href="<?= $h(eventUrl($event['slug'])) ?><?= !empty($event['external_only']) ? '?page=1' : '' ?>" target="_blank" class="ml-auto text-sm text-blue-600 hover:underline">Sitede gör ↗</a><?php endif; ?>
         </header>
 
         <div class="p-4 md:p-8 flex-1 overflow-y-auto">
@@ -363,6 +367,17 @@ function sessionRow(int $i, array $r, callable $h, string $input): string {
 
             <form method="POST" enctype="multipart/form-data" class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 max-w-3xl space-y-6">
                 <?= csrf_field() ?>
+
+                <?php if ($extReady): ?>
+                <div class="rounded-lg border border-blue-100 bg-blue-50/60 p-4">
+                    <p class="text-sm font-semibold text-gray-900">Kayıt / detay nerede?</p>
+                    <div class="mt-2 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+                        <label class="inline-flex items-center gap-2"><input type="radio" name="where" value="site" <?= !$event['external_only'] ? 'checked' : '' ?> data-where> Bu sitede (etkinlik sayfası)</label>
+                        <label class="inline-flex items-center gap-2"><input type="radio" name="where" value="external" <?= $event['external_only'] ? 'checked' : '' ?> data-where> Dış linkte (kayıt sayfası başka yerde)</label>
+                    </div>
+                    <p class="mt-2 text-xs text-gray-600" data-ext-only>Etkinlik kartları ve listeler doğrudan aşağıdaki dış linke gider (yeni sekmede). Etkinlik bittikten sonra bu sitedeki kısa sayfa açılır (başlık, tarih, yer, ofis iletişimi). Yalnız zorunlu alanlar gösteriliyor; diğerleri için <button type="button" class="underline" data-show-all>tüm alanları göster</button>.</p>
+                </div>
+                <?php endif; ?>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="md:col-span-2">
@@ -375,7 +390,7 @@ function sessionRow(int $i, array $r, callable $h, string $input): string {
                             <?php foreach ($typeLabels as $k => $label): ?><option value="<?= $k ?>" <?= $event['tag_key'] === $k ? 'selected' : '' ?>><?= $label ?></option><?php endforeach; ?>
                         </select>
                     </div>
-                    <div>
+                    <div data-detail>
                         <label class="block text-sm font-medium text-gray-700">Adres (slug) <span class="font-normal text-gray-500">boş bırakılırsa otomatik</span></label>
                         <input type="text" name="slug" value="<?= $h($event['slug']) ?>" placeholder="dr-yasar-colak-baku-2026" class="<?= $input ?>">
                     </div>
@@ -394,24 +409,24 @@ function sessionRow(int $i, array $r, callable $h, string $input): string {
                         </select>
                     </div>
                     <?php endif; ?>
-                    <div class="md:col-span-2">
+                    <div class="md:col-span-2" data-detail>
                         <label class="block text-sm font-medium text-gray-700">Açıklama</label>
                         <textarea name="description" dir="auto" rows="4" class="<?= $input ?>"><?= $h($event['description']) ?></textarea>
                     </div>
-                    <div>
+                    <div data-detail>
                         <label class="block text-sm font-medium text-gray-700">Kapak görseli (isteğe bağlı)</label>
                         <input type="text" name="image_url" value="<?= $h($event['image_url']) ?>" class="<?= $input ?>">
                         <input type="file" name="image_file" accept="image/jpeg,image/png,image/webp" class="mt-2 block w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700">
                         <p class="mt-1 text-xs text-gray-500">Boş bırakılırsa tipe göre hazır görünüm kullanılır.</p>
                         <?php if (!empty($event['image_url'])): ?><img src="<?= $h(admin_image_src($event['image_url'])) ?>" alt="" class="mt-2 h-20 rounded-md border border-gray-200 object-cover"><?php endif; ?>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Kayıt / bilgi linki (isteğe bağlı)</label>
+                    <div data-link-box>
+                        <label class="block text-sm font-medium text-gray-700"><span data-site-only>Kayıt / bilgi linki (isteğe bağlı)</span><span data-ext-only>Dış link (kayıt sayfası) *</span></label>
                         <input type="url" name="link_url" value="<?= $h($event['link_url']) ?>" placeholder="https://…" class="<?= $input ?>">
-                        <p class="mt-1 text-xs text-gray-500">Boşsa ziyaretçi ofisi arar ya da WhatsApp'tan yazar.</p>
+                        <p class="mt-1 text-xs text-gray-500" data-site-only>Boşsa ziyaretçi ofisi arar ya da WhatsApp'tan yazar.</p>
                     </div>
                     <?php if ($v2): ?>
-                    <div class="md:col-span-2">
+                    <div class="md:col-span-2" data-detail>
                         <label class="block text-sm font-medium text-gray-700">Duyuru PDF'i (isteğe bağlı)</label>
                         <?php if (!empty($event['file_url'])): ?>
                         <p class="mt-1 text-sm"><a href="<?= $h(admin_image_src($event['file_url'])) ?>" target="_blank" class="text-blue-600 hover:underline">Yüklü PDF'i aç ↗</a>
@@ -457,7 +472,7 @@ function sessionRow(int $i, array $r, callable $h, string $input): string {
                     </div>
                 </div>
 
-                <div>
+                <div data-detail>
                     <h3 class="text-base font-semibold text-gray-900">Katılımcılar</h3>
                     <p class="text-xs text-gray-500 mb-3">Hekim, heyet ya da yönetici; hiç katılımcı da olmayabilir. Kişiler ortak bir listede tutulur: bir kez girin, sonraki etkinliklerde listeden seçin. Acıbadem dışı konuşmacılar da eklenebilir. Kişileri düzenlemek için <a href="people.php" class="text-blue-600 hover:underline">Kişiler</a> sayfasına bakın.</p>
                     <div class="space-y-3" data-list="people">
@@ -467,7 +482,7 @@ function sessionRow(int $i, array $r, callable $h, string $input): string {
                     <button type="button" class="mt-3 text-sm font-medium text-blue-600 hover:text-blue-800" data-add="people">+ Katılımcı ekle</button>
                 </div>
 
-                <div>
+                <div data-detail>
                     <h3 class="text-base font-semibold text-gray-900">Program <span class="font-normal text-gray-500">(isteğe bağlı)</span></h3>
                     <p class="text-xs text-gray-500 mb-3">Çok günlü ya da oturumlu etkinlikler için gün gün satırlar. "Bölüm başlığı" satırı, altındaki oturumları gruplar (ör. Ameliyat Öncesi). Kısa etkinliklerde boş bırakın.</p>
                     <div class="space-y-2" data-list="program">
@@ -525,6 +540,26 @@ function sessionRow(int $i, array $r, callable $h, string $input): string {
         if (list.querySelectorAll('[data-stop]').length > 1) e.target.closest('[data-stop]').remove();
         renumber();
     });
+    // "Kayıt / detay nerede?": with an outside registration page only the fields that matter are shown
+    const whereEls = document.querySelectorAll('[data-where]');
+    let showAll = false;
+    function syncWhere() {
+        const ext = (document.querySelector('[data-where]:checked') || {}).value === 'external';
+        document.querySelectorAll('[data-detail]').forEach((el) => { el.hidden = ext && !showAll; });
+        document.querySelectorAll('[data-ext-only]').forEach((el) => { el.hidden = !ext; });
+        document.querySelectorAll('[data-site-only]').forEach((el) => { el.hidden = ext; });
+        const link = document.querySelector('[name="link_url"]');
+        if (link) link.required = ext;
+        const box = document.querySelector('[data-link-box]');
+        if (box) box.classList.toggle('md:col-span-2', ext);
+    }
+    if (whereEls.length) {
+        whereEls.forEach((el) => el.addEventListener('change', syncWhere));
+        const btn = document.querySelector('[data-show-all]');
+        if (btn) btn.addEventListener('click', () => { showAll = true; syncWhere(); });
+        syncWhere();
+    }
+
     // People and program rows: add / remove, keep the field indexes in order
     document.querySelectorAll('[data-list]').forEach((box) => {
         const name = box.dataset.list;

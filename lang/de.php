@@ -214,4 +214,5 @@ return [
     'event_role_chair' => 'Vorsitz',
     'event_role_executive' => 'Führungskraft',
     'event_role_guest' => 'Gast',
+    'event_ext_link' => 'Öffnet die Anmeldeseite',
 ];

@@ -216,4 +216,5 @@ return [
     'event_role_chair' => 'Голова',
     'event_role_executive' => 'Керівник',
     'event_role_guest' => 'Гість',
+    'event_ext_link' => 'Відкриває сторінку реєстрації',
 ];

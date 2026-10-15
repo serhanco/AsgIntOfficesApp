@@ -266,4 +266,5 @@ return [
     'event_role_chair' => 'Chair',
     'event_role_executive' => 'Executive',
     'event_role_guest' => 'Guest',
+    'event_ext_link' => 'Opens the registration page',
 ];

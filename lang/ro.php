@@ -216,4 +216,5 @@ return [
     'event_role_chair' => 'Președinte',
     'event_role_executive' => 'Reprezentant al conducerii',
     'event_role_guest' => 'Invitat',
+    'event_ext_link' => 'Deschide pagina de înscriere',
 ];

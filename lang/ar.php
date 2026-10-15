@@ -216,4 +216,5 @@ return [
     'event_role_chair' => 'رئيس',
     'event_role_executive' => 'مسؤول تنفيذي',
     'event_role_guest' => 'ضيف',
+    'event_ext_link' => 'يفتح صفحة التسجيل',
 ];

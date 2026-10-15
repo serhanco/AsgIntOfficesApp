@@ -32,7 +32,7 @@ $jsEvents = array_map(function ($ev) use (&$hasCoords) {
         return ['s' => $l['starts_on'], 'e' => $l['ends_on'], 'city' => $l['is_online'] ? '' : ($l['city'] ?: $l['name']), 'cc' => $l['country_code'],
                 'online' => $l['is_online'], 'lat' => $l['is_online'] ? null : $l['lat'], 'lon' => $l['is_online'] ? null : $l['lon']];
     }, $ev['locations']);
-    return ['url' => $ev['url'], 'title' => $ev['title'], 'tag' => $ev['tag_key'], 'tagLabel' => __($ev['tag_key']), 'icon' => $ev['icon'],
+    return ['url' => $ev['href'], 'ext' => $ev['href_ext'], 'title' => $ev['title'], 'tag' => $ev['tag_key'], 'tagLabel' => __($ev['tag_key']), 'icon' => $ev['icon'],
             'past' => $ev['status'] === 'past', 'cc' => $ev['countries'], 'aud' => $ev['audience'], 'g' => $ev['is_global'], 'stops' => $stops,
             'q' => mb_strtolower($ev['title'] . ' ' . implode(' ', array_column($stops, 'city')), 'UTF-8')];
 }, $events);
@@ -325,6 +325,7 @@ $hqMail = 'international@acibadem.com';
         evs.forEach(function (ev) {
             var a = el('a', 'card card--hover flex gap-3 p-4 items-start');
             a.href = ev.url;
+            if (ev.ext) { a.target = '_blank'; a.rel = 'noopener'; a.setAttribute('data-ev-external', ''); }
             var ico = el('span', 'icon-chip'); var i = document.createElement('i'); i.className = 'ph-fill ' + ev.icon; ico.appendChild(i);
             var body = el('div', 'min-w-0');
             body.appendChild(el('p', 'text-[0.7rem] font-bold uppercase tracking-wider text-azure', ev.tagLabel));
@@ -369,7 +370,7 @@ $hqMail = 'international@acibadem.com';
                 pop.appendChild(el('p', 'text-[0.7rem] font-bold uppercase tracking-wider text-azure', ev.tagLabel));
                 var t = el('p', 'font-bold text-ink', ev.title); t.dir = 'auto'; pop.appendChild(t);
                 if (s.s) pop.appendChild(el('p', 'text-sm text-muted', fmt(s.s, { day: 'numeric', month: 'long' }) + (s.e && s.e !== s.s ? ' – ' + fmt(s.e, { day: 'numeric', month: 'long' }) : '') + (s.city ? ' · ' + s.city : '')));
-                var a = el('a', 'text-sm', <?= json_encode(__('map_view_details')) ?>); a.href = ev.url; pop.appendChild(a);
+                var a = el('a', 'text-sm', <?= json_encode(__('map_view_details')) ?>); a.href = ev.url; if (ev.ext) { a.target = '_blank'; a.rel = 'noopener'; a.setAttribute('data-ev-external', ''); } pop.appendChild(a);
                 L.marker([s.lat, s.lon], { icon: icon }).bindPopup(pop).addTo(layer);
                 pts.push([s.lat, s.lon]);
             });
