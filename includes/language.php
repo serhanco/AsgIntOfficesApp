@@ -172,3 +172,15 @@ function textDir(?string $text): string {
 
 // Shorthand for current language code (used in header <html lang="...">)
 $current_lang = $GLOBALS['current_lang'];
+
+/**
+ * Link to the partner portal (partner.acibademinternational.com) in the
+ * visitor's current language. The portal uses the same language codes and
+ * the same ?lang= parameter, so the code is passed through as is.
+ * $path is the portal page, e.g. an office slug; empty = portal home.
+ */
+function partnerUrl(string $path = ''): string {
+    $path = trim($path, '/');
+    $url  = 'https://partner.acibademinternational.com/' . ($path === '' ? '' : rawurlencode($path) . '/');
+    return $url . '?lang=' . rawurlencode($GLOBALS['current_lang'] ?? DEFAULT_LANG);
+}
