@@ -1,5 +1,8 @@
 /* === Acıbadem International Offices App === */
 
+/* In-page jumps (#links) glide instead of jumping; off when the visitor asks for less motion */
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+
 /* Scrollbar hiding */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

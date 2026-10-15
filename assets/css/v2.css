@@ -345,6 +345,8 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 .hero-pillar__n { flex-shrink: 0; min-width: 1.9rem; height: 1.9rem; padding-inline: .5rem; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; font-size: .82rem; background: #fff; color: var(--navy); font-variant-numeric: tabular-nums; }
 @media (max-width: 639px) { .hero-pillar { border-radius: 18px; gap: .5rem; padding: .5rem; font-size: .84rem; } .hero-pillar__icon { width: 32px; height: 32px; font-size: 1rem; } .hero-pillar__n { min-width: 1.7rem; height: 1.7rem; font-size: .76rem; } }
 @media (max-width: 399px) { .hero-pillar { padding-inline-start: .9rem; } .hero-pillar__icon { display: none; } }
+/* Jump buttons only where the two panels stack (phones, tablets); side by side they are redundant */
+@media (min-width: 1024px) { .hero-pillars { display: none; } }
 
 .panel-head { display: flex; align-items: center; gap: .85rem; margin-bottom: 1rem; color: #fff; }
 .panel-head__icon { width: 46px; height: 46px; border-radius: 14px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.45rem; background: linear-gradient(135deg, var(--aqua), var(--aqua-deep)); box-shadow: 0 10px 22px rgba(37,170,225,.35); }
@@ -404,7 +406,8 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 /* Institutions ticker (home) */
 .ticker { position: relative; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
 .ticker__track { display: flex; gap: .75rem; width: max-content; animation: ticker 70s linear infinite; }
-.ticker:hover .ticker__track { animation-play-state: paused; }
+/* Pause on mouse hover only: on touch screens a tap leaves :hover stuck and the names stop for good */
+@media (hover: hover) and (pointer: fine) { .ticker:hover .ticker__track { animation-play-state: paused; } }
 .ticker__item { white-space: nowrap; padding: .55rem 1.1rem; border-radius: 999px; font-size: .85rem; font-weight: 600; color: #cfdcef; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); }
 @keyframes ticker { to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) {
@@ -470,3 +473,61 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 .of-theme .filter-pill[aria-pressed="true"] { background: var(--aqua-deep); border-color: var(--aqua-deep); }
 .btn--wa { background: linear-gradient(135deg, #3fe07f, #1fb85a); color: #fff; box-shadow: 0 12px 26px rgba(31,184,90,.35); }
 .btn--wa:hover { background: #1fb85a; transform: translateY(-3px); box-shadow: 0 20px 38px rgba(31,184,90,.4); }
+
+/* Home "Explore" cards: a picture strip on top of each card, drawn from live data */
+.xcard__visual { position: relative; height: 172px; overflow: hidden; isolation: isolate; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .9rem; }
+.xcard__visual::before { content: ''; position: absolute; inset: 0; z-index: -1; opacity: .5; background-image: radial-gradient(rgba(255,255,255,.22) 1px, transparent 1.2px); background-size: 16px 16px; }
+.xcard__visual--offices { background: radial-gradient(circle at 85% 0%, rgba(37,170,225,.45), transparent 55%), linear-gradient(135deg, var(--navy) 0%, var(--navy-900) 100%); }
+.xcard__visual--map { background: radial-gradient(circle at 50% 40%, rgba(37,170,225,.35), transparent 60%), linear-gradient(160deg, var(--navy-900) 0%, var(--navy-950) 100%); }
+.xcard__visual--online { background: radial-gradient(circle at 15% 0%, rgba(255,255,255,.28), transparent 50%), linear-gradient(135deg, var(--aqua) 0%, var(--azure) 100%); }
+/* Optional photo behind each strip: drop assets/images/explore-<offices|map|online>.webp (800x400) in place */
+.xcard__photo { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease); }
+.group:hover .xcard__photo { transform: scale(1.06); }
+.xcard__visual.has-photo { background: none; }
+.xcard__visual--offices.has-photo::before, .xcard__visual--map.has-photo::before { opacity: 1; background: linear-gradient(180deg, rgba(6,26,71,.55), rgba(3,16,43,.85)); }
+.xcard__visual--online.has-photo::before { opacity: 1; background: linear-gradient(135deg, rgba(37,170,225,.55), rgba(20,121,168,.8)); }
+.xcard__num { position: absolute; top: 12px; inset-inline-end: 18px; font-size: 2.6rem; font-weight: 800; line-height: 1; color: rgba(255,255,255,.14); transition: color .5s; }
+.group:hover .xcard__num { color: rgba(255,255,255,.3); }
+.xcard__chip { margin-top: -24px; background: #fff; box-shadow: 0 10px 24px rgba(9,44,116,.16); }
+
+/* Offices: country flags + live counts */
+.xflags { display: flex; flex-wrap: wrap; justify-content: center; max-width: 200px; }
+.xflags > * { width: 36px; height: 36px; margin: -3px -4px; border-radius: 50%; object-fit: cover; border: 2.5px solid var(--navy-900); background: #fff; transition: transform .45s var(--ease); transition-delay: calc(var(--k) * 30ms); }
+.xflags span { display: inline-flex; align-items: center; justify-content: center; font-size: .72rem; font-weight: 800; color: var(--navy); }
+.group:hover .xflags > * { transform: translateY(-4px); }
+.xstats { display: flex; gap: .5rem; font-size: .8rem; font-weight: 600; color: #cfdcef; }
+.xstats span { padding: .3rem .8rem; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); }
+.xstats b { color: #fff; font-weight: 800; }
+
+/* Map: arcs from the Istanbul head office to every office */
+.xnet { width: 100%; height: 100%; }
+.xnet__arc { fill: none; stroke: rgba(143,214,243,.55); stroke-width: .9; stroke-linecap: round; }
+.xnet__dot { fill: #fff; }
+.xnet__hq { fill: var(--coral); stroke: #fff; stroke-width: 2; }
+.xnet__pulse { fill: none; stroke: var(--coral); stroke-width: 2; transform-box: fill-box; transform-origin: center; animation: xpulse 2.4s ease-out infinite; }
+@keyframes xpulse { from { transform: scale(1); opacity: .9; } to { transform: scale(3.2); opacity: 0; } }
+.js-anim .xnet__arc { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.js-anim .reveal.in .xnet__arc { stroke-dashoffset: 0; transition: stroke-dashoffset 1.4s var(--ease); transition-delay: calc(.3s + var(--k) * 22ms); }
+.group:hover .xnet__arc { stroke: rgba(143,214,243,.9); }
+
+/* Online: a small video consultation window */
+.xcall { width: min(236px, 78%); border-radius: 16px; background: rgba(255,255,255,.96); box-shadow: 0 18px 40px rgba(3,16,43,.25); overflow: hidden; transition: transform .45s var(--ease); }
+.group:hover .xcall { transform: translateY(-4px) rotate(-1.5deg); }
+.xcall__bar { display: flex; gap: 5px; padding: 8px 10px; background: #eef4fb; }
+.xcall__bar i { width: 7px; height: 7px; border-radius: 50%; background: #c9d7e8; }
+.xcall__bar i:first-child { background: var(--coral); }
+.xcall__body { display: flex; align-items: center; gap: 12px; padding: 12px 14px 8px; }
+.xcall__doc { position: relative; width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.3rem; color: #fff; background: linear-gradient(135deg, var(--aqua), var(--navy)); }
+.xcall__doc em { position: absolute; bottom: 1px; inset-inline-end: 1px; width: 11px; height: 11px; border-radius: 50%; background: #22c55e; border: 2px solid #fff; }
+.xcall__lines { flex: 1; display: grid; gap: 6px; }
+.xcall__lines i { height: 7px; border-radius: 4px; background: #dfe8f3; }
+.xcall__lines i:first-child { width: 70%; background: #b9cbe2; }
+.xcall__lines i:last-child { width: 45%; }
+.xcall__tools { display: flex; justify-content: center; gap: 8px; padding: 6px 0 12px; }
+.xcall__tools span { width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: .9rem; color: var(--azure); background: #e6f5fc; }
+.xcall__tools .is-live { color: #fff; background: var(--coral); }
+
+@media (prefers-reduced-motion: reduce) {
+  .xnet__pulse { animation: none; opacity: 0; }
+  .group:hover .xflags > *, .group:hover .xcall { transform: none; }
+}
