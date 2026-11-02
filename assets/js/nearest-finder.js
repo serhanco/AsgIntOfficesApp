@@ -191,12 +191,12 @@
         ${actionsHtml(hq)}
       </div>
       <div class="nf-footer">
-        ${C.v2 ? findNearestBtn() : ''}
+        ${findNearestBtn()}
         <a href="${esc(C.mapUrl)}" class="nf-details"><i class="ph-fill ph-globe-hemisphere-west"></i> ${esc(T.seeWorld)} <i class="ph ph-arrow-right nf-arrow"></i></a>
       </div>`;
   }
 
-  // New design: "Nearest Office" button next to the other footer link of a card
+  // "Nearest Office" button next to the other footer link of a card
   function findNearestBtn() {
     if (state.position || state.selected) return '';
     return `<button type="button" class="nf-refine" data-nf-locate>
@@ -204,7 +204,7 @@
       <span data-nf-locate-label>${esc(T.findNearest)}</span></button>`;
   }
 
-  // New design: head office and nearest office as two panels built the same way, told apart by colour and label
+  // Head office and nearest office as two panels built the same way, told apart by colour and label
   function officePanel(kind, label, o, extra, link) {
     return `<section class="nf-panel nf-panel--${kind}">
       <p class="nf-label">${esc(label)}</p>
@@ -217,7 +217,7 @@
     </section>`;
   }
 
-  function noOfficeCardV2() {
+  function noOfficeCard() {
     const hq = hqOffice();
     const h = state.country ? fill(T.noOfficeH, `<span class="nf-nowrap">${esc(countryName(state.country))}</span>`) : esc(T.noOfficeRegionH);
     const near = nearestOffice();
@@ -236,45 +236,6 @@
         ${nearPanel}
       </div>
       <div class="nf-links">
-        <a href="${esc(C.listUrl)}" class="nf-link"><i class="ph-fill ph-list-dashes"></i>${esc(T.seeList)}</a>
-      </div>
-      <div class="nf-footer nf-footer--center">${refineBtn()}</div>`;
-  }
-
-  function noOfficeCard() {
-    if (C.v2) return noOfficeCardV2();
-    const hq = hqOffice();
-    const h = state.country ? fill(T.noOfficeH, `<span class="nf-nowrap">${esc(countryName(state.country))}</span>`) : esc(T.noOfficeRegionH);
-    const near = nearestOffice();
-    const physical = near ? `<div class="nf-near">
-        <p class="nf-label">${esc(T.nearestLabel)}</p>
-        <div class="nf-main">
-          <div class="nf-main__info">
-            <p class="nf-country">${flag(near.cc)}<span>${esc(countryName(near.cc))}</span></p>
-            <h3 class="nf-name nf-name--sm">${esc(near.name)}</h3>
-            <p class="nf-address"><i class="ph-fill ph-map-pin"></i><span dir="auto">${esc(near.address)}</span></p>
-            <span class="nf-distance">${near.approx ? '≈ ' : ''}${esc(kmText(near.distance))}</span>
-          </div>
-          ${actionsHtml(near)}
-        </div>
-        <div class="nf-footer"><a href="${esc(near.url)}" class="nf-details">${esc(T.details)} <i class="ph ph-arrow-right nf-arrow"></i></a></div>
-      </div>` : '';
-    return `${contextLine()}
-      <div class="nf-empty">
-        <div class="nf-empty__icon" aria-hidden="true"><i class="ph-fill ph-globe-hemisphere-east"></i></div>
-        <h2 class="nf-empty__h">${h}</h2>
-        <p class="nf-empty__p">${esc(T.noOfficeP)}</p>
-      </div>
-      <div class="nf-hq">
-        <div class="nf-hq__info">
-          <p class="nf-hq__name">${flag(hq.cc)} ${esc(hq.name)}</p>
-          <p class="nf-address"><i class="ph-fill ph-map-pin"></i><span dir="auto">${esc(hq.address)}</span></p>
-        </div>
-        ${actionsHtml(hq)}
-      </div>
-      ${physical}
-      <div class="nf-links">
-        <a href="${esc(C.mapUrl)}" class="nf-link nf-link--primary"><i class="ph-fill ph-globe-hemisphere-west"></i>${esc(T.seeWorld)}</a>
         <a href="${esc(C.listUrl)}" class="nf-link"><i class="ph-fill ph-list-dashes"></i>${esc(T.seeList)}</a>
       </div>
       <div class="nf-footer nf-footer--center">${refineBtn()}</div>`;
@@ -306,8 +267,8 @@
     if (state.selected) {
       html = officeCard(state.selected, [], T.selectedLabel);
     } else if (state.country === HQ_COUNTRY && !officesIn([HQ_COUNTRY]).length) {
-      // New design: a visitor who shared the location gets the office nearest to them when one is within reach
-      const near = C.v2 && state.position ? byDistance(offices)[0] : null;
+      // A visitor who shared the location gets the office nearest to them when one is within reach
+      const near = state.position ? byDistance(offices)[0] : null;
       if (near && near.distance <= FAR_KM) {
         html = officeCard(near, byDistance(officesIn([near.cc])).filter((o) => o.url !== near.url), T.nearestLabel);
         focus = near;
@@ -472,7 +433,7 @@
   function choose(o, fromSearch) {
     if (!o) return;
     stopCountdown();
-    if (fromSearch && C.v2) { input.value = o.name; closeList(); window.location.href = o.url; return; }
+    if (fromSearch) { input.value = o.name; closeList(); window.location.href = o.url; return; }
     state.selected = state.position ? { ...o, distance: distanceKm(state.position.lat, state.position.lon, o.lat, o.lon) } : o;
     input.value = o.name;
     closeList();

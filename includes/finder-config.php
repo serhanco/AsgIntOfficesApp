@@ -1,7 +1,7 @@
 <?php
 /**
  * Settings for the nearest-office finder (assets/js/nearest-finder.js): used by the home page,
- * and by the map and office list pages of the new design, so the same rules apply everywhere.
+ * and by the map and office list pages, so the same rules apply everywhere.
  */
 function finderConfig(array $offices): array {
     // Test parameters: ?cc=az (pretend country), ?at=40.4,49.8 (pretend location), ?at=deny (pretend refused)
@@ -84,11 +84,7 @@ function finderConfig(array $offices): array {
             'route'          => __('js_route'),
         ],
     ];
-    // New design only (the old home page keeps its markup and output exactly as before)
-    if (designV2()) {
-        $config['v2'] = true;
-        $config['t']['hqShort'] = __('nf_hq_short');
-        $config['t']['findNearest'] = __('nav_nearest');
-    }
+    $config['t']['hqShort'] = __('nf_hq_short');
+    $config['t']['findNearest'] = __('nav_nearest');
     return $config;
 }

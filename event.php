@@ -2,7 +2,6 @@
 /**
  * One event (/event/{slug}): what, when and where, with contact buttons per stop.
  * /event/{slug}.ics (or ?ics=1) downloads it for the phone calendar.
- * A new page, so it only exists in the new design.
  */
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/includes/db.php';

@@ -1,6 +1,6 @@
 <?php
 /**
- * New design: shared pieces for events (cards, date badges, stop chips).
+ * Shared pieces for events (cards, date badges, stop chips).
  * Dates are printed as numbers and re-formatted in the page language by assets/js/v2.js (Intl).
  */
 

@@ -7,27 +7,6 @@
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* Safe area padding for iOS */
-.pb-safe { padding-bottom: env(safe-area-inset-bottom, 16px); }
-.pt-safe { padding-top: env(safe-area-inset-top, 0px); }
-
-/* Animations */
-.fade-in {
-  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.slide-up {
-  animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 /* Leaflet map customizations */
 .custom-tooltip {
   background-color: rgba(255, 255, 255, 0.97) !important;
@@ -50,23 +29,6 @@
   box-shadow: 0 20px 40px rgba(12, 45, 116, 0.08);
 }
 
-/* CTA button shine effect */
-.cta-btn {
-  position: relative;
-  overflow: hidden;
-}
-.cta-btn::after {
-  content: '';
-  position: absolute;
-  top: 0; left: -100%;
-  width: 100%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-  transition: left 0.5s;
-}
-.cta-btn:hover::after {
-  left: 100%;
-}
-
 /* Mobile input zoom prevention */
 @media (max-width: 767px) {
   input[type=text], input[type=email], input[type=tel],
@@ -81,18 +43,6 @@
   background-color: #EFF6FF;
   box-shadow: 0 0 0 2px rgba(26, 75, 160, 0.4);
   border-radius: 16px;
-}
-
-/* Loading spinner */
-.spinner {
-  border: 4px solid #E6F0FA;
-  border-top-color: #0c2d74;
-  border-radius: 50%;
-  width: 48px; height: 48px;
-  animation: spin 0.8s linear infinite;
-}
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }
 
 /* Print styles */

@@ -1,5 +1,5 @@
 /**
- * Builds a small self-hosted Phosphor icon set for the public site (new design).
+ * Builds a small self-hosted Phosphor icon set for the public site.
  * Scans the public PHP/JS files for "ph-<name>" classes and writes only those glyphs:
  *   assets/fonts/phosphor-regular.woff2, assets/fonts/phosphor-fill.woff2, assets/css/icons.css
  * Run `npm run build:icons` after using a new icon (the CDN script loads ~6 icon weights instead).

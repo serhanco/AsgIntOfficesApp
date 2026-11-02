@@ -1,4 +1,4 @@
-/* === Nearest-office finder, new design (loaded after finder.css on the v2 home page) === */
+/* === Nearest-office finder, site design (loaded after finder.css) === */
 
 .nf-card {
   border: 1px solid rgba(255,255,255,.6); border-radius: 28px; padding: 1.75rem;
@@ -62,9 +62,6 @@
 .nf-empty__p { color: var(--muted); font-size: 1rem; }
 @media (min-width: 768px) { .nf-empty__h { font-size: 1.55rem; } }
 
-.nf-hq { flex-direction: column !important; align-items: stretch !important; background: var(--surface); border-color: var(--line); border-radius: 22px; }
-.nf-hq__name { color: var(--navy); }
-.nf-near { border-top-color: var(--line); }
 
 .nf-link { border: 1.5px solid var(--line); border-radius: 999px; color: var(--navy); font-weight: 700; transition: all .25s var(--ease); }
 .nf-link:hover { border-color: var(--navy); background: var(--navy); color: #fff; }
@@ -93,9 +90,6 @@
 .nf-opt[aria-selected="true"], .nf-opt:hover { background: #e6f5fc; }
 .nf-opt__name { color: var(--navy); }
 
-/* Hero locate button: radar in white */
-.nf-locate-btn .nf-radar { color: #fff; }
-.nf-locate-btn.is-locating { transform: none !important; }
 
 /* Finder card on a wide page (/nearest): details on the left, the four contact buttons on the right,
    so the card does not stretch a phone-sized layout over a desktop-sized box */

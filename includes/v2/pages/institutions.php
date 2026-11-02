@@ -1,5 +1,5 @@
 <?php
-/** New design: insurance & contracted institutions. $institutions comes from contracted-institutions.php. */
+/** Insurance & contracted institutions. $institutions comes from contracted-institutions.php. */
 require __DIR__ . '/../header.php';
 ?>
 

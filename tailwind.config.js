@@ -1,4 +1,4 @@
-/** Frontend Tailwind config — mirrors the theme that used to be inlined in includes/header.php */
+/** Frontend Tailwind config — public site (includes/v2) and admin panel */
 module.exports = {
   content: [
     './*.php',
@@ -16,7 +16,7 @@ module.exports = {
           dark: '#0A1C36',
           accent: '#1a4ba0'
         },
-        // New design (includes/v2): the acibademinternational.com palette
+        // Public site palette (acibademinternational.com)
         navy: { DEFAULT: '#092c74', 600: '#0c317f', 800: '#08235e', 900: '#061a47', 950: '#03102b' },
         azure: { DEFAULT: '#1479a8', dark: '#0e628a' },
         aqua: { DEFAULT: '#25aae1', light: '#3db7e8', deep: '#1a8fc4', soft: '#e6f5fc' },

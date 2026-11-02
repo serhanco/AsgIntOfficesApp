@@ -1,7 +1,6 @@
 <?php
 /**
  * Events hub (/events): list, calendar and map views over the same filters, plus "request an event".
- * A new page, so it only exists in the new design.
  */
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/includes/db.php';

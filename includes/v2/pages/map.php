@@ -1,5 +1,5 @@
 <?php
-/** New design: world map of all offices. Data comes from map.php. */
+/** World map of all offices. Data comes from map.php. */
 require __DIR__ . '/../header.php';
 $countryCount = count(array_unique(array_column($offices, 'country')));
 ?>
