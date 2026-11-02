@@ -1,5 +1,5 @@
 <?php
-/** New design: home page with the nearest-office finder. Data comes from index.php. */
+/** Home page with the nearest-office finder. Data comes from index.php. */
 $countryCount = count(array_unique(array_column($offices, 'country')));
 $institutions = require __DIR__ . '/../../institutions.php';
 $pageTitle = __('home_v2_meta');

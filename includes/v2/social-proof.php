@@ -1,6 +1,6 @@
 <?php
 /**
- * New design, home page: "social proof" band under the contracted institutions card.
+ * Home page: "social proof" band under the contracted institutions card.
  * DRAFT for testing: one language only (Turkish) and sample content until the real texts arrive.
  * Edit the three lists below; the markup needs no change. Set $proofDraft = false once the content is real.
  */

@@ -1,7 +1,7 @@
 <?php
 /**
  * Nearest office (/nearest): the finder as a page of its own. Linked from the map, the office list and the
- * footer; /nearest?find=1 asks for the location right away. A new page, so it only exists in the new design.
+ * footer; /nearest?find=1 asks for the location right away.
  */
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/includes/db.php';

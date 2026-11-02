@@ -1,5 +1,5 @@
 <?php
-/** New design: the nearest-office finder as a page. Data comes from nearest.php. */
+/** The nearest-office finder as a page. Data comes from nearest.php. */
 $extraHead = '<link rel="stylesheet" href="' . asset('assets/css/finder.css') . '">'
            . '<link rel="stylesheet" href="' . asset('assets/css/finder-v2.css') . '">';
 require __DIR__ . '/../header.php';

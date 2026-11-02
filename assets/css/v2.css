@@ -1,4 +1,4 @@
-/* === New design (includes/v2) ===
+/* === Public site design (includes/v2) ===
    Palette, type and motion follow acibademinternational.com.
    Tailwind utilities do the layout; this file holds the pieces that repeat
    (buttons, hero, cards, header, motion). Logical properties keep RTL right. */
@@ -134,9 +134,9 @@ html.drawer-open, html.drawer-open body { overflow: hidden; }
 .lang-panel:not(.hidden) { animation: pop .28s cubic-bezier(.22,.9,.24,1); transform-origin: top; }
 @keyframes pop { from { opacity: 0; transform: translateY(-6px) scale(.98); } to { opacity: 1; transform: none; } }
 
-/* Preview ribbon (only while the new design is not live) */
-.preview-bar { background: linear-gradient(90deg, var(--coral), #f58a5b); color: #fff; font-size: .8rem; font-weight: 600; }
-.preview-bar a { text-decoration: underline; text-underline-offset: 2px; }
+/* ?demo note on office pages (admins only) */
+.demo-note { display: flex; align-items: flex-start; gap: .6rem; padding: .8rem 1rem; border-radius: 16px; background: #fff1ed; border: 1px dashed var(--coral); color: #8a3a28; font-size: .875rem; line-height: 1.45; }
+.demo-note i { color: var(--coral); font-size: 1.15rem; flex-shrink: 0; margin-top: 1px; }
 
 /* ---------- Type helpers ---------- */
 .eyebrow {
@@ -400,7 +400,7 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 }
 
 @media print {
-  .site-header, .site-footer, .action-dock, .preview-bar { display: none !important; }
+  .site-header, .site-footer, .action-dock, .demo-note { display: none !important; }
 }
 
 /* Institutions ticker (home) */
@@ -415,7 +415,7 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
   .ticker__item:nth-child(n+25) { display: none; }
 }
 
-/* Offices list: rows inside country cards (style.css lifts .office-card in the old design) */
+/* Offices list: rows inside country cards (style.css also lifts .office-card) */
 .v2 .office-card:hover { transform: none; box-shadow: none; }
 .v2 .country-group { scroll-margin-top: calc(var(--header-h) + var(--bar-h, 0px) + 16px); }
 .v2 .country-highlight { box-shadow: 0 0 0 3px rgba(37,170,225,.55), var(--shadow); border-radius: 24px; background: #fff; }

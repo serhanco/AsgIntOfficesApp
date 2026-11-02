@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__ . '/language.php';
-require_once __DIR__ . '/design.php';
 require_once __DIR__ . '/events.php';
 
 /**
@@ -13,6 +12,18 @@ require_once __DIR__ . '/events.php';
  */
 function e(?string $str): string {
     return htmlspecialchars($str ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8');
+}
+
+/**
+ * URL of a local asset with a cache-busting version from its content
+ * (scripts/build-icons.mjs writes the same version into icons.css for the icon fonts).
+ */
+function asset(string $path): string {
+    static $versions = [];
+    $path = ltrim($path, '/');
+    $file = __DIR__ . '/../' . $path;
+    if (!isset($versions[$path])) $versions[$path] = is_file($file) ? substr(md5_file($file), 0, 8) : '';
+    return getBaseUrl() . '/' . $path . ($versions[$path] !== '' ? '?v=' . $versions[$path] : '');
 }
 
 /**

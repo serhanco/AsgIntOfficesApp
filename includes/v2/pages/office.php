@@ -1,5 +1,5 @@
 <?php
-/** New design: one office. Data ($office, $team, $activities, $relatedOffices …) comes from office.php. */
+/** One office. Data ($office, $team, $activities, $relatedOffices …) comes from office.php. */
 $heroImg = imageUrl($office['image_url'] ?? '', getBaseUrl() . '/assets/images/office-hero.webp');
 $extraHead = '<link rel="preload" as="image" href="' . e($heroImg) . '" fetchpriority="high">';
 require __DIR__ . '/../header.php';
@@ -54,6 +54,14 @@ $tagStyle = [
 </section>
 
 <div class="wrap wrap--narrow py-10 sm:py-14 space-y-6 sm:space-y-8">
+
+    <?php if (!empty($demoParts)): ?>
+    <!-- ?demo (admins only): say which cards hold sample data. Admin screens are Turkish only. -->
+    <p class="demo-note" dir="ltr" lang="tr">
+        <i class="ph-fill ph-eye" aria-hidden="true"></i>
+        <span><b>Demo görünüm</b> · <?= e(implode(' ve ', array_map(fn($p) => $p === 'team' ? 'ekip' : 'etkinlikler', $demoParts))) ?> örnek veridir; bunu yalnızca giriş yapmış yöneticiler görür.</span>
+    </p>
+    <?php endif; ?>
 
     <?php if ($hasTeam || $hasActivities): ?>
     <div class="grid gap-6 sm:gap-8 <?= $gridCols ?>">

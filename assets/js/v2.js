@@ -1,5 +1,5 @@
 /**
- * New design (includes/v2): header, mobile menu, scroll reveal, number count-up,
+ * Public site (includes/v2): header, mobile menu, scroll reveal, number count-up,
  * office action bar. Language menu, maps and search stay in assets/js/app.js.
  */
 (function () {

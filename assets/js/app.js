@@ -3,22 +3,8 @@
  * Client-side JavaScript
  */
 
-// === Mobile Menu Toggle ===
-function toggleMobileMenu() {
-  const menu = document.getElementById('mobile-menu');
-  const burger = document.getElementById('burger-btn');
-  if (menu) {
-    menu.classList.toggle('hidden');
-    burger?.classList.toggle('is-open');
-    const isExpanded = !menu.classList.contains('hidden');
-    burger?.setAttribute('aria-expanded', isExpanded);
-  }
-}
-
-// Translated UI strings (set in includes/header.php)
+// Translated UI strings (set in includes/v2/header.php)
 const I18N = Object.assign({
-  geoUnsupported: 'Geolocation is not supported by your browser.',
-  geoDenied: 'Location access denied. Please select an office from the list.',
   viewDetails: 'View details'
 }, window.APP_I18N || {});
 
@@ -40,75 +26,6 @@ document.addEventListener('keydown', function(e) {
     menu.querySelector('[data-lang-toggle]').setAttribute('aria-expanded', false);
   });
 });
-
-// === Toast Notification System ===
-function showToast(message, duration = 3000) {
-  // Remove existing toast
-  const existing = document.getElementById('toast');
-  if (existing) existing.remove();
-  
-  const toast = document.createElement('div');
-  toast.id = 'toast';
-  toast.className = 'fixed top-24 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full text-sm font-medium shadow-2xl z-[9999] w-max max-w-[90%] text-center transition-all duration-300 opacity-0';
-  toast.textContent = message;
-  document.body.appendChild(toast);
-  
-  requestAnimationFrame(() => {
-    toast.classList.replace('opacity-0', 'opacity-100');
-  });
-  
-  setTimeout(() => {
-    toast.classList.replace('opacity-100', 'opacity-0');
-    setTimeout(() => toast.remove(), 300);
-  }, duration);
-}
-
-// === Haversine Distance Calculator ===
-function calculateDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-            Math.sin(dLon/2) * Math.sin(dLon/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  return R * c;
-}
-
-// === Geolocation: Find Nearest Office ===
-function findNearestOffice(offices, callback) {
-  if (!navigator.geolocation) {
-    showToast(I18N.geoUnsupported);
-    callback(null);
-    return;
-  }
-  
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      const userLat = position.coords.latitude;
-      const userLon = position.coords.longitude;
-      
-      let nearest = null;
-      let minDist = Infinity;
-      
-      offices.forEach(office => {
-        const dist = calculateDistance(userLat, userLon, office.lat, office.lon);
-        if (dist < minDist) {
-          minDist = dist;
-          nearest = { ...office, distance: dist };
-        }
-      });
-      
-      callback(nearest);
-    },
-    (error) => {
-      console.warn('Location error:', error);
-      showToast(I18N.geoDenied);
-      callback(null);
-    },
-    { enableHighAccuracy: true, timeout: 8000 }
-  );
-}
 
 // === Country Jump (Offices List Page) ===
 function scrollToCountry(countryId) {
@@ -167,7 +84,7 @@ function initMap(containerId, offices, options = {}) {
     center: [41.0082, 28.9784],
     zoom: 4,
     singleOffice: false,
-    markerHtml: ''   // custom pin markup (new design)
+    markerHtml: ''   // custom pin markup
   };
   const config = { ...defaults, ...options };
   

@@ -1,5 +1,5 @@
 <?php
-/** New design: all offices, grouped by country. Data comes from offices.php. */
+/** All offices, grouped by country. Data comes from offices.php. */
 require __DIR__ . '/../header.php';
 ?>
 <div class="of-theme">

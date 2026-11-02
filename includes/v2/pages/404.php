@@ -1,5 +1,5 @@
 <?php
-/** New design: page not found. */
+/** Page not found. */
 require __DIR__ . '/../header.php';
 ?>
 

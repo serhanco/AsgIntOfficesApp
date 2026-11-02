@@ -1,6 +1,6 @@
 <?php
 /**
- * New design: page head + site header. Pages set $pageTitle, $currentPage,
+ * Page head + site header. Pages set $pageTitle, $currentPage,
  * $needsMap, $metaDescription (and optionally $ogImage, $extraHead) first.
  */
 $pageTitle       = $pageTitle ?? __('site_name');
@@ -102,8 +102,6 @@ $navItems = [
     <?php endif; ?>
 
     <script>window.APP_I18N = <?= json_encode([
-        'geoUnsupported' => __('js_geo_unsupported'),
-        'geoDenied'      => __('js_geo_denied'),
         'viewDetails'    => __('map_view_details'),
     ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) ?>;</script>
     <script defer src="<?= asset('assets/js/app.js') ?>"></script>
@@ -113,14 +111,6 @@ $navItems = [
 </head>
 <body class="v2 min-h-screen flex flex-col antialiased">
     <?= customCode('body_code') ?>
-    <?php if (designPreview()): ?>
-    <div class="preview-bar">
-        <div class="wrap py-1.5 flex items-center justify-center gap-3 text-center" dir="ltr" lang="tr">
-            <span><i class="ph-fill ph-sparkle" aria-hidden="true"></i> Yeni tasarım önizlemesi · ziyaretçiler hâlâ mevcut tasarımı görüyor</span>
-            <a href="?design=v1">Mevcut tasarıma dön</a>
-        </div>
-    </div>
-    <?php endif; ?>
 
     <header class="site-header" data-header>
         <div class="wrap site-header__bar">
