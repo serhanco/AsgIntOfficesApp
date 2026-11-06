@@ -9,6 +9,9 @@ $needsMap        = $needsMap ?? false;
 $metaDescription = $metaDescription ?? __('meta_default');
 $ogImage         = $ogImage ?? (getBaseUrl() . '/assets/images/og-logo.png');
 $extraHead       = $extraHead ?? '';
+// Public pages are open to search engines. Kept out of the index: pages that ask for it ($noIndex,
+// e.g. 404) and test/preview addresses (?demo, ?page, finder tests ?cc= / ?at=).
+$noIndex         = ($noIndex ?? false) || array_intersect_key($_GET, array_flip(['demo', 'page', 'cc', 'at'])) !== [];
 $current_lang    = $GLOBALS['current_lang'] ?? 'en';
 
 function v2LangUrl(string $lang): string {
@@ -60,7 +63,9 @@ $navItems = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title><?= e($pageTitle) ?> | <?= __('site_name') ?></title>
     <meta name="description" content="<?= e($metaDescription) ?>">
+<?php if ($noIndex): ?>
     <meta name="robots" content="noindex, nofollow">
+<?php endif; ?>
     <meta name="theme-color" content="#092c74">
     <meta property="og:title" content="<?= e($pageTitle) ?> | <?= __('site_name') ?>">
     <meta property="og:description" content="<?= e($metaDescription) ?>">

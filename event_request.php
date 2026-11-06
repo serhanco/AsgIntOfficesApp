@@ -9,6 +9,7 @@ require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/includes/v2/events-ui.php';
 
 header('Content-Type: application/json; charset=utf-8');
+header('X-Robots-Tag: noindex');
 header('Cache-Control: no-store');
 
 function reply_json(int $code, array $body): void {
