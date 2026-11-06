@@ -1,2 +1,9 @@
+# Public pages are open to search engines.
+# Admin, setup and API addresses stay closed (they also send their own noindex header).
 User-agent: *
-Disallow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /install.php
+Disallow: /apply_update.php
+Disallow: /api.php
+Disallow: /event_request.php

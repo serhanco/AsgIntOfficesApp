@@ -9,6 +9,7 @@ http_response_code(404);
 $pageTitle = __('404_title');
 $currentPage = '';
 $needsMap = false;
+$noIndex = true;
 $metaDescription = __('404_subtitle');
 
 require __DIR__ . '/includes/v2/pages/404.php';
