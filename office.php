@@ -54,30 +54,23 @@ if (empty($team) && $demoMode) {
     ];
 }
 
-if (empty($activities) && $demoMode) {
+// Sample events are shown next to the office's real events (never instead of them),
+// as upcoming event cards in the same style. They link nowhere.
+$demoActs = [];
+if ($demoMode) {
     $demoParts[] = 'activities';
-    $activities = [
-        [
-            'tag_key' => 'act_tag_doctor',
-            'title' => 'Prof. Yaşar Çolak',
-            'description' => 'Gastroenterology, Endoscopy and Nutrition'
-        ],
-        [
-            'tag_key' => 'act_tag_presentation',
-            'title' => 'Robotic Single Port Surgery',
-            'description' => 'Latest techniques in minimal-invasive care'
-        ],
-        [
-            'tag_key' => 'act_tag_exhibition',
-            'title' => 'Growing B2B Network',
-            'description' => 'International healthcare partnerships fair'
-        ]
+    $soon = fn(int $days) => date('Y-m-d', strtotime('+' . $days . ' days'));
+    $demoActs = [
+        ['tag_key' => 'act_tag_doctor',       'title' => 'Prof. Yaşar Çolak',            'description' => 'Gastroenterology, Endoscopy and Nutrition',    'start' => $soon(12), 'end' => $soon(12)],
+        ['tag_key' => 'act_tag_presentation', 'title' => 'Robotic Single Port Surgery',  'description' => 'Latest techniques in minimal-invasive care',   'start' => $soon(26), 'end' => $soon(26)],
+        ['tag_key' => 'act_tag_exhibition',   'title' => 'Growing B2B Network',          'description' => 'International healthcare partnerships fair', 'start' => $soon(40), 'end' => $soon(42)],
     ];
+    $demoActs = array_map(fn($a) => $a + ['url' => '', 'ext' => false, 'status' => 'upcoming', 'demo' => true], $demoActs);
 }
 // ==============================
 
 $hasTeam = !empty($team);
-$hasActivities = !empty($activities);
+$hasActivities = !empty($activities) || !empty($demoActs);
 
 // Determine grid layout based on available data
 $gridCols = ($hasTeam && $hasActivities) ? 'md:grid-cols-2' : 'md:grid-cols-1';
