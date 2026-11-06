@@ -59,7 +59,7 @@ $tagStyle = [
     <!-- ?demo (admins only): say which cards hold sample data. Admin screens are Turkish only. -->
     <p class="demo-note" dir="ltr" lang="tr">
         <i class="ph-fill ph-eye" aria-hidden="true"></i>
-        <span><b>Demo görünüm</b> · <?= e(implode(' ve ', array_map(fn($p) => $p === 'team' ? 'ekip' : 'etkinlikler', $demoParts))) ?> örnek veridir; bunu yalnızca giriş yapmış yöneticiler görür.</span>
+        <span><b>Demo görünüm</b> · <?= e(implode(' ve ', array_map(fn($p) => $p === 'team' ? 'ekip' : '“Demo” etiketli etkinlikler', $demoParts))) ?> örnek veridir (gerçek etkinlikler de yerinde); bunu yalnızca giriş yapmış yöneticiler görür.</span>
     </p>
     <?php endif; ?>
 
@@ -78,6 +78,7 @@ $tagStyle = [
                 $upcomingActs = array_values(array_filter($shownActs, fn($a) => $a['status'] === 'upcoming'));
                 $shownActs = $upcomingActs ?: array_slice($shownActs, 0, 3);
             }
+            $shownActs = array_merge($shownActs, $demoActs ?? []);
             ?>
             <div class="flex items-center justify-between gap-4 mb-6">
                 <h2 class="text-xl font-extrabold text-navy"><?= __('office_activities_h', '<bdi>' . e($office['country']) . '</bdi>') ?></h2>
@@ -93,7 +94,7 @@ $tagStyle = [
                     $tagName = $actUrl ? 'a' : 'div';
                 ?>
                 <<?= $tagName ?><?= $actUrl ? ' href="' . e($actUrl) . '"' . (!empty($act['ext']) ? ' target="_blank" rel="noopener" data-ev-external' : '') : '' ?> dir="<?= $actDir ?>" class="group flex gap-4 p-4 rounded-2xl border border-line bg-white hover:border-transparent hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-300<?= ($act['status'] ?? '') === 'past' ? ' opacity-70' : '' ?>">
-                    <?php if ($actUrl): ?>
+                    <?php if (!empty($act['start'])): ?>
                     <?= v2DateBadge($act['start'], $act['end'], $act['status'] === 'past') ?>
                     <?php else: ?>
                     <span class="w-12 h-12 rounded-xl bg-gradient-to-br <?= $st['chip'] ?> text-white flex items-center justify-center flex-shrink-0 shadow-md transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-6">
@@ -101,9 +102,9 @@ $tagStyle = [
                     </span>
                     <?php endif; ?>
                     <div class="flex-1 min-w-0">
-                        <span lang="<?= e(langHtml()) ?>" dir="<?= langDir() ?>" class="text-[0.7rem] font-bold uppercase tracking-wider <?= $st['text'] ?>"><?= __($act['tag_key']) ?></span>
+                        <span lang="<?= e(langHtml()) ?>" dir="<?= langDir() ?>" class="text-[0.7rem] font-bold uppercase tracking-wider <?= $st['text'] ?>"><?= __($act['tag_key']) ?></span><?php if (!empty($act['demo'])): ?> <span class="demo-tag" lang="tr" dir="ltr">Demo</span><?php endif; ?>
                         <p class="event-text mt-0.5 text-[0.95rem] font-bold text-ink leading-snug group-hover:text-navy transition-colors"><?= e($act['title']) ?></p>
-                        <?php if ($actUrl && $act['start']): ?>
+                        <?php if (!empty($act['start'])): ?>
                         <p class="mt-1 text-sm text-azure font-semibold" lang="<?= e(langHtml()) ?>" dir="<?= langDir() ?>"><?= v2DateText($act['start'], $act['end']) ?></p>
                         <?php elseif (!empty($act['description'])): ?>
                         <p class="event-text mt-1 text-sm text-muted line-clamp-2"><?= e($act['description']) ?></p>
@@ -113,7 +114,7 @@ $tagStyle = [
                 </<?= $tagName ?>>
                 <?php endforeach; ?>
             </div>
-            <?php if (isset($activities[0]['url'])): ?>
+            <?php if (isset($activities[0]['url']) || !empty($demoActs)): ?>
             <a href="<?= getBaseUrl() ?>/events" class="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-azure hover:text-navy"><?= __('events_see_all') ?><i class="ph ph-arrow-right arrow" aria-hidden="true"></i></a>
             <?php endif; ?>
         </section>

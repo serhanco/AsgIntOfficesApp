@@ -136,6 +136,7 @@ html.drawer-open, html.drawer-open body { overflow: hidden; }
 
 /* ?demo note on office pages (admins only) */
 .demo-note { display: flex; align-items: flex-start; gap: .6rem; padding: .8rem 1rem; border-radius: 16px; background: #fff1ed; border: 1px dashed var(--coral); color: #8a3a28; font-size: .875rem; line-height: 1.45; }
+.demo-tag { display: inline-block; margin-inline-start: .35rem; padding: 0 .4rem; border-radius: 6px; background: #fff1ed; color: #c8452c; font-size: .65rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; vertical-align: 1px; }
 .demo-note i { color: var(--coral); font-size: 1.15rem; flex-shrink: 0; margin-top: 1px; }
 
 /* ---------- Type helpers ---------- */
