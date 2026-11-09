@@ -81,6 +81,19 @@ function eventsV2Ready(): bool {
     return $ready;
 }
 
+/** Has patch_20261109_event_meta_description.sql been applied (events.meta_description)? */
+function eventsMetaReady(): bool {
+    static $ready = null;
+    if ($ready === null) {
+        try {
+            $ready = eventsReady() && (bool)getDb()->query("SHOW COLUMNS FROM events LIKE 'meta_description'")->fetchColumn();
+        } catch (\Throwable $e) {
+            $ready = false;
+        }
+    }
+    return $ready;
+}
+
 /** Has patch_20261109_event_image_hero.sql been applied (events.image_hero)? */
 function eventsImageHeroReady(): bool {
     static $ready = null;
@@ -276,6 +289,7 @@ function getEvents(bool $publishedOnly = true, string $scope = 'listed'): array 
             'relates_hq'   => $relatesHq,
             'title'        => $ev['title'],
             'description'  => (string)$ev['description'],
+            'meta_description' => trim((string)($ev['meta_description'] ?? '')), // optional text for Google and link previews
             'image_url'    => $ev['image_url'],
             'image_hero'   => !empty($ev['image_hero']), // also show the image behind the title (admin checkbox)
             'link_url'     => $ev['link_url'],

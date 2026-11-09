@@ -66,7 +66,13 @@ $others = array_slice($others, 0, 2);
 $pageTitle = $event['title'];
 $currentPage = 'events';
 $needsMap = (bool)$mapStops;
-$metaDescription = trim(mb_substr(preg_replace('/\s+/', ' ', $event['description']), 0, 160)) ?: __('events_subtitle');
+// Google / link preview text: the admin's short description, else the start of the description cut at a word
+$metaDescription = $event['meta_description'];
+if ($metaDescription === '') {
+    $plain = trim(preg_replace('/\s+/u', ' ', $event['description']));
+    $metaDescription = mb_strlen($plain) > 160 ? preg_replace('/\s+\S*$/u', '', mb_substr($plain, 0, 157)) . '…' : $plain;
+}
+$metaDescription = $metaDescription ?: __('events_subtitle');
 if ($event['image_url']) $ogImage = imageUrl($event['image_url']);
 // The cover image is always shown whole above the description (posters often carry text).
 // Only when the admin ticks "also as background" does it go behind the title too, dimmed.

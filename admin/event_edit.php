@@ -19,6 +19,7 @@ $offices = $db->query("SELECT id, display_name, country, country_code FROM offic
 $typeLabels = eventTypeLabelsTr();
 $v2 = eventsV2Ready(); // stage 1 columns and tables (patch_20261011_events_relations.sql)
 $extReady = eventsExternalReady(); // events.external_only (patch_20261015_events_external.sql)
+$metaReady = eventsMetaReady(); // events.meta_description (patch_20261109_event_meta_description.sql)
 $heroReady = eventsImageHeroReady(); // events.image_hero (patch_20261109_event_image_hero.sql)
 
 // Countries that have an office (a country relation means all of its offices)
@@ -27,7 +28,7 @@ foreach ($offices as $o) if ($o['country_code'] !== '') $countries[strtolower($o
 asort($countries);
 
 $event = ['title' => '', 'slug' => '', 'tag_key' => 'act_tag_doctor', 'audience' => 'b2c', 'visibility' => 'listed', 'featured_rank' => 0, 'relates_hq' => 0,
-          'description' => '', 'image_url' => '', 'image_hero' => 0, 'link_url' => '', 'external_only' => 0, 'file_url' => '', 'is_published' => 1, 'sort_order' => 0];
+          'description' => '', 'meta_description' => '', 'image_url' => '', 'image_hero' => 0, 'link_url' => '', 'external_only' => 0, 'file_url' => '', 'is_published' => 1, 'sort_order' => 0];
 $blankStop = ['kind' => 'office', 'office_id' => '', 'venue_name' => '', 'city' => '', 'country_code' => '', 'address' => '', 'coords' => '',
               'starts_on' => '', 'ends_on' => '', 'start_time' => '', 'end_time' => ''];
 $blankPerson = ['person_id' => '', 'role' => 'speaker', 'name' => '', 'title' => '', 'specialty' => '', 'organization' => '', 'photo_url' => '', 'is_acibadem' => '1'];
@@ -82,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $event['description'] = trim($_POST['description'] ?? '');
     $event['image_url'] = trim($_POST['image_url'] ?? '');
     if ($heroReady) $event['image_hero'] = isset($_POST['image_hero']) ? 1 : 0;
+    if ($metaReady) $event['meta_description'] = mb_substr(trim(preg_replace('/\s+/u', ' ', (string)($_POST['meta_description'] ?? ''))), 0, 255);
     $event['link_url'] = trim($_POST['link_url'] ?? '');
     if ($extReady) $event['external_only'] = ($_POST['where'] ?? '') === 'external' ? 1 : 0;
     $event['is_published'] = isset($_POST['is_published']) ? 1 : 0;
@@ -171,6 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                      'image_url' => $event['image_url'] ?: null, 'link_url' => $event['link_url'] ?: null, 'is_published' => $event['is_published'], 'sort_order' => $event['sort_order']];
             if ($extReady) $cols['external_only'] = (int)$event['external_only'];
             if ($heroReady) $cols['image_hero'] = (int)$event['image_hero'];
+            if ($metaReady) $cols['meta_description'] = $event['meta_description'] !== '' ? $event['meta_description'] : null;
             if ($v2) {
                 $cols += ['audience' => $event['audience'], 'visibility' => $event['visibility'], 'featured_rank' => $event['featured_rank'],
                           'relates_hq' => $event['relates_hq'], 'file_url' => $event['file_url'] ?: null];
@@ -427,6 +430,13 @@ function sessionRow(int $i, array $r, callable $h, string $input): string {
                         <label class="block text-sm font-medium text-gray-700">Açıklama</label>
                         <textarea name="description" dir="auto" rows="4" class="<?= $input ?>"><?= $h($event['description']) ?></textarea>
                     </div>
+                    <?php if ($metaReady): ?>
+                    <div class="md:col-span-2" data-detail>
+                        <label class="block text-sm font-medium text-gray-700">Kısa açıklama (isteğe bağlı) <span class="font-normal text-gray-500">— Google'da ve WhatsApp/Facebook paylaşımlarında görünür</span></label>
+                        <textarea name="meta_description" dir="auto" rows="2" maxlength="255" data-meta-desc class="<?= $input ?>"><?= $h($event['meta_description'] ?? '') ?></textarea>
+                        <p class="mt-1 text-xs text-gray-500"><span data-meta-count>0</span> / 160 karakter önerilir. Boş bırakılırsa açıklamanın başı kullanılır.</p>
+                    </div>
+                    <?php endif; ?>
                     <div data-detail>
                         <label class="block text-sm font-medium text-gray-700">Kapak görseli (isteğe bağlı)</label>
                         <input type="text" name="image_url" value="<?= $h($event['image_url']) ?>" class="<?= $input ?>">
@@ -617,6 +627,14 @@ function sessionRow(int $i, array $r, callable $h, string $input): string {
 })();
 </script>
 <?= upload_size_guard_script() ?>
+<script>
+// Character counter for the short (meta) description; turns amber above 160, where Google cuts the text
+document.querySelectorAll('[data-meta-desc]').forEach(function (ta) {
+    var out = ta.parentNode.querySelector('[data-meta-count]');
+    var upd = function () { var n = ta.value.length; out.textContent = n; out.className = n > 160 ? 'font-semibold text-amber-700' : ''; };
+    ta.addEventListener('input', upd); upd();
+});
+</script>
 <script>
 // Cover image narrower than 1200 px: warn (Google Discover shows large images only from 1200 px wide)
 document.querySelector('input[name="image_file"]')?.addEventListener('change', function () {
