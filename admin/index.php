@@ -12,6 +12,9 @@ if (($_POST['action'] ?? '') === 'logout') { // POST only (CSRF-checked in auth.
 
 
 $db = getDb();
+// Once a day: delete uploaded files no record has used for 30+ days (see includes/upload_cleanup.php)
+require_once __DIR__ . '/includes/upload_cleanup.php';
+maybe_cleanup_unused_uploads($db);
 $one = fn(string $sql) => (int)$db->query($sql)->fetchColumn();
 
 $officeCount = $one("SELECT COUNT(*) FROM offices WHERE is_active = 1");
