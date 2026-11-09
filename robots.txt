@@ -7,3 +7,8 @@ Disallow: /install.php
 Disallow: /apply_update.php
 Disallow: /api.php
 Disallow: /event_request.php
+# Calendar downloads of events (the event page itself stays open)
+Disallow: /*.ics$
+
+# Always-current list of public pages in all languages, built from the database
+Sitemap: https://acibadem.world/sitemap.xml

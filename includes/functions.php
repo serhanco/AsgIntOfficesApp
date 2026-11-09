@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/language.php';
 require_once __DIR__ . '/events.php';
+require_once __DIR__ . '/seo.php';
 
 /**
  * Helper Functions
@@ -33,7 +34,11 @@ function getBaseUrl(): string {
     if (defined('APP_URL') && APP_URL !== '') {
         return rtrim(APP_URL, '/');
     }
-    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    // Behind Cloudflare / a proxy the server itself may be reached over http while the visitor is on https
+    $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || strtolower((string)($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')) === 'https'
+        || strpos((string)($_SERVER['HTTP_CF_VISITOR'] ?? ''), '"https"') !== false;
+    $protocol = $https ? 'https' : 'http';
     $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
     $path = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
     $path = preg_replace('#/admin$#', '', $path); // links built inside the admin must still point at the public site

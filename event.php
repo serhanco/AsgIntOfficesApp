@@ -12,6 +12,15 @@ $slug = (string)($_GET['slug'] ?? '');
 $event = $slug !== '' ? getEventBySlug($slug) : null;
 
 if (!$event) {
+    // Address changed or event deleted in the admin: forward to where it lives now
+    $slug = preg_replace('/[^a-z0-9\-]/', '', $slug);
+    seoFollowOldAddress('/event/' . $slug);
+    // Event taken off the site (draft / internal, may come back): visitors from QR codes / old links get the events page
+    if ($slug !== '' && eventsReady()) {
+        $stmt = getDb()->prepare('SELECT COUNT(*) FROM events WHERE slug = ?');
+        $stmt->execute([$slug]);
+        if ((int)$stmt->fetchColumn()) seoForward('/events', 302);
+    }
     require __DIR__ . '/404.php';
     exit;
 }
@@ -22,6 +31,11 @@ if (isset($_GET['ics'])) {
     echo eventIcs($event);
     exit;
 }
+
+$seoPath = '/event/' . $event['slug'];
+seoRedirectToClean($seoPath);
+// Reachable only with its address (invitation, QR): open to visitors, kept out of search results and the sitemap
+$noIndex = $event['visibility'] === 'link';
 
 // Registration on an outside page: while the event is ahead, our address (QR codes, old links) forwards there.
 // After it ends, this short page opens instead. Admins can still look at our page with ?page=1.

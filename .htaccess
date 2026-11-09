@@ -11,6 +11,8 @@ RewriteRule ^event/([a-z0-9-]+)/?$ event.php?slug=$1 [L,QSA]
 # The finder test page became the home page
 RewriteRule ^nearest-beta/?$ / [R=301,L]
 RewriteRule ^contracted-institutions/?$ contracted-institutions.php [L,QSA]
+# Sitemap for search engines, built from the database on each request
+RewriteRule ^sitemap\.xml$ sitemap.php [L,QSA]
 RewriteRule ^api/offices/?$ api.php [L,QSA]
 RewriteRule ^api/event-request/?$ event_request.php [L,QSA]
 
@@ -43,7 +45,7 @@ Options -Indexes
 
 # Compress text responses
 <IfModule mod_deflate.c>
-    AddOutputFilterByType DEFLATE text/html text/css application/javascript text/javascript application/json image/svg+xml
+    AddOutputFilterByType DEFLATE text/html text/css application/javascript text/javascript application/json application/xml image/svg+xml
 </IfModule>
 
 # Browser caching: images and fonts rarely change; CSS/JS links carry ?v= versions where it matters

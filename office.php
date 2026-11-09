@@ -8,10 +8,21 @@ $slug = preg_replace('/[^a-z0-9\-]/', '', $slug);
 $office = getOfficeBySlug($slug);
 
 if (!$office) {
+    // Address changed or office deleted in the admin: forward to where it lives now
+    seoFollowOldAddress('/office/' . $slug);
+    // Office switched off (may come back): visitors from QR codes / old links get the nearest-office finder
+    if ($slug !== '') {
+        $stmt = getDb()->prepare('SELECT COUNT(*) FROM offices WHERE slug = ? AND is_active = 0');
+        $stmt->execute([$slug]);
+        if ((int)$stmt->fetchColumn()) seoForward('/nearest', 302);
+    }
     http_response_code(404);
     require_once __DIR__ . '/404.php';
     exit;
 }
+
+$seoPath = '/office/' . $office['slug'];
+seoRedirectToClean($seoPath);
 
 $relatedOffices = getOfficesByCountry($office['country'], $office['id']);
 $pageTitle = $office['display_name'] . ' — ' . $office['country'];

@@ -42,6 +42,7 @@ if ($isEdit) {
     $row = $stmt->fetch();
     if (!$row) { header('Location: events.php'); exit; }
     $event = array_merge($event, $row);
+    $oldSlug = (string)$row['slug'];
     $stmt = $db->prepare("SELECT * FROM event_locations WHERE event_id = ? ORDER BY sort_order, id");
     $stmt->execute([$id]);
     $stops = array_map(function ($s) {
@@ -223,7 +224,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $sess->execute([$id, $r['day'] ?: null, $r['start_time'] ?: null, $r['end_time'] ?: null, $r['kind'], $r['title'], $r['speakers'] ?: null, $i]);
                 }
             }
+            // Date of last change for the sitemap (people, program and places are in other tables)
+            $db->prepare("UPDATE events SET updated_at = CURRENT_TIMESTAMP WHERE id = ?")->execute([$id]);
             $db->commit();
+            // Address changed: the old one (QR codes, ads) forwards to the new one
+            if (!empty($oldSlug) && $oldSlug !== $event['slug']) seoRememberMove('/event/' . $oldSlug, '/event/' . $event['slug']);
             header('Location: event_edit.php?id=' . $id . '&saved=1');
             exit;
         } catch (PDOException $e) {

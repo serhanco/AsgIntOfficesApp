@@ -7,6 +7,11 @@ $db = getDb();
 $ready = eventsReady();
 
 if ($ready && ($_POST['action'] ?? '') === 'delete' && isset($_POST['id'])) {
+    // Its address keeps working: QR codes and old links open the events page
+    $stmt = $db->prepare("SELECT slug FROM events WHERE id = ?");
+    $stmt->execute([(int)$_POST['id']]);
+    $oldSlug = (string)$stmt->fetchColumn();
+    if ($oldSlug !== '') seoRememberMove('/event/' . $oldSlug, '/events');
     $db->prepare("DELETE FROM events WHERE id = ?")->execute([(int)$_POST['id']]);
     header('Location: events.php?msg=deleted');
     exit;
