@@ -1,13 +1,12 @@
 <?php
 /**
  * Home page: "social proof" band under the contracted institutions card.
- * DRAFT for testing: one language only (Turkish) and sample content until the real texts arrive.
- * Edit the three lists below; the markup needs no change. Set $proofDraft = false once the content is real.
+ * DRAFT: sample content until the real texts arrive. Patient stories stay in the patients' own languages (not translated);
+ * all other static texts come from the lang files (proof_* keys). Set $proofDraft = false once the content is real.
  */
 $proofDraft = true;
-$proofLang  = 'en'; // the texts below are written in this language; other page languages show them as is
 
-// Each story is written in the patient's own language ('lang'); country and topic labels stay in the page's draft language
+// Each story is written in the patient's own language ('lang') and is shown as is; country and topic labels belong to the story
 $proofQuotes = [
     ['lang' => 'az', 'q' => 'İlk zəngdən əməliyyatdan sonrakı yoxlamalara qədər Bakı komandası hər addımda yanımda idi. Özümü bir an belə yad hiss etmədim.',
      'name' => 'Leyla M.', 'cc' => 'az', 'country' => 'Azerbaijan', 'topic' => 'Orthopaedics'],
@@ -20,16 +19,16 @@ $proofQuotes = [
 ];
 
 $proofMetrics = [
-    ['n' => 30, 'pre' => '', 'suf' => '+',  'l' => 'Languages spoken by our teams', 'icon' => 'ph-translate'],
-    ['n' => 35, 'pre' => '', 'suf' => '+',  'l' => 'Years of healthcare experience', 'icon' => 'ph-medal'],
-    ['n' => 24, 'pre' => '', 'suf' => '/7', 'l' => 'International patient support', 'icon' => 'ph-headset'],
+    ['n' => 30, 'pre' => '', 'suf' => '+',  'l' => __('proof_m_langs'), 'icon' => 'ph-translate'],
+    ['n' => 35, 'pre' => '', 'suf' => '+',  'l' => __('proof_m_years'), 'icon' => 'ph-medal'],
+    ['n' => 24, 'pre' => '', 'suf' => '/7', 'l' => __('proof_m_support'), 'icon' => 'ph-headset'],
 ];
 
 $proofSeals = [
-    ['icon' => 'ph-seal-check',   'h' => 'JCI',                    'p' => 'International accreditation'],
-    ['icon' => 'ph-certificate',  'h' => 'ISO 9001',               'p' => 'Quality management'],
-    ['icon' => 'ph-shield-check', 'h' => 'Licensed',               'p' => 'Health tourism authorisation'],
-    ['icon' => 'ph-trophy',       'h' => 'Awards',                 'p' => 'Patient experience'],
+    ['icon' => 'ph-seal-check',   'h' => 'JCI',                    'p' => __('proof_s_jci_p')],
+    ['icon' => 'ph-certificate',  'h' => 'ISO 9001',               'p' => __('proof_s_iso_p')],
+    ['icon' => 'ph-shield-check', 'h' => __('proof_s_lic_h'),      'p' => __('proof_s_lic_p')],
+    ['icon' => 'ph-trophy',       'h' => __('proof_s_awards_h'),   'p' => __('proof_s_awards_p')],
 ];
 
 // Smiling people of all ages (Unsplash License stock: atmosphere only, never paired with a quote)
@@ -37,13 +36,13 @@ $proofPeople = ['assets/images/proof/people-1.webp', 'assets/images/proof/people
                 'assets/images/proof/people-4.webp', 'assets/images/proof/people-5.webp'];
 $proofPeople = array_values(array_filter($proofPeople, fn($f) => is_file(__DIR__ . '/../../' . $f)));
 ?>
-<section class="proof" aria-labelledby="proof-h"<?= $proofLang !== ($GLOBALS['current_lang'] ?? '') ? ' lang="' . $proofLang . '" dir="ltr"' : '' ?>>
+<section class="proof" aria-labelledby="proof-h">
     <div class="wrap">
         <div class="proof__head reveal">
-            <?php if ($proofDraft): ?><span class="proof__draft">Draft · sample content</span><?php endif; ?>
-            <p class="eyebrow justify-center">In our patients' words</p>
-            <h2 id="proof-h" class="proof__title">The right address <span>for your health.</span></h2>
-            <p class="proof__lead">Patients from all over the world know Acıbadem is by their side, from the very first conversation to follow-up after treatment.</p>
+            <?php if ($proofDraft): ?><span class="proof__draft"><?= e(__('proof_draft')) ?></span><?php endif; ?>
+            <p class="eyebrow justify-center"><?= e(__('proof_eyebrow')) ?></p>
+            <h2 id="proof-h" class="proof__title"><?= e(__('proof_title_a')) ?> <span><?= e(__('proof_title_b')) ?></span></h2>
+            <p class="proof__lead"><?= e(__('proof_lead')) ?></p>
         </div>
 
         <?php if ($proofPeople): ?>
@@ -61,12 +60,12 @@ $proofPeople = array_values(array_filter($proofPeople, fn($f) => is_file(__DIR__
                 <div class="proof__slides" aria-live="polite">
                     <?php foreach ($proofQuotes as $k => $t):
                         $ini = implode('', array_map(fn($w) => mb_substr($w, 0, 1), array_slice(preg_split('/\s+/', $t['name']), 0, 2))); ?>
-                    <div class="proof__slide<?= $k === 0 ? ' is-on' : '' ?>" lang="<?= e($t['lang']) ?>" data-slide<?= $k === 0 ? '' : ' aria-hidden="true"' ?>>
+                    <div class="proof__slide<?= $k === 0 ? ' is-on' : '' ?>" lang="<?= e($t['lang']) ?>" dir="ltr" data-slide<?= $k === 0 ? '' : ' aria-hidden="true"' ?>>
                         <blockquote class="proof__quote"><?= e($t['q']) ?></blockquote>
                         <figcaption class="proof__who">
                             <span class="proof__avatar" aria-hidden="true"><?= e($ini) ?></span>
                             <span class="min-w-0">
-                                <b class="proof__name"><?= e($t['name']) ?><?php if ($proofDraft): ?> <em>sample</em><?php endif; ?></b>
+                                <b class="proof__name"><?= e($t['name']) ?><?php if ($proofDraft): ?> <em><?= e(__('proof_sample')) ?></em><?php endif; ?></b>
                                 <span class="proof__from">
                                     <img src="<?= e(getFlagUrl($t['cc'])) ?>" alt="" width="20" height="20" loading="lazy" decoding="async">
                                     <?= e($t['country']) ?> · <?= e($t['topic']) ?>
@@ -77,14 +76,14 @@ $proofPeople = array_values(array_filter($proofPeople, fn($f) => is_file(__DIR__
                     <?php endforeach; ?>
                 </div>
                 <div class="proof__nav">
-                    <div class="proof__bars" role="tablist" aria-label="Patient stories">
+                    <div class="proof__bars" role="tablist" aria-label="<?= e(__('proof_stories')) ?>">
                         <?php foreach ($proofQuotes as $k => $t): ?>
                         <button type="button" class="proof__bar<?= $k === 0 ? ' is-on' : '' ?>" role="tab" aria-selected="<?= $k === 0 ? 'true' : 'false' ?>" aria-label="<?= $k + 1 ?> / <?= count($proofQuotes) ?>" data-go="<?= $k ?>"><i></i></button>
                         <?php endforeach; ?>
                     </div>
                     <div class="proof__arrows">
-                        <button type="button" class="proof__arrow" data-step="-1" aria-label="Previous"><i class="ph ph-arrow-left" aria-hidden="true"></i></button>
-                        <button type="button" class="proof__arrow" data-step="1" aria-label="Next"><i class="ph ph-arrow-right" aria-hidden="true"></i></button>
+                        <button type="button" class="proof__arrow" data-step="-1" aria-label="<?= e(__('proof_prev')) ?>"><i class="ph ph-arrow-left" aria-hidden="true"></i></button>
+                        <button type="button" class="proof__arrow" data-step="1" aria-label="<?= e(__('proof_next')) ?>"><i class="ph ph-arrow-right" aria-hidden="true"></i></button>
                     </div>
                 </div>
             </figure>
