@@ -157,6 +157,29 @@ function ga4Id(): string {
     return defined('GA4_ID') ? GA4_ID : 'G-QN9G5K8F63';
 }
 
+/** Where the GA4 ID comes from: 'admin' (Ayarlar), 'config' (config.php GA4_ID), 'default' or 'off'. */
+function ga4IdSource(): string {
+    $v = trim(siteSetting('ga4_id'));
+    if (strtolower($v) === 'kapat') return 'off';
+    if (preg_match('/^G-[A-Z0-9]{4,20}$/', $v)) return 'admin';
+    if (defined('GA4_ID')) return GA4_ID === '' ? 'off' : 'config';
+    return 'default';
+}
+
+/** Why the GA4 tag is not on this page (printed as an HTML comment, so a page source check shows it). */
+function ga4SkipReason(): string {
+    if (ga4Id() === '') return 'off';
+    if (isAdminVisitor()) return 'skipped, signed-in admin (open the site in a private window to be measured)';
+    if (!analyticsAllowed()) return 'waiting for cookie consent';
+    return 'loaded';
+}
+
+/** Country code Cloudflare sent for this request, '' when the header is missing. */
+function cfCountry(): string {
+    $cc = strtoupper(trim($_SERVER['HTTP_CF_IPCOUNTRY'] ?? ''));
+    return preg_match('/^[A-Z0-9]{2}$/', $cc) ? $cc : '';
+}
+
 /**
  * Get all offices
  */

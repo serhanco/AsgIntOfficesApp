@@ -100,6 +100,18 @@ $nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => '
                         <p class="text-sm text-gray-600 mt-1">Sitenin ölçüm kimliği. Boş bırakırsanız mevcut kimlik (<code><?= $h(ga4Id()) ?></code>) kullanılır. Ölçümü kapatmak için <code>kapat</code> yazın.</p>
                         <input type="text" name="ga4_id" value="<?= $h($cur['ga4_id'] ?? '') ?>" placeholder="G-XXXXXXXXXX" maxlength="30"
                                class="mt-3 w-full sm:w-72 border border-gray-300 rounded-md px-3 py-2 text-sm font-mono">
+                        <?php
+                        $gaSrc = ga4IdSource();
+                        $gaSrcText = ['admin' => 'bu sayfadaki alan', 'config' => 'sunucudaki config.php (GA4_ID)', 'default' => 'yerleşik varsayılan', 'off' => 'ölçüm kapalı'][$gaSrc];
+                        $cc = cfCountry();
+                        ?>
+                        <div class="mt-4 rounded-md border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700 space-y-1.5">
+                            <p class="font-medium text-gray-900">Ölçüm durumu</p>
+                            <p>Sitede kullanılan kimlik: <code class="font-mono"><?= $h(ga4Id() ?: 'yok') ?></code> (kaynak: <?= $h($gaSrcText) ?>)</p>
+                            <p>Cloudflare ülke bilgisi (sizin bu isteğiniz): <?php if ($cc !== ''): ?><code><?= $h($cc) ?></code><?php else: ?><strong class="text-red-700">gelmiyor</strong>. Bu durumda tüm ziyaretçiler "ülkesi bilinmeyen" sayılır, çerez şeridi herkese çıkar ve Temel modda onay vermeyen hiçbir ziyaretçi ölçülmez. Cloudflare'de "IP Geolocation" ayarını açın.<?php endif; ?></p>
+                            <p>Çerez onayı modu: <?= ($cur['consent_mode'] ?? '') === 'advanced' ? 'Gelişmiş' : 'Temel' ?></p>
+                            <p class="text-gray-600">Yönetici olarak giriş yapmış tarayıcıda GA4 kodu yüklenmez, kendi ziyaretleriniz ölçülmez. Ölçümü denemek için siteyi gizli pencerede açın ve GA4'te <em>Raporlar &gt; Gerçek zamanlı</em> ekranına bakın. Sayfa kaynağında <code>ga4:</code> ile başlayan not, o sayfada kodun neden yüklenmediğini söyler.</p>
+                        </div>
                     </section>
 
                     <section class="bg-white border border-gray-200 rounded-lg shadow-sm p-5 md:p-6">

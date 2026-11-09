@@ -87,6 +87,8 @@ $navItems = [
       gtag('js', new Date());
       gtag('config', '<?= e($ga4Id) ?>');
     </script>
+    <?php else: ?>
+    <!-- ga4: <?= e(ga4SkipReason()) ?> -->
     <?php endif; ?>
 
     <!-- Fonts: Plus Jakarta Sans (brand), Inter for Cyrillic, Noto for Arabic/Persian and Georgian.
