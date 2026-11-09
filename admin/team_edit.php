@@ -168,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label class="block text-sm font-medium text-gray-700">Görsel URL</label>
                         <input type="text" name="image_url" value="<?= htmlspecialchars($member['image_url']) ?>" placeholder="/assets/images/team/john.jpg" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2 border">
                         <input type="file" name="image_file" accept="image/jpeg,image/png,image/webp" class="mt-2 block w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                        <p class="mt-1 text-xs text-gray-500">Dosya seçerseniz yukarıdaki yol otomatik dolar (JPG, PNG, WEBP; en fazla 8 MB). Boş bırakılırsa varsayılan kişi ikonu gösterilir. Önerilen: kare, en az 400px.</p>
+                        <p class="mt-1 text-xs text-gray-500">Dosya seçerseniz yukarıdaki yol otomatik dolar Boş bırakılırsa varsayılan kişi ikonu gösterilir. <?= upload_image_hint(400, 'Önerilen: kare, en az 400×400 px, yüz üst-ortada.') ?></p>
                         <?php if (!empty($member['image_url'])): ?>
                             <img src="<?= htmlspecialchars(admin_image_src($member['image_url'])) ?>" alt="" class="mt-2 h-20 rounded-md border border-gray-200 object-cover">
                         <?php endif; ?>
@@ -186,5 +186,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
         </div>
     </main>
+<?= upload_size_guard_script() ?>
 </body>
 </html>

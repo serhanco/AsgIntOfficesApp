@@ -237,7 +237,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <label class="block text-sm font-medium text-gray-700">Görsel URL (İsteğe bağlı)</label>
                                 <input type="text" name="image_url" value="<?= htmlspecialchars($office['image_url']) ?>" placeholder="/assets/images/offices/london.jpg" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2 border">
                                 <input type="file" name="image_file" accept="image/jpeg,image/png,image/webp" class="mt-2 block w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                                <p class="mt-1 text-xs text-gray-500">Dosya seçerseniz yukarıdaki yol otomatik dolar (JPG, PNG, WEBP; en fazla 8 MB). Boş bırakılırsa varsayılan ofis görseli kullanılır. Önerilen: yatay, en az 1600px genişlik.</p>
+                                <p class="mt-1 text-xs text-gray-500">Dosya seçerseniz yukarıdaki yol otomatik dolar Boş bırakılırsa varsayılan ofis görseli kullanılır. <?= upload_image_hint(1600, 'Önerilen: yatay, 1600×900 px (16:9) ya da daha büyük.') ?></p>
                                 <?php if (!empty($office['image_url'])): ?>
                                     <img src="<?= htmlspecialchars(admin_image_src($office['image_url'])) ?>" alt="" class="mt-2 h-20 rounded-md border border-gray-200 object-cover">
                                 <?php endif; ?>
@@ -261,5 +261,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
         </div>
     </main>
+<?= upload_size_guard_script() ?>
 </body>
 </html>

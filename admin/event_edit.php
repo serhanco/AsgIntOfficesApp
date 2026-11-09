@@ -423,6 +423,7 @@ function sessionRow(int $i, array $r, callable $h, string $input): string {
                         <input type="text" name="image_url" value="<?= $h($event['image_url']) ?>" class="<?= $input ?>">
                         <input type="file" name="image_file" accept="image/jpeg,image/png,image/webp" class="mt-2 block w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700">
                         <p class="mt-1 text-xs text-gray-500">Boş bırakılırsa tipe göre hazır görünüm kullanılır.</p>
+                        <p class="mt-1 text-xs text-gray-500"><?= upload_image_hint(1600, 'Yatay fotoğraf (önerilen 1600×900 px, 16:9) etkinlik sayfasının üstünde koyulaştırılmış arka plan olur ve kenarları kırpılabilir; önemli kısmı ortada tutun. Kare veya dikey afiş (ör. 1080×1080 ya da 1080×1350 px) sayfada kırpılmadan, bütün olarak gösterilir.') ?></p>
                         <?php if (!empty($event['image_url'])): ?><img src="<?= $h(admin_image_src($event['image_url'])) ?>" alt="" class="mt-2 h-20 rounded-md border border-gray-200 object-cover"><?php endif; ?>
                     </div>
                     <div data-link-box>
@@ -603,5 +604,6 @@ function sessionRow(int $i, array $r, callable $h, string $input): string {
     });
 })();
 </script>
+<?= upload_size_guard_script() ?>
 </body>
 </html>
