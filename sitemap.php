@@ -61,6 +61,12 @@ header('Content-Type: application/xml; charset=utf-8');
 header('X-Robots-Tag: noindex');
 header('Cache-Control: public, max-age=3600');
 
+// Compress here too (about 2 MB → 20 KB), so it does not depend on the server's mod_deflate.
+// ob_gzhandler only compresses when the client asks for it and sets Content-Encoding / Vary itself.
+if (extension_loaded('zlib') && !ini_get('zlib.output_compression')) {
+    ob_start('ob_gzhandler');
+}
+
 $x = fn(string $s) => htmlspecialchars($s, ENT_XML1 | ENT_QUOTES, 'UTF-8');
 
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
