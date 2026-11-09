@@ -3,6 +3,9 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/functions.php';
 
+$seoPath = '/offices';
+seoRedirectToClean($seoPath);
+
 $offices = getAllOffices();
 $countries = getCountriesWithCount();
 $totalOffices = count($offices);

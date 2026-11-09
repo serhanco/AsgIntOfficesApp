@@ -13,6 +13,9 @@ if (!$office) {
     exit;
 }
 
+$seoPath = '/office/' . $office['slug'];
+seoRedirectToClean($seoPath);
+
 $relatedOffices = getOfficesByCountry($office['country'], $office['id']);
 $pageTitle = $office['display_name'] . ' — ' . $office['country'];
 $currentPage = 'office';

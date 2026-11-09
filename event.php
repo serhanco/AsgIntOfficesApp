@@ -23,6 +23,11 @@ if (isset($_GET['ics'])) {
     exit;
 }
 
+$seoPath = '/event/' . $event['slug'];
+seoRedirectToClean($seoPath);
+// Reachable only with its address (invitation, QR): open to visitors, kept out of search results and the sitemap
+$noIndex = $event['visibility'] === 'link';
+
 // Registration on an outside page: while the event is ahead, our address (QR codes, old links) forwards there.
 // After it ends, this short page opens instead. Admins can still look at our page with ?page=1.
 if ($event['href_ext'] && !(isset($_GET['page']) && isAdminVisitor())) {

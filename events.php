@@ -7,6 +7,9 @@ require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/includes/v2/events-ui.php';
 
+$seoPath = '/events';
+seoRedirectToClean($seoPath);
+
 $events   = sortEvents(getEvents());
 $upcoming = array_values(array_filter($events, fn($e) => $e['status'] === 'upcoming'));
 $past     = array_values(array_filter($events, fn($e) => $e['status'] === 'past'));

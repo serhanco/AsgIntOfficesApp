@@ -65,6 +65,8 @@ $navItems = [
     <meta name="description" content="<?= e($metaDescription) ?>">
 <?php if ($noIndex): ?>
     <meta name="robots" content="noindex, nofollow">
+<?php elseif (isset($seoPath)): ?>
+    <?= seoHeadLinks($seoPath) ?>
 <?php endif; ?>
     <meta name="theme-color" content="#092c74">
     <meta property="og:title" content="<?= e($pageTitle) ?> | <?= __('site_name') ?>">
