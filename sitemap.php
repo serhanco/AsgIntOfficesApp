@@ -36,8 +36,18 @@ if ($events) {
     }
 }
 
+// An office page also shows its team: a team change counts as a change of the office page
+$teamDates = [];
+try {
+    foreach (getDb()->query('SELECT office_id, MAX(updated_at) AS u FROM office_teams GROUP BY office_id')->fetchAll() as $r) {
+        $teamDates[(int)$r['office_id']] = sitemapDate($r['u']);
+    }
+} catch (\Throwable $e) {
+}
+$officeDate = fn(array $o) => max(sitemapDate($o['updated_at'] ?? null), $teamDates[(int)$o['id']] ?? null);
+
 $latest = fn(array $dates) => ($dates = array_filter($dates)) ? max($dates) : null;
-$latestOffice = $latest(array_map(fn($o) => sitemapDate($o['updated_at'] ?? null), $offices));
+$latestOffice = $latest(array_map($officeDate, $offices));
 $latestEvent = $latest(array_map(fn($ev) => $eventDates[$ev['id']] ?? null, $events));
 $latestAny = $latest([$latestOffice, $latestEvent]);
 
@@ -51,7 +61,7 @@ $pages = [
     ['/contracted-institutions', null],
 ];
 foreach ($offices as $o) {
-    $pages[] = ['/office/' . $o['slug'], sitemapDate($o['updated_at'] ?? null)];
+    $pages[] = ['/office/' . $o['slug'], $officeDate($o)];
 }
 foreach ($events as $ev) {
     $pages[] = ['/event/' . $ev['slug'], $eventDates[$ev['id']] ?? null];

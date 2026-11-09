@@ -36,7 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Sanitize and collect input
     $office['name'] = trim($_POST['name'] ?? '');
     $office['display_name'] = trim($_POST['display_name'] ?? '');
-    $office['slug'] = trim($_POST['slug'] ?? '');
+    $oldSlug = $is_edit ? (string)$office['slug'] : '';
+    // Only lower case Latin letters, digits and hyphens work in the address (/office/{slug})
+    $office['slug'] = seoSlug(trim($_POST['slug'] ?? ''));
     $office['country'] = trim($_POST['country'] ?? '');
     $office['country_code'] = trim($_POST['country_code'] ?? '');
     $office['address'] = trim($_POST['address'] ?? '');
@@ -74,6 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $office['latitude'], $office['longitude'], $office['image_url'], $office['is_active'],
                     $office['sort_order'], $id]
                 ));
+                // Address changed: the old one (QR codes, ads) forwards to the new one
+                if ($oldSlug !== '' && $oldSlug !== $office['slug']) seoRememberMove('/office/' . $oldSlug, '/office/' . $office['slug']);
                 $success = "Ofis başarıyla güncellendi.";
             } else {
                 $stmt = $db->prepare("INSERT INTO offices (

@@ -7,6 +7,11 @@ $db = getDb();
 // Handle Delete Action
 if (isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['id'])) {
     $id = (int)$_POST['id'];
+    // Its address keeps working: QR codes and old links open the nearest-office finder
+    $stmt = $db->prepare("SELECT slug FROM offices WHERE id = ?");
+    $stmt->execute([$id]);
+    $oldSlug = (string)$stmt->fetchColumn();
+    if ($oldSlug !== '') seoRememberMove('/office/' . $oldSlug, '/nearest');
     $stmt = $db->prepare("DELETE FROM offices WHERE id = ?");
     $stmt->execute([$id]);
     header('Location: offices.php?msg=deleted');

@@ -12,6 +12,15 @@ $slug = (string)($_GET['slug'] ?? '');
 $event = $slug !== '' ? getEventBySlug($slug) : null;
 
 if (!$event) {
+    // Address changed or event deleted in the admin: forward to where it lives now
+    $slug = preg_replace('/[^a-z0-9\-]/', '', $slug);
+    seoFollowOldAddress('/event/' . $slug);
+    // Event taken off the site (draft / internal, may come back): visitors from QR codes / old links get the events page
+    if ($slug !== '' && eventsReady()) {
+        $stmt = getDb()->prepare('SELECT COUNT(*) FROM events WHERE slug = ?');
+        $stmt->execute([$slug]);
+        if ((int)$stmt->fetchColumn()) seoForward('/events', 302);
+    }
     require __DIR__ . '/404.php';
     exit;
 }
