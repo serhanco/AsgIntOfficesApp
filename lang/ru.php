@@ -269,8 +269,6 @@ return [
     'event_ext_link' => 'Открывает страницу регистрации',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)
-    'proof_draft' => 'Черновик · пример содержимого',
-    'proof_sample' => 'пример',
     'proof_eyebrow' => 'Слова наших пациентов',
     'proof_title_a' => 'Правильный адрес',
     'proof_title_b' => 'для вашего здоровья.',

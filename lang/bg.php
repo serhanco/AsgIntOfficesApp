@@ -219,8 +219,6 @@ return [
     'event_ext_link' => 'Отваря страницата за регистрация',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)
-    'proof_draft' => 'Чернова · примерно съдържание',
-    'proof_sample' => 'пример',
     'proof_eyebrow' => 'С думите на нашите пациенти',
     'proof_title_a' => 'Правилният адрес',
     'proof_title_b' => 'за вашето здраве.',

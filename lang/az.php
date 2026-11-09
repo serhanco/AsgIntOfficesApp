@@ -219,8 +219,6 @@ return [
     'event_ext_link' => 'Qeydiyyat səhifəsini açır',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)
-    'proof_draft' => 'Qaralama · nümunə məzmun',
-    'proof_sample' => 'nümunə',
     'proof_eyebrow' => 'Xəstələrimizin sözləri ilə',
     'proof_title_a' => 'Düzgün ünvan',
     'proof_title_b' => 'sağlamlığınız üçün.',

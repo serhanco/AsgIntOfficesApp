@@ -219,8 +219,6 @@ return [
     'event_ext_link' => 'Deschide pagina de înscriere',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)
-    'proof_draft' => 'Ciornă · conținut de exemplu',
-    'proof_sample' => 'exemplu',
     'proof_eyebrow' => 'Din cuvintele pacienților noștri',
     'proof_title_a' => 'Adresa potrivită',
     'proof_title_b' => 'pentru sănătatea dumneavoastră.',

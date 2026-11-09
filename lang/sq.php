@@ -219,8 +219,6 @@ return [
     'event_ext_link' => 'Hap faqen e regjistrimit',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)
-    'proof_draft' => 'Skicë · përmbajtje shembull',
-    'proof_sample' => 'shembull',
     'proof_eyebrow' => 'Me fjalët e pacientëve tanë',
     'proof_title_a' => 'Adresa e duhur',
     'proof_title_b' => 'për shëndetin tuaj.',
