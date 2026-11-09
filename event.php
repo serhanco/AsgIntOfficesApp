@@ -131,17 +131,75 @@ require __DIR__ . '/includes/v2/header.php';
     </div>
     <?php endif; ?>
 
-    <div class="grid gap-6 sm:gap-8 <?= $mapStops ? 'lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]' : '' ?>">
+    <?php
+    // Desktop: cover image, dates & places and the map in the right column; phones: image above the text, places further down.
+    // Long text: the image moves to the right column so both columns stay balanced. Short text: it stays above the text.
+    $coverRight = $coverImg !== '' && (mb_strlen(trim($event['description'])) > 600 || $people || $program);
+    $hasAside = $mapStops || $coverRight;
+    $coverHtml = $coverImg === '' ? '' : '<a href="' . e($coverImg) . '" target="_blank" rel="noopener" class="block bg-surface"><img src="' . e($coverImg) . '" alt="' . e($event['title']) . '"'
+        . ($coverSize ? ' width="' . (int)$coverSize[0] . '" height="' . (int)$coverSize[1] . '"' : '')
+        . ' loading="eager" decoding="async" class="block w-full h-auto max-h-[80vh] object-contain mx-auto"></a>';
+    ob_start();
+    ?>
+            <section class="reveal">
+                <div class="flex items-center gap-3 mb-4">
+                    <h2 class="text-xl sm:text-2xl font-extrabold text-navy"><?= __('event_stops') ?></h2>
+                    <span class="count-pill"><?= count($stops) ?></span>
+                </div>
+                <ol class="space-y-4">
+                    <?php foreach ($stops as $i => $l):
+                        $tel = $l['phone'] !== '' ? 'tel:' . preg_replace('/[^0-9+]/', '', $l['phone']) : '';
+                        $wa  = $l['whatsapp'] !== '' ? 'https://wa.me/' . $l['whatsapp'] . '?text=' . rawurlencode(__('event_wa_msg', $event['title'])) : '';
+                        $stopPast = $l['ends_on'] && $l['ends_on'] < date('Y-m-d');
+                    ?>
+                    <li data-stop="<?= $i + 1 ?>" class="card p-5 sm:p-6 scroll-mt-28<?= $stopPast && !$past ? ' opacity-60' : '' ?>">
+                        <div class="flex gap-4">
+                            <?= v2DateBadge($l['starts_on'], $l['ends_on'], $past || $stopPast) ?>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-semibold text-azure"><?= v2DateText($l['starts_on'], $l['ends_on'], $l['start_time'], $l['end_time']) ?></p>
+                                <?php if ($l['is_online']): ?>
+                                <h3 class="mt-1 text-lg font-extrabold text-ink flex items-center gap-2"><i class="ph-fill ph-video-camera text-aqua" aria-hidden="true"></i><?= __('event_online') ?></h3>
+                                <?php elseif ($l['floating']): ?>
+                                <?php else: ?>
+                                <h3 class="mt-1 text-lg font-extrabold text-ink flex items-center gap-2 min-w-0">
+                                    <?php if ($l['country_code']): ?><img src="<?= e(getFlagUrl($l['country_code'])) ?>" alt="<?= e($l['country']) ?>" width="22" height="16" class="w-[22px] h-4 object-cover rounded-[3px] flex-shrink-0"><?php endif; ?>
+                                    <bdi class="truncate"><?= e($l['name']) ?></bdi>
+                                </h3>
+                                <?php if ($l['address'] !== '' || ($l['at_venue'] && $l['city'] !== '')): ?>
+                                <p class="mt-1 text-sm text-muted leading-relaxed"><bdi><?= e(trim($l['address'] . ($l['at_venue'] && $l['city'] !== '' && stripos($l['address'], $l['city']) === false ? ($l['address'] !== '' ? ', ' : '') . $l['city'] : ''))) ?></bdi></p>
+                                <?php endif; ?>
+                                <?php endif; ?>
+                                <?php if ($l['office'] && ($l['at_venue'] || $l['is_online'])): ?>
+                                <p class="mt-2 text-xs text-muted-2"><?= __('event_contact_office', '<a href="' . e($l['office_url']) . '" class="font-semibold text-azure hover:underline"><bdi>' . e($l['office']['display_name']) . '</bdi></a>') ?></p>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <?php if (!$past && !$stopPast && ($tel || $wa || $l['maps_url'])): ?>
+                        <div class="mt-4 pt-4 border-t border-line grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
+                            <?php if ($wa): ?><a href="<?= e($wa) ?>" target="_blank" rel="noopener" class="btn btn--sm bg-wa text-white hover:-translate-y-0.5"><i class="ph-fill ph-whatsapp-logo" aria-hidden="true"></i><?= __('js_whatsapp') ?></a><?php endif; ?>
+                            <?php if ($tel): ?><a href="<?= e($tel) ?>" class="btn btn--sm btn--line"><i class="ph-fill ph-phone" aria-hidden="true"></i><?= __('js_call') ?></a><?php endif; ?>
+                            <?php if ($l['maps_url']): ?><a href="<?= e($l['maps_url']) ?>" target="_blank" rel="noopener" class="btn btn--sm btn--line"><i class="ph-fill ph-navigation-arrow" aria-hidden="true"></i><?= __('office_cta_route') ?></a><?php endif; ?>
+                            <?php if ($l['office'] && !$l['at_venue'] && !$l['is_online']): ?><a href="<?= e($l['office_url']) ?>" class="btn btn--sm btn--line"><i class="ph-fill ph-buildings" aria-hidden="true"></i><?= __('event_office_page') ?></a><?php endif; ?>
+                        </div>
+                        <?php endif; ?>
+                    </li>
+                    <?php endforeach; ?>
+                </ol>
+            </section>
+    <?php
+    $stopsHtml = ob_get_clean();
+    // Only the phone copy carries the #stop-N anchors; links from the map go to whichever copy is visible (script below)
+    $stopsHtmlMobile = preg_replace('/data-stop="(\d+)"/', 'id="stop-$1" data-stop="$1"', $stopsHtml);
+    ?>
+    <div class="grid gap-6 sm:gap-8 <?= $hasAside ? 'lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]' : '' ?>">
         <div class="space-y-6 sm:space-y-8 min-w-0">
             <?php if ($coverImg !== '' || trim($event['description']) !== ''): ?>
-            <section class="card overflow-hidden reveal">
+            <section class="card overflow-hidden reveal<?= $coverRight && trim($event['description']) === '' ? ' lg:hidden' : '' ?>">
                 <?php if ($coverImg !== ''): ?>
-                <a href="<?= e($coverImg) ?>" target="_blank" rel="noopener" class="block bg-surface">
-                    <img src="<?= e($coverImg) ?>" alt="<?= e($event['title']) ?>"<?php if ($coverSize): ?> width="<?= (int)$coverSize[0] ?>" height="<?= (int)$coverSize[1] ?>"<?php endif; ?> loading="eager" decoding="async" class="block w-full h-auto max-h-[80vh] object-contain mx-auto">
-                </a>
+                <div class="<?= $coverRight ? 'lg:hidden' : '' ?>"><?= $coverHtml ?></div>
                 <?php endif; ?>
                 <?php if (trim($event['description']) !== ''): ?>
-                <div class="p-6 sm:p-8<?= $coverImg !== '' ? ' border-t border-line' : '' ?>">
+                <div class="p-6 sm:p-8<?= $coverImg !== '' ? ' border-t border-line' . ($coverRight ? ' lg:border-t-0' : '') : '' ?>">
                     <div class="event-text text-[1.02rem] text-ink leading-relaxed whitespace-pre-line" dir="<?= $dir ?>"><?= e(trim($event['description'])) ?></div>
                 </div>
                 <?php endif; ?>
@@ -210,51 +268,7 @@ require __DIR__ . '/includes/v2/header.php';
             </section>
             <?php endif; ?>
 
-            <section class="reveal">
-                <div class="flex items-center gap-3 mb-4">
-                    <h2 class="text-xl sm:text-2xl font-extrabold text-navy"><?= __('event_stops') ?></h2>
-                    <span class="count-pill"><?= count($stops) ?></span>
-                </div>
-                <ol class="space-y-4">
-                    <?php foreach ($stops as $i => $l):
-                        $tel = $l['phone'] !== '' ? 'tel:' . preg_replace('/[^0-9+]/', '', $l['phone']) : '';
-                        $wa  = $l['whatsapp'] !== '' ? 'https://wa.me/' . $l['whatsapp'] . '?text=' . rawurlencode(__('event_wa_msg', $event['title'])) : '';
-                        $stopPast = $l['ends_on'] && $l['ends_on'] < date('Y-m-d');
-                    ?>
-                    <li id="stop-<?= $i + 1 ?>" class="card p-5 sm:p-6 scroll-mt-28<?= $stopPast && !$past ? ' opacity-60' : '' ?>">
-                        <div class="flex gap-4">
-                            <?= v2DateBadge($l['starts_on'], $l['ends_on'], $past || $stopPast) ?>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-semibold text-azure"><?= v2DateText($l['starts_on'], $l['ends_on'], $l['start_time'], $l['end_time']) ?></p>
-                                <?php if ($l['is_online']): ?>
-                                <h3 class="mt-1 text-lg font-extrabold text-ink flex items-center gap-2"><i class="ph-fill ph-video-camera text-aqua" aria-hidden="true"></i><?= __('event_online') ?></h3>
-                                <?php elseif ($l['floating']): ?>
-                                <?php else: ?>
-                                <h3 class="mt-1 text-lg font-extrabold text-ink flex items-center gap-2 min-w-0">
-                                    <?php if ($l['country_code']): ?><img src="<?= e(getFlagUrl($l['country_code'])) ?>" alt="<?= e($l['country']) ?>" width="22" height="16" class="w-[22px] h-4 object-cover rounded-[3px] flex-shrink-0"><?php endif; ?>
-                                    <bdi class="truncate"><?= e($l['name']) ?></bdi>
-                                </h3>
-                                <?php if ($l['address'] !== '' || ($l['at_venue'] && $l['city'] !== '')): ?>
-                                <p class="mt-1 text-sm text-muted leading-relaxed"><bdi><?= e(trim($l['address'] . ($l['at_venue'] && $l['city'] !== '' && stripos($l['address'], $l['city']) === false ? ($l['address'] !== '' ? ', ' : '') . $l['city'] : ''))) ?></bdi></p>
-                                <?php endif; ?>
-                                <?php endif; ?>
-                                <?php if ($l['office'] && ($l['at_venue'] || $l['is_online'])): ?>
-                                <p class="mt-2 text-xs text-muted-2"><?= __('event_contact_office', '<a href="' . e($l['office_url']) . '" class="font-semibold text-azure hover:underline"><bdi>' . e($l['office']['display_name']) . '</bdi></a>') ?></p>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                        <?php if (!$past && !$stopPast && ($tel || $wa || $l['maps_url'])): ?>
-                        <div class="mt-4 pt-4 border-t border-line grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
-                            <?php if ($wa): ?><a href="<?= e($wa) ?>" target="_blank" rel="noopener" class="btn btn--sm bg-wa text-white hover:-translate-y-0.5"><i class="ph-fill ph-whatsapp-logo" aria-hidden="true"></i><?= __('js_whatsapp') ?></a><?php endif; ?>
-                            <?php if ($tel): ?><a href="<?= e($tel) ?>" class="btn btn--sm btn--line"><i class="ph-fill ph-phone" aria-hidden="true"></i><?= __('js_call') ?></a><?php endif; ?>
-                            <?php if ($l['maps_url']): ?><a href="<?= e($l['maps_url']) ?>" target="_blank" rel="noopener" class="btn btn--sm btn--line"><i class="ph-fill ph-navigation-arrow" aria-hidden="true"></i><?= __('office_cta_route') ?></a><?php endif; ?>
-                            <?php if ($l['office'] && !$l['at_venue'] && !$l['is_online']): ?><a href="<?= e($l['office_url']) ?>" class="btn btn--sm btn--line"><i class="ph-fill ph-buildings" aria-hidden="true"></i><?= __('event_office_page') ?></a><?php endif; ?>
-                        </div>
-                        <?php endif; ?>
-                    </li>
-                    <?php endforeach; ?>
-                </ol>
-            </section>
+            <div class="<?= $hasAside ? 'lg:hidden' : '' ?>"><?= $stopsHtmlMobile ?></div>
 
             <?php if ($event['relates_hq'] || $event['relations']): ?>
             <section class="reveal">
@@ -288,11 +302,17 @@ require __DIR__ . '/includes/v2/header.php';
             <?php endif; ?>
         </div>
 
-        <?php if ($mapStops): ?>
-        <aside class="lg:sticky lg:top-[calc(var(--header-h)+1.5rem)] self-start reveal" style="--d:.08s">
-            <div class="card relative overflow-hidden h-[320px] lg:h-[460px]">
+        <?php if ($hasAside): ?>
+        <aside class="space-y-6 sm:space-y-8 min-w-0 self-start">
+            <?php if ($coverRight): ?>
+            <section class="hidden lg:block card overflow-hidden reveal" style="--d:.06s"><?= $coverHtml ?></section>
+            <?php endif; ?>
+            <div class="hidden lg:block"><?= $stopsHtml ?></div>
+            <?php if ($mapStops): ?>
+            <div class="card relative overflow-hidden h-[320px] lg:h-[400px] reveal" style="--d:.08s">
                 <div id="event-map" class="absolute inset-0 z-0"></div>
             </div>
+            <?php endif; ?>
         </aside>
         <?php endif; ?>
     </div>
@@ -310,6 +330,16 @@ require __DIR__ . '/includes/v2/header.php';
     <?php endif; ?>
 </div>
 
+<script>
+// Links to a date/place (#stop-N, e.g. from the map) scroll to the copy that is visible on this screen size
+document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="#stop-"]');
+    if (!a) return;
+    var n = a.getAttribute('href').slice(6);
+    var el = Array.prototype.find.call(document.querySelectorAll('[data-stop="' + n + '"]'), function (x) { return x.offsetParent !== null; });
+    if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+});
+</script>
 <?php if ($mapStops): ?>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
