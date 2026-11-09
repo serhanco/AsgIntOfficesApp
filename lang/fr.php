@@ -217,8 +217,6 @@ return [
     'event_ext_link' => 'Ouvre la page d\'inscription',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)
-    'proof_draft' => 'Brouillon · contenu d\'exemple',
-    'proof_sample' => 'exemple',
     'proof_eyebrow' => 'Les mots de nos patients',
     'proof_title_a' => 'La bonne adresse',
     'proof_title_b' => 'pour votre santé.',

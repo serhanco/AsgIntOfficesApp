@@ -217,8 +217,6 @@ return [
     'event_ext_link' => 'Kayıt sayfasını açar',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)
-    'proof_draft' => 'Taslak · örnek içerik',
-    'proof_sample' => 'örnek',
     'proof_eyebrow' => 'Hastalarımızın ağzından',
     'proof_title_a' => 'Sağlığınız için',
     'proof_title_b' => 'doğru adres.',

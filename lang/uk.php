@@ -219,8 +219,6 @@ return [
     'event_ext_link' => 'Відкриває сторінку реєстрації',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)
-    'proof_draft' => 'Чернетка · приклад вмісту',
-    'proof_sample' => 'приклад',
     'proof_eyebrow' => 'Слова наших пацієнтів',
     'proof_title_a' => 'Правильна адреса',
     'proof_title_b' => 'для вашого здоров\'я.',

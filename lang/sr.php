@@ -219,8 +219,6 @@ return [
     'event_ext_link' => 'Otvara stranicu za prijavu',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)
-    'proof_draft' => 'Nacrt · primer sadržaja',
-    'proof_sample' => 'primer',
     'proof_eyebrow' => 'Rečima naših pacijenata',
     'proof_title_a' => 'Prava adresa',
     'proof_title_b' => 'za vaše zdravlje.',

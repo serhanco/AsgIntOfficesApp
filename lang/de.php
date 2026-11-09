@@ -217,8 +217,6 @@ return [
     'event_ext_link' => 'Öffnet die Anmeldeseite',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)
-    'proof_draft' => 'Entwurf · Beispielinhalt',
-    'proof_sample' => 'Beispiel',
     'proof_eyebrow' => 'In den Worten unserer Patienten',
     'proof_title_a' => 'Die richtige Adresse',
     'proof_title_b' => 'für Ihre Gesundheit.',

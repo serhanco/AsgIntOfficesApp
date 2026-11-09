@@ -219,8 +219,6 @@ return [
     'event_ext_link' => 'صفحه ثبت‌نام را باز می‌کند',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)
-    'proof_draft' => 'پیش‌نویس · محتوای نمونه',
-    'proof_sample' => 'نمونه',
     'proof_eyebrow' => 'به روایت بیماران ما',
     'proof_title_a' => 'نشانیِ درست',
     'proof_title_b' => 'برای سلامت شما.',

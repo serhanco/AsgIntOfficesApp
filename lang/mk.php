@@ -219,8 +219,6 @@ return [
     'event_ext_link' => 'Ја отвора страницата за пријава',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)
-    'proof_draft' => 'Нацрт · примерна содржина',
-    'proof_sample' => 'пример',
     'proof_eyebrow' => 'Со зборовите на нашите пациенти',
     'proof_title_a' => 'Вистинската адреса',
     'proof_title_b' => 'за вашето здравје.',

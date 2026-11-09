@@ -269,8 +269,6 @@ return [
     'event_ext_link' => 'Opens the registration page',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)
-    'proof_draft' => 'Draft · sample content',
-    'proof_sample' => 'sample',
     'proof_eyebrow' => 'In our patients\' words',
     'proof_title_a' => 'The right address',
     'proof_title_b' => 'for your health.',

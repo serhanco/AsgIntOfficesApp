@@ -219,8 +219,6 @@ return [
     'event_ext_link' => 'يفتح صفحة التسجيل',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)
-    'proof_draft' => 'مسودة · محتوى تجريبي',
-    'proof_sample' => 'نموذج',
     'proof_eyebrow' => 'بكلمات مرضانا',
     'proof_title_a' => 'العنوان الصحيح',
     'proof_title_b' => 'لصحتك.',

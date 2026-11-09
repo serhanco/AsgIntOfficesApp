@@ -2,9 +2,8 @@
 /**
  * Home page: "social proof" band under the contracted institutions card.
  * DRAFT: sample content until the real texts arrive. Patient stories stay in the patients' own languages (not translated);
- * all other static texts come from the lang files (proof_* keys). Set $proofDraft = false once the content is real.
+ * all other static texts come from the lang files (proof_* keys).
  */
-$proofDraft = true;
 
 // Each story is written in the patient's own language ('lang') and is shown as is; country and topic labels belong to the story
 $proofQuotes = [
@@ -39,7 +38,6 @@ $proofPeople = array_values(array_filter($proofPeople, fn($f) => is_file(__DIR__
 <section class="proof" aria-labelledby="proof-h">
     <div class="wrap">
         <div class="proof__head reveal">
-            <?php if ($proofDraft): ?><span class="proof__draft"><?= e(__('proof_draft')) ?></span><?php endif; ?>
             <p class="eyebrow justify-center"><?= e(__('proof_eyebrow')) ?></p>
             <h2 id="proof-h" class="proof__title"><?= e(__('proof_title_a')) ?> <span><?= e(__('proof_title_b')) ?></span></h2>
             <p class="proof__lead"><?= e(__('proof_lead')) ?></p>
@@ -65,7 +63,7 @@ $proofPeople = array_values(array_filter($proofPeople, fn($f) => is_file(__DIR__
                         <figcaption class="proof__who">
                             <span class="proof__avatar" aria-hidden="true"><?= e($ini) ?></span>
                             <span class="min-w-0">
-                                <b class="proof__name"><?= e($t['name']) ?><?php if ($proofDraft): ?> <em><?= e(__('proof_sample')) ?></em><?php endif; ?></b>
+                                <b class="proof__name"><?= e($t['name']) ?></b>
                                 <span class="proof__from">
                                     <img src="<?= e(getFlagUrl($t['cc'])) ?>" alt="" width="20" height="20" loading="lazy" decoding="async">
                                     <?= e($t['country']) ?> · <?= e($t['topic']) ?>

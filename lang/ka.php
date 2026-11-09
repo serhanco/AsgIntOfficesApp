@@ -219,8 +219,6 @@ return [
     'event_ext_link' => 'ხსნის რეგისტრაციის გვერდს',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)
-    'proof_draft' => 'ესკიზი · ნიმუშის შინაარსი',
-    'proof_sample' => 'ნიმუში',
     'proof_eyebrow' => 'ჩვენი პაციენტების სიტყვებით',
     'proof_title_a' => 'სწორი მისამართი',
     'proof_title_b' => 'თქვენი ჯანმრთელობისთვის.',
