@@ -131,6 +131,7 @@ $tab = fn($key, $label) => '<a href="people.php' . ($key !== 'all' ? '?f=' . $ke
                         <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700">Fotoğraf (isteğe bağlı)</label>
                             <input type="file" name="photo_file" accept="image/jpeg,image/png,image/webp" class="mt-1 block w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700">
                             <input type="text" name="photo_url" value="<?= $h($form['photo_url']) ?>" placeholder="ya da fotoğraf linki: https://… / assets/images/…" class="<?= $input ?>">
+                            <p class="mt-1 text-xs text-gray-500"><?= upload_image_hint(600, 'Önerilen: kare, en az 600×600 px, yüz ortada (yuvarlak çerçevede gösterilir).') ?></p>
                             <?php if (!empty($form['photo_url'])): ?><img src="<?= $h(admin_image_src($form['photo_url'])) ?>" alt="" class="mt-2 h-16 w-16 rounded-full object-cover border border-gray-200"><?php endif; ?></div>
                         <label class="inline-flex items-center gap-2 text-sm"><input type="checkbox" name="is_acibadem" value="1" <?= $form['is_acibadem'] ? 'checked' : '' ?>> Acıbadem'de çalışıyor</label>
                     </div>
@@ -180,5 +181,6 @@ $tab = fn($key, $label) => '<a href="people.php' . ($key !== 'all' ? '?f=' . $ke
             <?php endif; ?>
         </div>
     </main>
+<?= upload_size_guard_script() ?>
 </body>
 </html>

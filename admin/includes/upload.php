@@ -4,7 +4,7 @@
  * Acıbadem International Offices App
  *
  * Validates an uploaded image (JPG, PNG, WEBP), re-encodes it with GD
- * (which also strips anything hidden inside the file), scales it down to
+ * (which also strips anything hidden inside the file), turns phone photos upright, scales it down to
  * $maxWidth and saves it under assets/images/uploads/<subdir>/.
  *
  * Returns the stored path relative to the app root
@@ -15,16 +15,89 @@
 
 const UPLOAD_MAX_BYTES = 8 * 1024 * 1024; // 8 MB
 
-function handle_image_upload(string $field, string $subdir, int $maxWidth): ?string {
+/** Bytes from a php.ini size value such as "2M" or "512K" (0 = no limit). */
+function upload_ini_bytes(string $value): int {
+    $value = trim($value);
+    if ($value === '') return 0;
+    $num = (float)$value;
+    switch (strtolower(substr($value, -1))) {
+        case 'g': $num *= 1024;
+        case 'm': $num *= 1024;
+        case 'k': $num *= 1024;
+    }
+    return (int)$num;
+}
+
+/** The real image size limit: our 8 MB, or less when the server's PHP settings allow less. */
+function upload_limit_bytes(): int {
+    $limit = UPLOAD_MAX_BYTES;
+    foreach (['upload_max_filesize', 'post_max_size'] as $key) {
+        $b = upload_ini_bytes((string)ini_get($key));
+        if ($b > 0) $limit = min($limit, $b);
+    }
+    return $limit;
+}
+
+function upload_limit_label(): string {
+    $mb = upload_limit_bytes() / 1048576;
+    return (floor($mb) == $mb ? (int)$mb : number_format($mb, 1, ',', '')) . ' MB';
+}
+
+/** True when the server can shrink and re-encode images (GD). */
+function upload_can_process(): bool {
+    return extension_loaded('gd') && function_exists('imagecreatetruecolor');
+}
+
+/**
+ * Admin form note for an image field: accepted types, the real size limit and what happens to the file on upload.
+ * $advice is the field-specific recommendation (shape and size). Returns escaped HTML.
+ */
+function upload_image_hint(int $maxWidth, string $advice = ''): string {
+    $parts = ['JPG, PNG veya WEBP; en fazla ' . upload_limit_label() . '.'];
+    if ($advice !== '') $parts[] = $advice;
+    if (upload_can_process()) {
+        $fmt = function_exists('imagewebp') ? 'WebP biçimine çevrilip sıkıştırılır' : 'yeniden sıkıştırılır';
+        $parts[] = "Yüklenen görsel otomatik olarak en fazla {$maxWidth} px genişliğe küçültülür, {$fmt}; telefon fotoğraflarının yönü düzeltilir ve konum gibi gizli bilgiler silinir.";
+    } else {
+        $parts[] = 'Sunucuda görsel işleme kapalı olduğu için dosya olduğu gibi kaydedilir; yüklemeden önce görseli küçültün.';
+    }
+    return htmlspecialchars(implode(' ', $parts), ENT_QUOTES, 'UTF-8');
+}
+
+/** Small script that warns right away when a chosen image is over the limit (before the form is sent). Print once per page. */
+function upload_size_guard_script(): string {
+    $limit = upload_limit_bytes();
+    $label = upload_limit_label();
+    return <<<HTML
+<script>
+document.addEventListener('change', function (e) {
+    var el = e.target;
+    if (!el || el.type !== 'file' || !el.accept || el.accept.indexOf('image/') !== 0) return;
+    var box = el.parentNode.querySelector('[data-upload-warn]');
+    if (!box) { box = document.createElement('p'); box.setAttribute('data-upload-warn', ''); box.className = 'mt-1 text-xs font-medium text-red-600'; el.insertAdjacentElement('afterend', box); }
+    var f = el.files && el.files[0];
+    if (f && f.size > {$limit}) {
+        box.textContent = 'Bu dosya ' + (f.size / 1048576).toFixed(1).replace('.', ',') + ' MB; en fazla {$label} yüklenebilir. Lütfen daha küçük bir görsel seçin.';
+        el.value = '';
+    } else {
+        box.textContent = '';
+    }
+});
+</script>
+HTML;
+}
+
+function handle_image_upload(string $field, string $subdir, int $maxWidth, int $maxHeight = 0): ?string {
+    $maxHeight = $maxHeight > 0 ? $maxHeight : $maxWidth * 2; // very tall posters are capped too
     $file = $_FILES[$field] ?? null;
     if (!$file || ($file['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
         return null;
     }
     if ($file['error'] !== UPLOAD_ERR_OK || !is_uploaded_file($file['tmp_name'])) {
-        throw new RuntimeException('Görsel yüklenemedi (dosya çok büyük olabilir).');
+        throw new RuntimeException('Görsel yüklenemedi (dosya çok büyük olabilir; en fazla ' . upload_limit_label() . ').');
     }
     if ($file['size'] > UPLOAD_MAX_BYTES) {
-        throw new RuntimeException('Görsel en fazla 8 MB olabilir.');
+        throw new RuntimeException('Görsel en fazla ' . upload_limit_label() . ' olabilir.');
     }
 
     $info = @getimagesize($file['tmp_name']);
@@ -43,7 +116,7 @@ function handle_image_upload(string $field, string $subdir, int $maxWidth): ?str
     $name = $subdir . '_' . date('Ymd') . '_' . bin2hex(random_bytes(6));
 
     // Re-encode with GD when available; fall back to storing the validated file as is
-    if (extension_loaded('gd')) {
+    if (upload_can_process()) {
         $loaders = [IMAGETYPE_JPEG => 'imagecreatefromjpeg', IMAGETYPE_PNG => 'imagecreatefrompng', IMAGETYPE_WEBP => 'imagecreatefromwebp'];
         $loader = $loaders[$info[2]];
         $src = function_exists($loader) ? @$loader($file['tmp_name']) : false;
@@ -55,13 +128,29 @@ function handle_image_upload(string $field, string $subdir, int $maxWidth): ?str
             imagepalettetotruecolor($src); // WEBP encoder needs truecolor
         }
 
+        // Phone photos are stored sideways with an EXIF "orientation" flag; GD ignores it, so turn the pixels upright here
+        if ($info[2] === IMAGETYPE_JPEG && function_exists('exif_read_data')) {
+            $exif = @exif_read_data($file['tmp_name']);
+            $orientation = (int)($exif['Orientation'] ?? 1);
+            if (in_array($orientation, [2, 4, 5, 7], true) && function_exists('imageflip')) {
+                imageflip($src, IMG_FLIP_HORIZONTAL);
+            }
+            $angle = [3 => 180, 4 => 180, 5 => 90, 6 => 270, 7 => 270, 8 => 90][$orientation] ?? 0;
+            if ($angle) {
+                $rotated = imagerotate($src, $angle, 0);
+                if ($rotated) { imagedestroy($src); $src = $rotated; }
+            }
+        }
+
         [$w, $h] = [imagesx($src), imagesy($src)];
-        if ($w > $maxWidth) {
-            $newH = (int)round($h * $maxWidth / $w);
-            $dst = imagecreatetruecolor($maxWidth, $newH);
+        $scale = min(1, $maxWidth / $w, $maxHeight / $h);
+        if ($scale < 1) {
+            $newW = max(1, (int)round($w * $scale));
+            $newH = max(1, (int)round($h * $scale));
+            $dst = imagecreatetruecolor($newW, $newH);
             imagealphablending($dst, false);
             imagesavealpha($dst, true);
-            imagecopyresampled($dst, $src, 0, 0, 0, 0, $maxWidth, $newH, $w, $h);
+            imagecopyresampled($dst, $src, 0, 0, 0, 0, $newW, $newH, $w, $h);
             imagedestroy($src);
             $src = $dst;
         }
