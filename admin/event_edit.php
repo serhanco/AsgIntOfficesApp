@@ -230,6 +230,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Date of last change for the sitemap (people, program and places are in other tables)
             $db->prepare("UPDATE events SET updated_at = CURRENT_TIMESTAMP WHERE id = ?")->execute([$id]);
             $db->commit();
+            // A newly uploaded cover gets a readable name from the event address and first date, ending in the event id
+            if (!empty($uploaded)) {
+                $dates = array_filter(array_column($stops, 'starts_on'));
+                $named = upload_rename_readable($uploaded, ($dates ? preg_replace('/-\d{4}$/', '', $event['slug']) . '-' . min($dates) : $event['slug']), (string)$id);
+                if ($named !== $uploaded) $db->prepare("UPDATE events SET image_url = ? WHERE id = ?")->execute([$named, $id]);
+            }
             // Address changed: the old one (QR codes, ads) forwards to the new one
             if (!empty($oldSlug) && $oldSlug !== $event['slug']) seoRememberMove('/event/' . $oldSlug, '/event/' . $event['slug']);
             header('Location: event_edit.php?id=' . $id . '&saved=1');
