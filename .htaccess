@@ -41,6 +41,8 @@ Options -Indexes
 # Fonts served with the right type (self-hosted icon font)
 <IfModule mod_mime.c>
     AddType font/woff2 .woff2
+    # Browsers only apply the sitemap's stylesheet when it is served as XML
+    AddType application/xml .xsl
 </IfModule>
 
 # Compress text responses

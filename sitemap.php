@@ -80,6 +80,8 @@ if (extension_loaded('zlib') && !ini_get('zlib.output_compression')) {
 $x = fn(string $s) => htmlspecialchars($s, ENT_XML1 | ENT_QUOTES, 'UTF-8');
 
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+// Readable view for people who open the address in a browser (search engines ignore it)
+echo '<?xml-stylesheet type="text/xsl" href="' . e(getBaseUrl()) . '/sitemap.xsl"?>' . "\n";
 echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">' . "\n";
 foreach ($pages as [$path, $lastmod]) {
     $alternates = seoAlternates($path);
