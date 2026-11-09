@@ -68,13 +68,14 @@ $currentPage = 'events';
 $needsMap = (bool)$mapStops;
 $metaDescription = trim(mb_substr(preg_replace('/\s+/', ' ', $event['description']), 0, 160)) ?: __('events_subtitle');
 if ($event['image_url']) $ogImage = imageUrl($event['image_url']);
-$heroImg = $event['image_url'] ? imageUrl($event['image_url']) : '';
-// A poster (square or portrait, mostly text and faces) is shown whole in the page; only a wide photo works as a dimmed hero background.
-$poster = '';
-if ($heroImg !== '') {
+// The cover image is always shown whole above the description (posters often carry text).
+// Only when the admin ticks "also as background" does it go behind the title too, dimmed.
+$coverImg = $event['image_url'] ? imageUrl($event['image_url']) : '';
+$heroImg = ($coverImg !== '' && $event['image_hero']) ? $coverImg : '';
+$coverSize = false;
+if ($coverImg !== '') {
     $local = realpath(__DIR__ . '/' . ltrim((string)$event['image_url'], '/'));
-    $size = ($local && strpos($local, realpath(__DIR__ . '/assets/images')) === 0) ? @getimagesize($local) : false;
-    if ($size && $size[1] >= $size[0] * 0.7) { $poster = $heroImg; $heroImg = ''; }
+    $coverSize = ($local && strpos($local, realpath(__DIR__ . '/assets/images')) === 0) ? @getimagesize($local) : false;
 }
 
 require __DIR__ . '/includes/v2/header.php';
@@ -132,14 +133,18 @@ require __DIR__ . '/includes/v2/header.php';
 
     <div class="grid gap-6 sm:gap-8 <?= $mapStops ? 'lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]' : '' ?>">
         <div class="space-y-6 sm:space-y-8 min-w-0">
-            <?php if ($poster): ?>
-            <a href="<?= e($poster) ?>" target="_blank" rel="noopener" class="block reveal">
-                <img src="<?= e($poster) ?>" alt="<?= e($event['title']) ?>" loading="eager" decoding="async" class="w-full max-w-xl mx-auto rounded-3xl border border-line shadow-sm">
-            </a>
-            <?php endif; ?>
-            <?php if (trim($event['description']) !== ''): ?>
-            <section class="card p-6 sm:p-8 reveal">
-                <div class="event-text text-[1.02rem] text-ink leading-relaxed whitespace-pre-line" dir="<?= $dir ?>"><?= e(trim($event['description'])) ?></div>
+            <?php if ($coverImg !== '' || trim($event['description']) !== ''): ?>
+            <section class="card overflow-hidden reveal">
+                <?php if ($coverImg !== ''): ?>
+                <a href="<?= e($coverImg) ?>" target="_blank" rel="noopener" class="block bg-surface">
+                    <img src="<?= e($coverImg) ?>" alt="<?= e($event['title']) ?>"<?php if ($coverSize): ?> width="<?= (int)$coverSize[0] ?>" height="<?= (int)$coverSize[1] ?>"<?php endif; ?> loading="eager" decoding="async" class="block w-full h-auto max-h-[80vh] object-contain mx-auto">
+                </a>
+                <?php endif; ?>
+                <?php if (trim($event['description']) !== ''): ?>
+                <div class="p-6 sm:p-8<?= $coverImg !== '' ? ' border-t border-line' : '' ?>">
+                    <div class="event-text text-[1.02rem] text-ink leading-relaxed whitespace-pre-line" dir="<?= $dir ?>"><?= e(trim($event['description'])) ?></div>
+                </div>
+                <?php endif; ?>
             </section>
             <?php endif; ?>
 

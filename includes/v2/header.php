@@ -66,6 +66,7 @@ $navItems = [
 <?php if ($noIndex): ?>
     <meta name="robots" content="noindex, nofollow">
 <?php elseif (isset($seoPath)): ?>
+    <meta name="robots" content="max-image-preview:large">
     <?= seoHeadLinks($seoPath) ?>
 <?php endif; ?>
     <meta name="theme-color" content="#092c74">

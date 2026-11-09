@@ -19,6 +19,7 @@ $offices = $db->query("SELECT id, display_name, country, country_code FROM offic
 $typeLabels = eventTypeLabelsTr();
 $v2 = eventsV2Ready(); // stage 1 columns and tables (patch_20261011_events_relations.sql)
 $extReady = eventsExternalReady(); // events.external_only (patch_20261015_events_external.sql)
+$heroReady = eventsImageHeroReady(); // events.image_hero (patch_20261109_event_image_hero.sql)
 
 // Countries that have an office (a country relation means all of its offices)
 $countries = [];
@@ -26,7 +27,7 @@ foreach ($offices as $o) if ($o['country_code'] !== '') $countries[strtolower($o
 asort($countries);
 
 $event = ['title' => '', 'slug' => '', 'tag_key' => 'act_tag_doctor', 'audience' => 'b2c', 'visibility' => 'listed', 'featured_rank' => 0, 'relates_hq' => 0,
-          'description' => '', 'image_url' => '', 'link_url' => '', 'external_only' => 0, 'file_url' => '', 'is_published' => 1, 'sort_order' => 0];
+          'description' => '', 'image_url' => '', 'image_hero' => 0, 'link_url' => '', 'external_only' => 0, 'file_url' => '', 'is_published' => 1, 'sort_order' => 0];
 $blankStop = ['kind' => 'office', 'office_id' => '', 'venue_name' => '', 'city' => '', 'country_code' => '', 'address' => '', 'coords' => '',
               'starts_on' => '', 'ends_on' => '', 'start_time' => '', 'end_time' => ''];
 $blankPerson = ['person_id' => '', 'role' => 'speaker', 'name' => '', 'title' => '', 'specialty' => '', 'organization' => '', 'photo_url' => '', 'is_acibadem' => '1'];
@@ -80,6 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $event['tag_key'] = array_key_exists($_POST['tag_key'] ?? '', $typeLabels) ? $_POST['tag_key'] : 'act_tag_doctor';
     $event['description'] = trim($_POST['description'] ?? '');
     $event['image_url'] = trim($_POST['image_url'] ?? '');
+    if ($heroReady) $event['image_hero'] = isset($_POST['image_hero']) ? 1 : 0;
     $event['link_url'] = trim($_POST['link_url'] ?? '');
     if ($extReady) $event['external_only'] = ($_POST['where'] ?? '') === 'external' ? 1 : 0;
     $event['is_published'] = isset($_POST['is_published']) ? 1 : 0;
@@ -168,6 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $cols = ['slug' => $event['slug'], 'tag_key' => $event['tag_key'], 'title' => $event['title'], 'description' => $event['description'],
                      'image_url' => $event['image_url'] ?: null, 'link_url' => $event['link_url'] ?: null, 'is_published' => $event['is_published'], 'sort_order' => $event['sort_order']];
             if ($extReady) $cols['external_only'] = (int)$event['external_only'];
+            if ($heroReady) $cols['image_hero'] = (int)$event['image_hero'];
             if ($v2) {
                 $cols += ['audience' => $event['audience'], 'visibility' => $event['visibility'], 'featured_rank' => $event['featured_rank'],
                           'relates_hq' => $event['relates_hq'], 'file_url' => $event['file_url'] ?: null];
@@ -423,8 +426,11 @@ function sessionRow(int $i, array $r, callable $h, string $input): string {
                         <input type="text" name="image_url" value="<?= $h($event['image_url']) ?>" class="<?= $input ?>">
                         <input type="file" name="image_file" accept="image/jpeg,image/png,image/webp" class="mt-2 block w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700">
                         <p class="mt-1 text-xs text-gray-500">Boş bırakılırsa tipe göre hazır görünüm kullanılır.</p>
-                        <p class="mt-1 text-xs text-gray-500"><?= upload_image_hint(1600, 'Yatay fotoğraf (önerilen 1600×900 px, 16:9) etkinlik sayfasının üstünde koyulaştırılmış arka plan olur ve kenarları kırpılabilir; önemli kısmı ortada tutun. Kare veya dikey afiş (ör. 1080×1080 ya da 1080×1350 px) sayfada kırpılmadan, bütün olarak gösterilir.') ?></p>
+                        <p class="mt-1 text-xs text-gray-500"><?= upload_image_hint(1600, 'Görsel, etkinlik sayfasında açıklamanın üstünde kırpılmadan gösterilir; yatay, kare ya da dikey olabilir. Genişliği en az 1200 px olsun (Google Discover gibi yerlerde büyük görselle çıkmak için gereken en küçük genişlik).') ?></p>
                         <?php if (!empty($event['image_url'])): ?><img src="<?= $h(admin_image_src($event['image_url'])) ?>" alt="" class="mt-2 h-20 rounded-md border border-gray-200 object-cover"><?php endif; ?>
+                        <?php if ($heroReady): ?>
+                        <label class="mt-2 flex items-start gap-2 text-sm text-gray-700"><input type="checkbox" name="image_hero" value="1" class="mt-0.5" <?= !empty($event['image_hero']) ? 'checked' : '' ?>> <span>Başlığın arkasında (üstteki lacivert alanda) soluk arka plan olarak da göster <span class="block text-xs text-gray-500">Yazısız fotoğraflarda güzel durur. Üzerinde yazı olan afişlerde işaretlemeyin, yazılar başlıkla üst üste biner.</span></span></label>
+                        <?php endif; ?>
                     </div>
                     <div data-link-box>
                         <label class="block text-sm font-medium text-gray-700"><span data-site-only>Kayıt / bilgi linki (isteğe bağlı)</span><span data-ext-only>Dış link (kayıt sayfası) *</span></label>
@@ -605,5 +611,21 @@ function sessionRow(int $i, array $r, callable $h, string $input): string {
 })();
 </script>
 <?= upload_size_guard_script() ?>
+<script>
+// Cover image narrower than 1200 px: warn (Google Discover shows large images only from 1200 px wide)
+document.querySelector('input[name="image_file"]')?.addEventListener('change', function () {
+    var el = this, f = el.files && el.files[0];
+    var box = el.parentNode.querySelector('[data-width-warn]');
+    if (!box) { box = document.createElement('p'); box.setAttribute('data-width-warn', ''); box.className = 'mt-1 text-xs font-medium text-amber-700'; el.insertAdjacentElement('afterend', box); }
+    box.textContent = '';
+    if (!f || !window.URL) return;
+    var img = new Image(), url = URL.createObjectURL(f);
+    img.onload = function () {
+        if (img.naturalWidth < 1200) box.textContent = 'Bu görselin genişliği ' + img.naturalWidth + ' px. Yüklenebilir, ama en az 1200 px genişlikte bir görsel önerilir.';
+        URL.revokeObjectURL(url);
+    };
+    img.src = url;
+});
+</script>
 </body>
 </html>

@@ -81,6 +81,19 @@ function eventsV2Ready(): bool {
     return $ready;
 }
 
+/** Has patch_20261109_event_image_hero.sql been applied (events.image_hero)? */
+function eventsImageHeroReady(): bool {
+    static $ready = null;
+    if ($ready === null) {
+        try {
+            $ready = eventsReady() && (bool)getDb()->query("SHOW COLUMNS FROM events LIKE 'image_hero'")->fetchColumn();
+        } catch (\Throwable $e) {
+            $ready = false;
+        }
+    }
+    return $ready;
+}
+
 /** Has patch_20261015_events_external.sql been applied (events.external_only)? */
 function eventsExternalReady(): bool {
     static $ready = null;
@@ -264,6 +277,7 @@ function getEvents(bool $publishedOnly = true, string $scope = 'listed'): array 
             'title'        => $ev['title'],
             'description'  => (string)$ev['description'],
             'image_url'    => $ev['image_url'],
+            'image_hero'   => !empty($ev['image_hero']), // also show the image behind the title (admin checkbox)
             'link_url'     => $ev['link_url'],
             'file_url'     => $v2 ? (string)$ev['file_url'] : '',
             'is_published' => (bool)$ev['is_published'],
