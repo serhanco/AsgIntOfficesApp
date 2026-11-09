@@ -24,10 +24,13 @@ function upload_cleanup_dir(): string {
     return dirname(__DIR__, 2) . '/assets/images/uploads';
 }
 
-/** Names this app gives uploaded files: <subdir>_<YYYYMMDD>_<12 random hex>.<ext>. Anything else in the folder is never touched. */
-const UPLOAD_NAME_PATTERN = '/^[a-z0-9_-]+_(\d{8}_[0-9a-f]{12})\.(?:webp|jpe?g|png|pdf)$/i';
-/** The unique part of such a name (date + random hex), looked for in database text. */
-const UPLOAD_KEY_PATTERN = '/_(\d{8}_[0-9a-f]{12})\./i';
+/**
+ * Names this app gives uploaded files: <subdir>_<YYYYMMDD>_<12 random hex>.<ext>, or for event covers a readable
+ * <event-slug>-<date>-<8 random hex>-<event id>.<ext>. Anything else in the folder is never touched.
+ */
+const UPLOAD_NAME_PATTERN = '/^(?|[a-z0-9_-]+_(\d{8}_[0-9a-f]{12})|[a-z0-9-]+-([0-9a-f]{8}-\d+))\.(?:webp|jpe?g|png|pdf)$/i';
+/** The unique part of such a name (random hex, plus date or event id), looked for in database text. */
+const UPLOAD_KEY_PATTERN = '/(?|_(\d{8}_[0-9a-f]{12})|-([0-9a-f]{8}-\d+))\./i';
 
 /**
  * The unique part of every uploaded file name mentioned anywhere in the database, as [lowercase key => true].
@@ -48,7 +51,7 @@ function upload_cleanup_referenced(PDO $db): array {
     $found = [];
     foreach ($cols as [$table, $col]) {
         $val = 'CAST(' . $quote($col) . ' AS CHAR)';
-        $stmt = $db->query("SELECT $val FROM " . $quote($table) . " WHERE $val REGEXP '_[0-9]{8}_[0-9a-f]{12}[.]'");
+        $stmt = $db->query("SELECT $val FROM " . $quote($table) . " WHERE $val REGEXP '(_[0-9]{8}_[0-9a-f]{12}|-[0-9a-f]{8}-[0-9]+)[.]'");
         while (($v = $stmt->fetchColumn()) !== false) {
             if (preg_match_all(UPLOAD_KEY_PATTERN, (string)$v, $m)) {
                 foreach ($m[1] as $key) $found[strtolower($key)] = true;

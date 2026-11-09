@@ -184,6 +184,23 @@ function handle_image_upload(string $field, string $subdir, int $maxWidth, int $
 }
 
 /**
+ * Give an uploaded file a readable, search-friendly name in the same folder: <slug>-<random 8 hex>-<suffix>.<ext>,
+ * e.g. "consultation-bulent-tiras-wien-2026-11-26-3fa9c01b-12.webp". The random part makes a replaced image get a
+ * new address, so browsers and Cloudflare never keep showing the old one. Returns the new relative path, or the
+ * old one if renaming is not possible.
+ */
+function upload_rename_readable(string $relPath, string $slug, string $suffix): string {
+    $abs = __DIR__ . '/../../' . $relPath;
+    $ext = strtolower(pathinfo($relPath, PATHINFO_EXTENSION));
+    $slug = trim(substr(preg_replace('/[^a-z0-9]+/', '-', strtolower($slug)), 0, 90), '-') ?: 'image';
+    $suffix = preg_replace('/[^a-z0-9-]/', '', strtolower($suffix));
+    $name = $slug . '-' . bin2hex(random_bytes(4)) . ($suffix !== '' ? '-' . $suffix : '') . '.' . $ext;
+    $newRel = dirname($relPath) . '/' . $name;
+    if (!is_file($abs) || !@rename($abs, __DIR__ . '/../../' . $newRel)) return $relPath;
+    return $newRel;
+}
+
+/**
  * Turn a stored image path into a URL usable from inside /admin
  */
 function admin_image_src(?string $path): string {
