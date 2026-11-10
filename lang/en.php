@@ -76,6 +76,11 @@ return [
 
     // Institutions page
     'inst_title'          => 'Insurance & Contracted Institutions',
+    'sitemap_title'       => 'Sitemap',
+    'sitemap_subtitle'    => 'All public pages of the site: offices, events and more.',
+    'sitemap_pages'       => 'Pages',
+    'sitemap_offices'     => 'Offices',
+    'sitemap_events'      => 'Events',
     'inst_subtitle'       => 'We partner with leading global insurance and assistance providers to ensure seamless healthcare access for international patients.',
 
     // JS action buttons (rendered server-side for translation)
