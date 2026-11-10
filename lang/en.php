@@ -201,6 +201,7 @@ return [
     'events_no_match'         => 'No events match this filter.',
     'events_filter_country'   => 'All countries',
     'events_filter_type'      => 'All types',
+    'events_filters'          => 'Filters',
     'events_near_h'           => 'Upcoming events near you',
     'events_see_all'          => 'All events',
     'event_stops'             => 'Dates and places',

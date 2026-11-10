@@ -146,6 +146,7 @@ return [
     'events_no_match'         => 'Asnjë event për këtë filtër.',
     'events_filter_country'   => 'Të gjitha vendet',
     'events_filter_type'      => 'Të gjitha llojet',
+    'events_filters'          => 'Filtrat',
     'events_near_h'           => 'Evente të ardhshme pranë jush',
     'events_see_all'          => 'Të gjitha eventet',
     'event_stops'             => 'Datat dhe vendet',

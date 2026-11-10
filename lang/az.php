@@ -146,6 +146,7 @@ return [
     'events_no_match'         => 'Bu filtrə uyğun tədbir yoxdur.',
     'events_filter_country'   => 'Bütün ölkələr',
     'events_filter_type'      => 'Bütün növlər',
+    'events_filters'          => 'Filtrlər',
     'events_near_h'           => 'Sizə yaxın qarşıdakı tədbirlər',
     'events_see_all'          => 'Bütün tədbirlər',
     'event_stops'             => 'Tarixlər və məkanlar',

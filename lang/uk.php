@@ -146,6 +146,7 @@ return [
     'events_no_match'         => 'Немає заходів за цим фільтром.',
     'events_filter_country'   => 'Усі країни',
     'events_filter_type'      => 'Усі типи',
+    'events_filters'          => 'Фільтри',
     'events_near_h'           => 'Найближчі заходи поруч із вами',
     'events_see_all'          => 'Усі заходи',
     'event_stops'             => 'Дати та місця',

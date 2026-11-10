@@ -149,6 +149,7 @@ return [
     'events_no_match'         => 'Bu filtreye uyan etkinlik yok.',
     'events_filter_country'   => 'Tüm ülkeler',
     'events_filter_type'      => 'Tüm türler',
+    'events_filters'          => 'Filtrele',
     'events_near_h'           => 'Size yakın yaklaşan etkinlikler',
     'events_see_all'          => 'Tüm etkinlikler',
     'event_stops'             => 'Tarihler ve yerler',

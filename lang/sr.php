@@ -146,6 +146,7 @@ return [
     'events_no_match'         => 'Nema događaja za ovaj filter.',
     'events_filter_country'   => 'Sve zemlje',
     'events_filter_type'      => 'Sve vrste',
+    'events_filters'          => 'Filteri',
     'events_near_h'           => 'Predstojeći događaji u vašoj blizini',
     'events_see_all'          => 'Svi događaji',
     'event_stops'             => 'Datumi i mesta',

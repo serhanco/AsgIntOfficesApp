@@ -146,6 +146,7 @@ return [
     'events_no_match'         => 'Niciun eveniment pentru acest filtru.',
     'events_filter_country'   => 'Toate țările',
     'events_filter_type'      => 'Toate tipurile',
+    'events_filters'          => 'Filtre',
     'events_near_h'           => 'Evenimente viitoare în apropierea dvs.',
     'events_see_all'          => 'Toate evenimentele',
     'event_stops'             => 'Date și locuri',

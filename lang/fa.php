@@ -146,6 +146,7 @@ return [
     'events_no_match'         => 'رویدادی با این فیلتر پیدا نشد.',
     'events_filter_country'   => 'همه کشورها',
     'events_filter_type'      => 'همه انواع',
+    'events_filters'          => 'فیلتر',
     'events_near_h'           => 'رویدادهای پیش رو در نزدیکی شما',
     'events_see_all'          => 'همه رویدادها',
     'event_stops'             => 'تاریخ‌ها و مکان‌ها',

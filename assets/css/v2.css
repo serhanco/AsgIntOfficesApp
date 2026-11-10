@@ -452,6 +452,8 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 .ev-theme .filter-pill[aria-pressed="true"] { background: var(--coral); border-color: var(--coral); }
 .ev-theme .filter-pill[aria-pressed="true"] i { color: #fff; }
 .ev-theme .seg button[aria-pressed="true"] { background: var(--coral); }
+.ev-theme .ev-filter-btn[aria-expanded="true"] { border-color: var(--coral); color: var(--navy); }
+.ev-theme .ev-filter-btn__n { background: var(--coral); }
 .ev-theme .field:focus { border-color: var(--coral); box-shadow: 0 0 0 5px rgba(242,107,80,.15), var(--shadow-sm); }
 .ev-theme .cal__day.is-today { box-shadow: inset 0 0 0 2px var(--coral); }
 .ev-theme .cal__day.has-ev:hover { background: #fff1ed; }
@@ -629,3 +631,16 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
   .js-anim .proof__people.reveal .proof__person { opacity: 1; transform: none; }
 }
 .js-anim .proof__people.reveal.in .proof__person:hover { transform: translateY(-6px); transition-delay: 0s; }
+
+/* Events list toolbar: sticky only on wide screens; on phones it scrolls away and the filters fold behind one button */
+@media (min-width: 768px) { .ev-toolbar { position: sticky; } .ev-filter-btn { display: none !important; } }
+@media (max-width: 767px) {
+  .ev-filters:not(.is-open) { display: none; }
+  .ev-head-stat { display: none; }
+  .ev-head-btn { font-size: .9rem; padding: .7em 1.2em; }
+  .ev-list .event-card > .arrow, .ev-list .event-card > .ph-arrow-square-out { display: none; } /* the whole card is the link: give the title the width */
+}
+.ev-filter-btn { display: inline-flex; align-items: center; gap: .45rem; height: 48px; padding-inline: 1rem; border-radius: 999px; background: #fff; border: 1.5px solid var(--line); font-size: .86rem; font-weight: 600; color: var(--muted); }
+.ev-filter-btn i { font-size: 1.15rem; }
+.ev-filter-btn__n { min-width: 1.3rem; height: 1.3rem; padding-inline: .35rem; border-radius: 999px; background: var(--navy); color: #fff; font-size: .72rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+.ev-filter-btn__n[hidden] { display: none; }
