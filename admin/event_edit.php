@@ -399,7 +399,8 @@ function sessionRow(int $i, array $r, callable $h, string $input): string {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700">Başlık * <span class="font-normal text-gray-500">(yerel dilde yazabilirsiniz, çevrilmez)</span></label>
-                        <input type="text" name="title" dir="auto" required value="<?= $h($event['title']) ?>" class="<?= $input ?>">
+                        <input type="text" name="title" dir="auto" required value="<?= $h($event['title']) ?>" data-title-count-for class="<?= $input ?>">
+                        <p class="mt-1 text-xs text-gray-500"><span data-title-count>0</span> karakter. Telefonda kartta 2 satıra sığması için en çok 60, ideali 45 karakter. Uzun metinli dillerde (Almanca, Rusça) 40 civarı daha güvenli.</p>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Tip *</label>
@@ -434,7 +435,7 @@ function sessionRow(int $i, array $r, callable $h, string $input): string {
                     <div class="md:col-span-2" data-detail>
                         <label class="block text-sm font-medium text-gray-700">Kısa açıklama (isteğe bağlı) <span class="font-normal text-gray-500">— Google'da ve WhatsApp/Facebook paylaşımlarında görünür</span></label>
                         <textarea name="meta_description" dir="auto" rows="2" maxlength="255" data-meta-desc class="<?= $input ?>"><?= $h($event['meta_description'] ?? '') ?></textarea>
-                        <p class="mt-1 text-xs text-gray-500"><span data-meta-count>0</span> / 160 karakter önerilir. Boş bırakılırsa açıklamanın başı kullanılır.</p>
+                        <p class="mt-1 text-xs text-gray-500"><span data-meta-count>0</span> / 160 karakter önerilir (ideal 120-155). Boş bırakılırsa açıklamanın başı kullanılır.</p>
                     </div>
                     <?php endif; ?>
                     <div data-detail>
@@ -633,6 +634,12 @@ document.querySelectorAll('[data-meta-desc]').forEach(function (ta) {
     var out = ta.parentNode.querySelector('[data-meta-count]');
     var upd = function () { var n = ta.value.length; out.textContent = n; out.className = n > 160 ? 'font-semibold text-amber-700' : ''; };
     ta.addEventListener('input', upd); upd();
+});
+// Same for the title: ideal 45, amber above 45, red above 60 (long titles are cut to two lines on phones)
+document.querySelectorAll('[data-title-count-for]').forEach(function (inp) {
+    var out = inp.parentNode.querySelector('[data-title-count]');
+    var upd = function () { var n = inp.value.length; out.textContent = n; out.className = n > 60 ? 'font-semibold text-red-600' : (n > 45 ? 'font-semibold text-amber-700' : ''); };
+    inp.addEventListener('input', upd); upd();
 });
 </script>
 <script>
