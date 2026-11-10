@@ -27,8 +27,6 @@ const EVENT_TYPES = [
     'act_tag_other'        => ['label_tr' => 'Diğer (sektörel etkinlik vb.)', 'icon' => 'ph-calendar-star',      'audience' => 'b2b'],
 ];
 
-/** The types a visitor can pick on the "request an event" form (a short, patient-facing list). */
-const EVENT_REQUEST_TYPES = ['act_tag_doctor', 'act_tag_presentation', 'act_tag_exhibition', 'act_tag_webinar'];
 
 /** Type => Turkish admin label. */
 function eventTypeLabelsTr(): array {

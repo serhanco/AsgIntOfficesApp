@@ -196,7 +196,7 @@ $hqMail = 'international@acibadem.com';
                 <div class="relative">
                     <label for="req-type" class="sr-only"><?= __('events_req_type') ?></label>
                     <select id="req-type" class="field !bg-white/10 !text-white !border-white/25">
-                        <?php foreach (EVENT_REQUEST_TYPES as $k): ?>
+                        <?php foreach (array_keys(EVENT_TYPES) as $k): // same types and order as the admin panel ?>
                         <option value="<?= e($k) ?>" class="text-ink"><?= __($k) ?></option>
                         <?php endforeach; ?>
                     </select>
