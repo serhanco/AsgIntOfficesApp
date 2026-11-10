@@ -146,6 +146,7 @@ return [
     'events_no_match'         => 'لا توجد فعاليات مطابقة لهذا الاختيار.',
     'events_filter_country'   => 'جميع الدول',
     'events_filter_type'      => 'جميع الأنواع',
+    'events_filters'          => 'تصفية',
     'events_near_h'           => 'فعاليات قادمة بالقرب منك',
     'events_see_all'          => 'جميع الفعاليات',
     'event_stops'             => 'المواعيد والأماكن',

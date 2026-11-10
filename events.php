@@ -1,6 +1,7 @@
 <?php
 /**
- * Events hub (/events): list, calendar and map views over the same filters, plus "request an event".
+ * Events hub (/events): list and calendar views over the same filters, plus "request an event".
+ * The audience (B2C/B2B) is kept in the data and the admin but is not shown to visitors.
  */
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/includes/db.php';
@@ -17,35 +18,31 @@ $past     = array_values(array_filter($events, fn($e) => $e['status'] === 'past'
 // Filters: only countries and types that events actually have
 $countryNames = [];
 $types = [];
-$audiences = [];
 foreach ($events as $ev) {
     foreach ($ev['countries'] as $cc) $countryNames[$cc] = countryNameFor($cc);
     $types[$ev['tag_key']] = true;
-    $audiences[$ev['audience']] = true;
 }
 asort($countryNames);
 $types = array_values(array_intersect(array_keys(EVENT_TYPES), array_keys($types)));
 
-// Data for the calendar and map views (event text is set with textContent in the browser)
-$hasCoords = false;
-$jsEvents = array_map(function ($ev) use (&$hasCoords) {
-    $stops = array_map(function ($l) use (&$hasCoords) {
-        if (!$l['is_online'] && $l['lat'] !== null) $hasCoords = true;
+// Data for the calendar view (event text is set with textContent in the browser)
+$jsEvents = array_map(function ($ev) {
+    $stops = array_map(function ($l) {
         return ['s' => $l['starts_on'], 'e' => $l['ends_on'], 'city' => $l['is_online'] ? '' : ($l['city'] ?: $l['name']), 'cc' => $l['country_code'],
-                'online' => $l['is_online'], 'lat' => $l['is_online'] ? null : $l['lat'], 'lon' => $l['is_online'] ? null : $l['lon']];
+                'online' => $l['is_online']];
     }, $ev['locations']);
     return ['url' => $ev['href'], 'ext' => $ev['href_ext'], 'title' => $ev['title'], 'tag' => $ev['tag_key'], 'tagLabel' => __($ev['tag_key']), 'icon' => $ev['icon'],
-            'past' => $ev['status'] === 'past', 'cc' => $ev['countries'], 'aud' => $ev['audience'], 'g' => $ev['is_global'], 'stops' => $stops,
+            'past' => $ev['status'] === 'past', 'cc' => $ev['countries'], 'g' => $ev['is_global'], 'stops' => $stops,
             'q' => mb_strtolower($ev['title'] . ' ' . implode(' ', array_column($stops, 'city')), 'UTF-8')];
 }, $events);
 
-$view = in_array($_GET['view'] ?? '', ['calendar', 'map'], true) ? $_GET['view'] : 'list';
+$view = ($_GET['view'] ?? '') === 'calendar' ? $_GET['view'] : 'list';
 $firstDate = null;
 foreach ($upcoming as $ev) { if ($ev['start']) { $firstDate = max($ev['start'], date('Y-m-d')); break; } }
 
 $pageTitle = __('events_title');
 $currentPage = 'events';
-$needsMap = $hasCoords;
+$needsMap = false;
 $metaDescription = __('events_subtitle');
 
 require __DIR__ . '/includes/v2/header.php';
@@ -56,50 +53,47 @@ $hqMail = 'international@acibadem.com';
 <div class="ev-theme">
 
 <section class="page-head">
-    <div class="wrap py-12 sm:py-16 flex flex-col md:flex-row md:items-end justify-between gap-6">
+    <div class="wrap py-7 sm:py-16 flex flex-col lg:flex-row lg:items-end justify-between gap-4 sm:gap-6">
         <div class="rise">
             <p class="eyebrow eyebrow--light"><?= __('site_name') ?></p>
-            <h1 class="mt-3 text-3xl sm:text-5xl font-extrabold"><?= __('events_title') ?></h1>
-            <p class="mt-3 text-[#cfdcef] text-base sm:text-lg max-w-2xl"><?= __('events_subtitle') ?></p>
+            <h1 class="mt-2 sm:mt-3 text-[1.85rem] sm:text-5xl font-extrabold"><?= __('events_title') ?></h1>
+            <p class="mt-2 sm:mt-3 text-[#cfdcef] text-[0.95rem] sm:text-lg max-w-2xl"><?= __('events_subtitle') ?></p>
         </div>
-        <div class="rise flex items-center gap-3 self-start md:self-auto" style="--d:.1s">
+        <div class="rise flex items-center gap-3 self-start lg:self-auto" style="--d:.1s">
             <?php if ($upcoming): ?>
-            <span class="stat-tile !py-3 !px-5">
+            <span class="stat-tile !py-3 !px-5 ev-head-stat">
                 <span class="stat-tile__n"><?= count($upcoming) ?></span>
                 <span class="stat-tile__l block"><?= __('events_upcoming') ?></span>
             </span>
             <?php endif; ?>
-            <a href="#request" class="btn btn--primary"><i class="ph-fill ph-paper-plane-tilt" aria-hidden="true"></i><?= __('events_req_btn') ?></a>
+            <a href="#request" class="btn btn--primary ev-head-btn"><i class="ph-fill ph-paper-plane-tilt" aria-hidden="true"></i><?= __('events_req_btn') ?></a>
         </div>
     </div>
 </section>
 
 <?php if ($events): ?>
-<!-- Toolbar: search, view switch, filters -->
-<div class="sticky z-40 top-[var(--header-h)] bg-surface/85 backdrop-blur-xl border-b border-line" style="-webkit-backdrop-filter: blur(20px)">
+<!-- Toolbar: search, view switch, filters. Sticky on wide screens; on phones it scrolls away and the filters fold behind one button. -->
+<?php $hasFilters = count($types) > 1 || count($countryNames) > 1; ?>
+<div class="ev-toolbar z-40 top-[var(--header-h)] bg-surface/85 backdrop-blur-xl border-b border-line" style="-webkit-backdrop-filter: blur(20px)">
     <div class="wrap py-3 sm:py-4 space-y-3">
-        <div class="flex flex-col md:flex-row gap-3 md:items-center">
-            <div class="relative flex-1">
+        <div class="flex flex-wrap md:flex-nowrap gap-2.5 md:gap-3 items-center">
+            <div class="relative w-full md:flex-1">
                 <i class="ph ph-magnifying-glass absolute start-5 top-1/2 -translate-y-1/2 text-muted text-xl pointer-events-none" aria-hidden="true"></i>
                 <input type="search" id="event-search" class="field !h-12" placeholder="<?= e(__('events_search_ph')) ?>" aria-label="<?= e(__('events_search_ph')) ?>" autocomplete="off">
             </div>
-            <div class="seg self-start md:self-auto" role="group" aria-label="View">
+            <div class="seg" role="group" aria-label="View">
                 <button type="button" data-view="list" aria-pressed="<?= $view === 'list' ? 'true' : 'false' ?>"><i class="ph-fill ph-list-bullets" aria-hidden="true"></i><?= __('events_view_list') ?></button>
                 <button type="button" data-view="calendar" aria-pressed="<?= $view === 'calendar' ? 'true' : 'false' ?>"><i class="ph-fill ph-calendar-blank" aria-hidden="true"></i><?= __('events_view_calendar') ?></button>
-                <?php if ($hasCoords): ?>
-                <button type="button" data-view="map" aria-pressed="<?= $view === 'map' ? 'true' : 'false' ?>"><i class="ph-fill ph-map-trifold" aria-hidden="true"></i><?= __('events_view_map') ?></button>
-                <?php endif; ?>
             </div>
+            <?php if ($hasFilters): ?>
+            <button type="button" class="ev-filter-btn md:hidden ms-auto" aria-expanded="false" aria-controls="ev-filters" data-filter-toggle>
+                <i class="ph ph-sliders-horizontal" aria-hidden="true"></i><span><?= __('events_filters') ?></span>
+                <span class="ev-filter-btn__n" data-filter-count hidden></span>
+            </button>
+            <?php endif; ?>
         </div>
-        <?php if (count($audiences) > 1): ?>
-        <div class="flex gap-2 overflow-x-auto no-scrollbar -mx-1 px-1" role="group" aria-label="<?= e(__('events_filter_aud')) ?>">
-            <button type="button" class="filter-pill" aria-pressed="true" data-aud-filter=""><?= __('events_filter_aud') ?></button>
-            <button type="button" class="filter-pill" aria-pressed="false" data-aud-filter="b2c"><i class="ph-fill ph-users-three" aria-hidden="true"></i><?= __('aud_b2c') ?></button>
-            <button type="button" class="filter-pill" aria-pressed="false" data-aud-filter="b2b"><i class="ph-fill ph-buildings" aria-hidden="true"></i><?= __('aud_b2b') ?></button>
-        </div>
-        <?php endif; ?>
-        <?php if (count($types) > 1 || count($countryNames) > 1): ?>
-        <div class="flex flex-col md:flex-row md:items-center gap-3">
+        <?php if ($hasFilters): ?>
+        <div id="ev-filters" class="ev-filters flex flex-col md:flex-row md:items-center gap-3">
             <?php if (count($types) > 1): ?>
             <div class="flex gap-2 overflow-x-auto no-scrollbar -mx-1 px-1 flex-1" role="group" aria-label="<?= e(__('events_filter_type')) ?>">
                 <button type="button" class="filter-pill" aria-pressed="true" data-type-filter=""><?= __('events_filter_type') ?></button>
@@ -124,9 +118,9 @@ $hqMail = 'international@acibadem.com';
     </div>
 </div>
 
-<div class="wrap py-10 sm:py-14">
+<div class="wrap py-6 sm:py-14">
     <!-- List view -->
-    <div id="view-list"<?= $view !== 'list' ? ' hidden' : '' ?>>
+    <div id="view-list" class="ev-list"<?= $view !== 'list' ? ' hidden' : '' ?>>
         <?php if ($upcoming): ?>
         <div class="grid md:grid-cols-2 gap-4 sm:gap-5">
             <?php foreach ($upcoming as $ev): ?>
@@ -178,13 +172,6 @@ $hqMail = 'international@acibadem.com';
         </div>
     </div>
 
-    <!-- Map view -->
-    <?php if ($hasCoords): ?>
-    <div id="view-map"<?= $view !== 'map' ? ' hidden' : '' ?>>
-        <div class="card overflow-hidden"><div id="events-map" aria-label="<?= e(__('events_view_map')) ?>"></div></div>
-        <p id="events-map-none" class="hidden text-center text-muted py-8"><?= __('events_no_match') ?></p>
-    </div>
-    <?php endif; ?>
 </div>
 <?php else: ?>
 <div class="wrap py-12 sm:py-16">
@@ -242,7 +229,7 @@ $hqMail = 'international@acibadem.com';
     var START = <?= json_encode($firstDate) ?>;
     var lang = document.documentElement.lang || 'en';
     var rtlWeek = /^(ar|fa)/.test(lang);
-    var state = { view: <?= json_encode($view) ?>, type: '', aud: '', cc: '', q: '', y: 0, m: 0, sel: null };
+    var state = { view: <?= json_encode($view) ?>, type: '', cc: '', q: '', y: 0, m: 0, sel: null };
     var $ = function (s, r) { return (r || document).querySelector(s); };
     var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
 
@@ -253,7 +240,6 @@ $hqMail = 'international@acibadem.com';
     function fmt(s, o) { try { return new Intl.DateTimeFormat(lang, Object.assign({ timeZone: 'UTC' }, o)).format(utc(s)); } catch (e) { return s; } }
     function matches(ev) {
         if (state.type && ev.tag !== state.type) return false;
-        if (state.aud && ev.aud !== state.aud) return false;
         if (state.cc && !ev.g && ev.cc.indexOf(state.cc) === -1) return false; // events without a place or country suit every country
         if (state.q && ev.q.indexOf(state.q) === -1) return false;
         return true;
@@ -349,52 +335,19 @@ $hqMail = 'international@acibadem.com';
         renderCal();
     }
 
-    // ---- map
-    var map = null, layer = null;
-    function renderMap() {
-        var holder = $('#events-map');
-        if (!holder || typeof L === 'undefined') return;
-        if (!map) {
-            map = L.map(holder, { zoomControl: false, scrollWheelZoom: false }).setView([41, 29], 4);
-            map.attributionControl.setPrefix(false);
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap', maxZoom: 19 }).addTo(map);
-            L.control.zoom({ position: 'bottomright' }).addTo(map);
-            layer = L.layerGroup().addTo(map);
-        }
-        layer.clearLayers();
-        var pts = [];
-        EVENTS.forEach(function (ev) {
-            if (ev.past || !matches(ev)) return;
-            ev.stops.forEach(function (s) {
-                if (s.lat == null || s.lon == null) return;
-                var icon = L.divIcon({ className: 'bg-transparent', html: '<div class="map-pin"><i class="ph-fill ' + ev.icon + '"></i></div>', iconSize: [40, 40], iconAnchor: [20, 40] });
-                var pop = el('div', 'ev-pop');
-                pop.appendChild(el('p', 'text-[0.7rem] font-bold uppercase tracking-wider text-azure', ev.tagLabel));
-                var t = el('p', 'font-bold text-ink', ev.title); t.dir = 'auto'; pop.appendChild(t);
-                if (s.s) pop.appendChild(el('p', 'text-sm text-muted', fmt(s.s, { day: 'numeric', month: 'long' }) + (s.e && s.e !== s.s ? ' – ' + fmt(s.e, { day: 'numeric', month: 'long' }) : '') + (s.city ? ' · ' + s.city : '')));
-                var a = el('a', 'text-sm', <?= json_encode(__('map_view_details')) ?>); a.href = ev.url; if (ev.ext) { a.target = '_blank'; a.rel = 'noopener'; a.setAttribute('data-ev-external', ''); } pop.appendChild(a);
-                L.marker([s.lat, s.lon], { icon: icon }).bindPopup(pop).addTo(layer);
-                pts.push([s.lat, s.lon]);
-            });
-        });
-        var none = $('#events-map-none'); if (none) none.classList.toggle('hidden', pts.length > 0);
-        map.invalidateSize();
-        if (pts.length === 1) map.setView(pts[0], 9);
-        else if (pts.length) map.fitBounds(pts, { padding: [50, 50], maxZoom: 7 });
-    }
-
     // ---- views and filters
     function show(view) {
         state.view = view;
-        ['list', 'calendar', 'map'].forEach(function (v) { var n = $('#view-' + v); if (n) n.hidden = v !== view; });
+        ['list', 'calendar'].forEach(function (v) { var n = $('#view-' + v); if (n) n.hidden = v !== view; });
         $$('[data-view]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.view === view)); });
         try { var u = new URL(location.href); if (view === 'list') u.searchParams.delete('view'); else u.searchParams.set('view', view); history.replaceState(null, '', u); } catch (e) {}
         refresh();
     }
     function refresh() {
         applyList();
+        var n = (state.type ? 1 : 0) + (state.cc ? 1 : 0), badge = $('[data-filter-count]');
+        if (badge) { badge.textContent = n; badge.hidden = !n; }
         if (state.view === 'calendar') renderCal();
-        if (state.view === 'map') renderMap();
     }
     $$('[data-view]').forEach(function (b) { b.addEventListener('click', function () { show(b.dataset.view); }); });
     $$('[data-type-filter]').forEach(function (p) {
@@ -404,12 +357,12 @@ $hqMail = 'international@acibadem.com';
             refresh();
         });
     });
-    $$('[data-aud-filter]').forEach(function (p) {
-        p.addEventListener('click', function () {
-            state.aud = p.dataset.audFilter;
-            $$('[data-aud-filter]').forEach(function (q) { q.setAttribute('aria-pressed', String(q === p)); });
-            refresh();
-        });
+    // Phones: the type and country filters fold behind one button
+    var toggle = $('[data-filter-toggle]'), panel = $('#ev-filters');
+    if (toggle && panel) toggle.addEventListener('click', function () {
+        var open = toggle.getAttribute('aria-expanded') !== 'true';
+        toggle.setAttribute('aria-expanded', String(open));
+        panel.classList.toggle('is-open', open);
     });
     var country = $('#event-country'); if (country) country.addEventListener('change', function () { state.cc = country.value; refresh(); });
     var search = $('#event-search'); if (search) search.addEventListener('input', function () { state.q = search.value.trim().toLowerCase(); refresh(); });

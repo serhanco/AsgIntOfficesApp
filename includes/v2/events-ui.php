@@ -77,11 +77,10 @@ function v2StopChips(array $ev, int $max = 4, string $tone = 'light'): string {
     return $out;
 }
 
-/** Small labels next to the type: "For institutions" (B2B events) and "From head office". Patient events carry no label. */
+/** Small label next to the type: "From head office". The audience (B2C/B2B) stays internal: it is kept in the admin, not shown to visitors. */
 function v2EventBadges(array $ev): string {
     $out = '';
     $cls = 'inline-flex items-center gap-1 rounded-full border border-line bg-surface px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider text-muted';
-    if ($ev['audience'] === 'b2b') $out .= '<span class="' . $cls . '"><i class="ph-fill ph-buildings" aria-hidden="true"></i>' . __('aud_b2b') . '</span>';
     if ($ev['relates_hq']) $out .= '<span class="' . $cls . '"><i class="ph-fill ph-seal-check" aria-hidden="true"></i>' . __('event_from_hq') . '</span>';
     return $out;
 }

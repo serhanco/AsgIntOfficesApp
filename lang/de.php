@@ -144,6 +144,7 @@ return [
     'events_no_match'         => 'Keine Veranstaltungen für diesen Filter.',
     'events_filter_country'   => 'Alle Länder',
     'events_filter_type'      => 'Alle Arten',
+    'events_filters'          => 'Filter',
     'events_near_h'           => 'Kommende Veranstaltungen in Ihrer Nähe',
     'events_see_all'          => 'Alle Veranstaltungen',
     'event_stops'             => 'Termine und Orte',

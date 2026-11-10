@@ -146,6 +146,7 @@ return [
     'events_no_match'         => 'Нема настани за овој филтер.',
     'events_filter_country'   => 'Сите земји',
     'events_filter_type'      => 'Сите видови',
+    'events_filters'          => 'Филтри',
     'events_near_h'           => 'Претстојни настани во ваша близина',
     'events_see_all'          => 'Сите настани',
     'event_stops'             => 'Датуми и места',

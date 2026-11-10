@@ -196,6 +196,7 @@ return [
     'events_no_match'         => 'Нет мероприятий по этому фильтру.',
     'events_filter_country'   => 'Все страны',
     'events_filter_type'      => 'Все типы',
+    'events_filters'          => 'Фильтры',
     'events_near_h'           => 'Предстоящие мероприятия рядом с вами',
     'events_see_all'          => 'Все мероприятия',
     'event_stops'             => 'Даты и места',

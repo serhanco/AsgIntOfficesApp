@@ -146,6 +146,7 @@ return [
     'events_no_match'         => 'ამ ფილტრით ღონისძიება ვერ მოიძებნა.',
     'events_filter_country'   => 'ყველა ქვეყანა',
     'events_filter_type'      => 'ყველა ტიპი',
+    'events_filters'          => 'ფილტრები',
     'events_near_h'           => 'მომავალი ღონისძიებები თქვენთან ახლოს',
     'events_see_all'          => 'ყველა ღონისძიება',
     'event_stops'             => 'თარიღები და ადგილები',
