@@ -126,6 +126,7 @@ function v2EventCard(array $ev, string $extraClass = ''): string {
 
 /** WhatsApp link for an event: its contact office (see eventContact), head office when that has no number, with the event title as the message. */
 function v2EventWa(array $ev): string {
+    if (!officeWhatsappEnabled()) return '';
     $digits = eventContact($ev)['whatsapp'] ?: '905359650466';
     return 'https://wa.me/' . $digits . '?text=' . rawurlencode(__('event_wa_msg', $ev['title']));
 }

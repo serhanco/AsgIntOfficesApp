@@ -31,6 +31,7 @@ if ($ready && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $served = trim((string)($_POST['stat_served'] ?? ''));
     if ($served !== '' && !preg_match('/^\d{1,5}\+?$/', $served)) $err = 'Hizmet verilen ülke sayısı bir sayı olmalı (ör. 90 veya 90+).';
     $values['stat_served'] = $served;
+    $values['office_whatsapp'] = ($_POST['office_whatsapp'] ?? '') === '1' ? '1' : '0';
     if ($err === '') {
         $st = $db->prepare("INSERT INTO site_settings (skey, svalue) VALUES (?, ?) ON DUPLICATE KEY UPDATE svalue = VALUES(svalue)");
         foreach ($values as $k => $v) $st->execute([$k, $v]);
@@ -43,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $err !== '') {
     $cur = $_POST;
 } else {
     $cur = [];
-    if ($ready) foreach (array_merge(array_keys($fields), ['ga4_id', 'consent_mode', 'stat_served']) as $k) $cur[$k] = siteSetting($k);
+    if ($ready) foreach (array_merge(array_keys($fields), ['ga4_id', 'consent_mode', 'stat_served', 'office_whatsapp']) as $k) $cur[$k] = siteSetting($k);
 }
 $h = fn($v) => htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
 $nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => 'Ekipler', 'events.php' => 'Etkinlikler', 'people.php' => 'Kişiler', 'event_requests.php' => 'Talepler', 'settings.php' => 'Ayarlar', 'admins.php' => 'Yöneticiler', '../apply_update.php' => 'Güncellemeler'];
@@ -94,6 +95,16 @@ $nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => '
 
                 <form method="POST" class="space-y-6">
                     <?= csrf_field() ?>
+
+                    <section class="bg-white border border-gray-200 rounded-lg shadow-sm p-5 md:p-6">
+                        <h3 class="font-semibold text-gray-900">WhatsApp düğmeleri (ofisler ve etkinlikler)</h3>
+                        <p class="text-sm text-gray-600 mt-1">Kapalıyken ofis sayfalarında, etkinlik detay sayfalarında ve ana sayfadaki ofis kartında WhatsApp düğmesi görünmez; diğer düğmeler (ara, e-posta, yol tarifi) boşluk bırakmadan yerleşir. Ofislere girilen WhatsApp numaraları silinmez, açtığınızda hemen geri gelir. Üst menü, alt bilgi ve genel merkez kartındaki merkez WhatsApp hattı bu ayardan etkilenmez.</p>
+                        <label class="mt-3 flex gap-3 items-start text-sm text-gray-800">
+                            <input type="checkbox" name="office_whatsapp" value="1" class="mt-0.5 h-4 w-4" <?= ($cur['office_whatsapp'] ?? '') === '1' ? 'checked' : '' ?>>
+                            <span><strong>Ofis ve etkinlik WhatsApp düğmelerini göster</strong></span>
+                        </label>
+                        <p class="mt-2 text-xs text-gray-500">Şu an sitede: <?= ($cur['office_whatsapp'] ?? '') === '1' ? '<span class="font-semibold text-green-700">açık</span>' : '<span class="font-semibold text-gray-700">kapalı</span>' ?></p>
+                    </section>
 
                     <section class="bg-white border border-gray-200 rounded-lg shadow-sm p-5 md:p-6">
                         <h3 class="font-semibold text-gray-900">Google Analytics (GA4)</h3>

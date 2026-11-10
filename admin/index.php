@@ -46,7 +46,7 @@ if ($reqReady) {
     $n = $one("SELECT COUNT(*) FROM event_requests WHERE status = 'new'");
     if ($n > 0) array_unshift($todo, [$n . ' etkinlik talebi yanıt bekliyor', 'Talepler', 'event_requests.php', 'blue']);
 }
-if ($hasWhatsapp) {
+if ($hasWhatsapp && officeWhatsappEnabled()) { // while switched off in Ayarlar, empty numbers are not a to-do
     $n = $one("SELECT COUNT(*) FROM offices WHERE is_active = 1 AND (whatsapp IS NULL OR whatsapp = '')");
     if ($n > 0) $todo[] = [$n . ' ofiste WhatsApp numarası boş (butonu görünmez)', 'Ofisler', 'offices.php', 'blue'];
 }

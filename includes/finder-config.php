@@ -47,7 +47,7 @@ function finderConfig(array $offices): array {
             'cc'           => strtolower((string)$o['country_code']),
             'address'      => $o['address'],
             'phone'        => $o['phone'],
-            'whatsapp'     => officeWhatsapp($o),
+            'whatsapp'     => officeWhatsappEnabled() ? officeWhatsapp($o) : '', // off in Ayarlar: no button
             'email'        => $o['email'],
             'url'          => officeUrl($o['slug']),
         ], $offices),
