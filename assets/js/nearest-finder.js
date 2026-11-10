@@ -128,11 +128,15 @@
     const btn = (href, icon, label, extra = '') => href
       ? `<a href="${esc(href)}" class="nf-action ${extra}"${href.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}><i class="ph-fill ${icon}"></i><span>${esc(label)}</span></a>`
       : '';
-    return `<div class="nf-actions">
-      ${btn(tel, 'ph-phone', T.call)}
-      ${btn(wa, 'ph-whatsapp-logo', T.whatsapp, 'nf-action--wa')}
-      ${btn(mail, 'ph-envelope-simple', T.email)}
-      ${btn(route, 'ph-navigation-arrow', T.route)}
+    const items = [
+      btn(tel, 'ph-phone', T.call),
+      btn(wa, 'ph-whatsapp-logo', T.whatsapp, 'nf-action--wa'),
+      btn(mail, 'ph-envelope-simple', T.email),
+      btn(route, 'ph-navigation-arrow', T.route),
+    ].filter(Boolean);
+    // Fewer than four buttons (e.g. office WhatsApp switched off in the admin): the grid adapts, see finder-v2.css
+    return `<div class="nf-actions nf-actions--${items.length}">
+      ${items.join('\n      ')}
     </div>`;
   }
 

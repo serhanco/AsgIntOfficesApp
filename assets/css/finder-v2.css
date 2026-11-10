@@ -120,3 +120,10 @@
 .nf-panel--hq .nf-label { color: var(--navy); }
 .nf-panel--near { background: #eaf7fd; border-color: #cfe9f6; border-top-color: var(--aqua); }
 .nf-panel--near .nf-label { color: var(--azure); }
+
+/* Three buttons (office WhatsApp off in the admin, or an office without a number): three columns in a row,
+   and in the two-column layouts the last button takes the full row so there is no empty cell */
+.nf-actions.nf-actions--3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+@media (min-width: 900px) {
+  .nf-card--wide:has(> .nf-main) .nf-actions--3 > :last-child { grid-column: 1 / -1; }
+}

@@ -202,7 +202,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">WhatsApp numarası</label>
                                 <input type="text" name="whatsapp" value="<?= htmlspecialchars((string)($office['whatsapp'] ?? '')) ?>" placeholder="+90 535 000 00 00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2 border">
-                                <p class="mt-1 text-xs text-gray-500">Boş bırakılırsa sitede bu ofis için WhatsApp düğmesi görünmez. Ülke koduyla yazın.</p>
+                                <p class="mt-1 text-xs text-gray-500">Boş bırakılırsa sitede bu ofis için WhatsApp düğmesi görünmez. Ülke koduyla yazın.<?= officeWhatsappEnabled() ? '' : ' <strong>Şu an tüm ofislerde kapalı:</strong> düğmeler Ayarlar\'dan açılınca görünür.' ?></p>
                             </div>
                             <?php endif; ?>
 

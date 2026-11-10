@@ -56,6 +56,7 @@ $program  = $event['program'];
 $contact  = eventContact($event, strtolower((string)($_SERVER['HTTP_CF_IPCOUNTRY'] ?? '')));
 // A finished external event keeps the visitor here: office contact instead of the (often closed) outside page
 $needContact = ($past && $event['external']) || (!$past && ($event['relates_hq'] || !array_filter($stops, fn($l) => $l['office'])));
+$waOn = officeWhatsappEnabled(); // WhatsApp buttons: switched on in Ayarlar, off by default
 $link     = $event['link_url'] && preg_match('#^https?://#i', $event['link_url']) ? $event['link_url'] : '';
 
 // Other upcoming events, the ones sharing a country first
@@ -160,7 +161,7 @@ require __DIR__ . '/includes/v2/header.php';
                 <ol class="space-y-4">
                     <?php foreach ($stops as $i => $l):
                         $tel = $l['phone'] !== '' ? 'tel:' . preg_replace('/[^0-9+]/', '', $l['phone']) : '';
-                        $wa  = $l['whatsapp'] !== '' ? 'https://wa.me/' . $l['whatsapp'] . '?text=' . rawurlencode(__('event_wa_msg', $event['title'])) : '';
+                        $wa  = $waOn && $l['whatsapp'] !== '' ? 'https://wa.me/' . $l['whatsapp'] . '?text=' . rawurlencode(__('event_wa_msg', $event['title'])) : '';
                         $stopPast = $l['ends_on'] && $l['ends_on'] < date('Y-m-d');
                     ?>
                     <li data-stop="<?= $i + 1 ?>" class="card p-5 sm:p-6 scroll-mt-28<?= $stopPast && !$past ? ' opacity-60' : '' ?>">
@@ -186,7 +187,7 @@ require __DIR__ . '/includes/v2/header.php';
                             </div>
                         </div>
                         <?php if (!$past && !$stopPast && ($tel || $wa || $l['maps_url'])): ?>
-                        <div class="mt-4 pt-4 border-t border-line grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
+                        <div class="mt-4 pt-4 border-t border-line grid grid-cols-2 odd-span sm:flex sm:flex-wrap gap-2">
                             <?php if ($wa): ?><a href="<?= e($wa) ?>" target="_blank" rel="noopener" class="btn btn--sm bg-wa text-white hover:-translate-y-0.5"><i class="ph-fill ph-whatsapp-logo" aria-hidden="true"></i><?= __('js_whatsapp') ?></a><?php endif; ?>
                             <?php if ($tel): ?><a href="<?= e($tel) ?>" class="btn btn--sm btn--line"><i class="ph-fill ph-phone" aria-hidden="true"></i><?= __('js_call') ?></a><?php endif; ?>
                             <?php if ($l['maps_url']): ?><a href="<?= e($l['maps_url']) ?>" target="_blank" rel="noopener" class="btn btn--sm btn--line"><i class="ph-fill ph-navigation-arrow" aria-hidden="true"></i><?= __('office_cta_route') ?></a><?php endif; ?>
@@ -299,12 +300,12 @@ require __DIR__ . '/includes/v2/header.php';
 
             <?php if ($needContact):
                 $ctel = $contact['phone'] !== '' ? 'tel:' . preg_replace('/[^0-9+]/', '', $contact['phone']) : '';
-                $cwa  = $contact['whatsapp'] !== '' ? 'https://wa.me/' . $contact['whatsapp'] . '?text=' . rawurlencode(__('event_wa_msg', $event['title'])) : '';
+                $cwa  = $waOn && $contact['whatsapp'] !== '' ? 'https://wa.me/' . $contact['whatsapp'] . '?text=' . rawurlencode(__('event_wa_msg', $event['title'])) : '';
             ?>
             <section class="card p-5 sm:p-6 reveal">
                 <h2 class="text-lg font-extrabold text-navy"><?= __('event_contact_h') ?></h2>
                 <p class="mt-1 text-sm text-muted"><?= $contact['office'] ? '<bdi>' . e($contact['office']['display_name']) . '</bdi>' : __('event_contact_hq') ?></p>
-                <div class="mt-4 grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
+                <div class="mt-4 grid grid-cols-2 odd-span sm:flex sm:flex-wrap gap-2">
                     <?php if ($cwa): ?><a href="<?= e($cwa) ?>" target="_blank" rel="noopener" class="btn btn--sm bg-wa text-white hover:-translate-y-0.5"><i class="ph-fill ph-whatsapp-logo" aria-hidden="true"></i><?= __('js_whatsapp') ?></a><?php endif; ?>
                     <?php if ($ctel): ?><a href="<?= e($ctel) ?>" class="btn btn--sm btn--line"><i class="ph-fill ph-phone" aria-hidden="true"></i><?= __('js_call') ?></a><?php endif; ?>
                     <?php if ($contact['email'] !== ''): ?><a href="mailto:<?= e($contact['email']) ?>" class="btn btn--sm btn--line"><i class="ph-fill ph-envelope-simple" aria-hidden="true"></i><?= __('js_email') ?></a><?php endif; ?>

@@ -414,6 +414,7 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
     .home-duo #nf-card .nf-panel .nf-action { padding: .55rem .2rem .5rem; border-radius: 14px; background: #fff; }
     .home-duo #nf-card .nf-panel .nf-action i { font-size: 1.2rem; margin-bottom: .15rem; }
     .home-duo #nf-card .nf-panel .nf-action span { font-size: .68rem; }
+    .home-duo #nf-card .nf-panel .nf-actions--3 > :last-child { grid-column: 1 / -1; } /* three buttons: no empty cell in the 2x2 */
     .home-duo #nf-card .nf-panel .nf-details { padding: .3rem 0; border: 0; background: none; color: var(--navy); font-size: .82rem; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 4px; }
     .home-duo #nf-card .nf-panel .nf-details:hover { color: var(--navy); text-decoration-color: currentColor; transform: none; }
     .home-duo #nf-card:has(> .nf-duo) > .nf-links { flex-basis: auto; margin-top: 1rem; justify-content: flex-start; }
@@ -707,3 +708,6 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 .ev-filter-btn i { font-size: 1.15rem; }
 .ev-filter-btn__n { min-width: 1.3rem; height: 1.3rem; padding-inline: .35rem; border-radius: 999px; background: var(--navy); color: #fff; font-size: .72rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
 .ev-filter-btn__n[hidden] { display: none; }
+
+/* Two-column button grids (phones): an odd last button takes the full row, so a hidden button leaves no hole */
+.odd-span > :last-child:nth-child(odd) { grid-column: 1 / -1; }

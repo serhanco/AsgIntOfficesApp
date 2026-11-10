@@ -6,7 +6,7 @@ require __DIR__ . '/../header.php';
 require_once __DIR__ . '/../events-ui.php';
 
 $tel   = !empty($office['phone']) ? 'tel:' . preg_replace('/[^0-9+]/', '', $office['phone']) : '';
-$wa    = officeWhatsapp($office) !== '' ? 'https://wa.me/' . officeWhatsapp($office) : '';
+$wa    = officeWhatsappEnabled() && officeWhatsapp($office) !== '' ? 'https://wa.me/' . officeWhatsapp($office) : '';
 $mail  = !empty($office['email']) ? 'mailto:' . $office['email'] : '';
 $route = 'https://www.google.com/maps/dir/?api=1&destination=' . $office['latitude'] . ',' . $office['longitude'];
 
@@ -42,7 +42,7 @@ $tagStyle = [
             <bdi><?= e($office['address']) ?></bdi>
         </p>
 
-        <div class="rise mt-8 grid grid-cols-2 sm:flex sm:flex-wrap gap-3" style="--d:.2s" data-dock-anchor>
+        <div class="rise mt-8 grid grid-cols-2 odd-span sm:flex sm:flex-wrap gap-3" style="--d:.2s" data-dock-anchor>
             <?php foreach ($actions as $i => $a): ?>
             <a href="<?= e($a['href']) ?>"<?= $a['ext'] ? ' target="_blank" rel="noopener"' : '' ?>
                class="btn <?= $i === 0 ? 'btn--primary' : ($a['cls'] === 'is-wa' ? 'btn--wa' : 'btn--ghost') ?>">

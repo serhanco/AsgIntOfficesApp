@@ -206,6 +206,15 @@ function activeOfficeCount(): int {
 }
 
 /**
+ * Office and event WhatsApp buttons are shown only when switched on in the admin (Ayarlar).
+ * Off by default: an unset setting (or no site_settings table yet) counts as off. The numbers stay in the database.
+ * Head office WhatsApp in the header, footer, head office card and event request form is not affected.
+ */
+function officeWhatsappEnabled(): bool {
+    return siteSetting('office_whatsapp') === '1';
+}
+
+/**
  * WhatsApp number of an office, digits only ('' = none, the button is hidden).
  * Before the whatsapp column exists (patch not applied yet) the phone number is used, as before.
  */
