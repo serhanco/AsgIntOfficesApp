@@ -56,10 +56,10 @@ $homeEvents = array_slice($homeEvents, 0, 6);
         </div>
 
         <!-- The two main sections, side by side -->
-        <div class="mt-9 lg:mt-12 grid gap-8 lg:gap-6 xl:gap-8 lg:grid-cols-2 lg:items-start">
+        <div class="home-duo mt-9 lg:mt-12 grid gap-8 lg:gap-6 xl:gap-8 lg:grid-cols-2 lg:items-start">
 
             <!-- Offices: filled in by assets/js/nearest-finder.js. ?find=1 starts the location search on load. -->
-            <div id="panel-offices" class="rise scroll-mt-28" style="--d:.24s">
+            <div id="panel-offices" class="home-pillar rise scroll-mt-28" style="--d:.24s">
                 <div class="panel-head">
                     <span class="panel-head__icon"><i class="ph-fill ph-buildings" aria-hidden="true"></i></span>
                     <div class="min-w-0 flex-1">
@@ -88,7 +88,7 @@ $homeEvents = array_slice($homeEvents, 0, 6);
             </div>
 
             <!-- Events -->
-            <div id="panel-events" class="rise scroll-mt-28" style="--d:.3s">
+            <div id="panel-events" class="home-pillar rise scroll-mt-28" style="--d:.3s">
                 <div class="panel-head">
                     <span class="panel-head__icon panel-head__icon--coral"><i class="ph-fill ph-calendar-star" aria-hidden="true"></i></span>
                     <div class="min-w-0 flex-1">
@@ -103,7 +103,7 @@ $homeEvents = array_slice($homeEvents, 0, 6);
                     <ul class="mt-4 space-y-2.5" data-ev-list>
                         <?php foreach ($homeEvents as $i => $ev) echo v2EventRow($ev, $i >= 3); ?>
                     </ul>
-                    <div class="mt-5 pt-5 border-t border-line grid grid-cols-2 gap-2.5">
+                    <div class="ev-panel__foot mt-5 pt-5 border-t border-line grid grid-cols-2 gap-2.5">
                         <a href="<?= getBaseUrl() ?>/events" class="btn btn--navy btn--sm"><i class="ph-fill ph-list-bullets" aria-hidden="true"></i><?= __('events_view_list') ?></a>
                         <a href="<?= getBaseUrl() ?>/events?view=calendar" class="btn btn--line btn--sm"><i class="ph-fill ph-calendar-blank" aria-hidden="true"></i><?= __('events_view_calendar') ?></a>
                     </div>
