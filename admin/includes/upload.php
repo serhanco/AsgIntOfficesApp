@@ -5,13 +5,16 @@
  *
  * Validates an uploaded image (JPG, PNG, WEBP), re-encodes it with GD
  * (which also strips anything hidden inside the file), turns phone photos upright, scales it down to
- * $maxWidth and saves it under assets/images/uploads/<subdir>/.
+ * $maxWidth and saves it in the storage folder outside the site (see includes/storage.php), served at
+ * assets/images/uploads/<subdir>/.
  *
  * Returns the stored path relative to the app root
  * (e.g. "assets/images/uploads/offices/office_6523ab.webp"),
  * or null when no file was sent. Throws RuntimeException with a
  * user-facing (Turkish) message on invalid input.
  */
+
+require_once __DIR__ . '/../../includes/storage.php';
 
 const UPLOAD_MAX_BYTES = 8 * 1024 * 1024; // 8 MB
 
@@ -107,9 +110,9 @@ function handle_image_upload(string $field, string $subdir, int $maxWidth, int $
     }
 
     $subdir = preg_replace('/[^a-z0-9_-]/', '', strtolower($subdir));
-    $relDir = 'assets/images/uploads/' . $subdir;
-    $absDir = __DIR__ . '/../../' . $relDir;
-    if (!is_dir($absDir) && !mkdir($absDir, 0755, true)) {
+    $relDir = 'assets/images/uploads/' . $subdir;   // what the database stores (the address stays the same)
+    $absDir = uploads_dir() . '/' . $subdir;         // where the file really goes: outside the site folder
+    if (!is_dir($absDir) && !@mkdir($absDir, 0755, true)) {
         throw new RuntimeException('Yükleme klasörü oluşturulamadı: ' . $relDir);
     }
 
@@ -190,13 +193,14 @@ function handle_image_upload(string $field, string $subdir, int $maxWidth, int $
  * old one if renaming is not possible.
  */
 function upload_rename_readable(string $relPath, string $slug, string $suffix): string {
-    $abs = __DIR__ . '/../../' . $relPath;
+    $abs = upload_file_path($relPath);
+    if ($abs === null) return $relPath;
     $ext = strtolower(pathinfo($relPath, PATHINFO_EXTENSION));
     $slug = trim(substr(preg_replace('/[^a-z0-9]+/', '-', strtolower($slug)), 0, 90), '-') ?: 'image';
     $suffix = preg_replace('/[^a-z0-9-]/', '', strtolower($suffix));
     $name = $slug . '-' . bin2hex(random_bytes(4)) . ($suffix !== '' ? '-' . $suffix : '') . '.' . $ext;
     $newRel = dirname($relPath) . '/' . $name;
-    if (!is_file($abs) || !@rename($abs, __DIR__ . '/../../' . $newRel)) return $relPath;
+    if (!@rename($abs, dirname($abs) . '/' . $name)) return $relPath;
     return $newRel;
 }
 
@@ -232,9 +236,9 @@ function handle_pdf_upload(string $field, string $subdir): ?string {
     }
 
     $subdir = preg_replace('/[^a-z0-9_-]/', '', strtolower($subdir));
-    $relDir = 'assets/images/uploads/' . $subdir;
-    $absDir = __DIR__ . '/../../' . $relDir;
-    if (!is_dir($absDir) && !mkdir($absDir, 0755, true)) {
+    $relDir = 'assets/images/uploads/' . $subdir;   // what the database stores (the address stays the same)
+    $absDir = uploads_dir() . '/' . $subdir;         // where the file really goes: outside the site folder
+    if (!is_dir($absDir) && !@mkdir($absDir, 0755, true)) {
         throw new RuntimeException('Yükleme klasörü oluşturulamadı: ' . $relDir);
     }
     $name = $subdir . '_' . date('Ymd') . '_' . bin2hex(random_bytes(6)) . '.pdf';

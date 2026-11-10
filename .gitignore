@@ -7,8 +7,10 @@ Thumbs.db
 *.swp
 *.swo
 
-# Database backups created by apply_update.php
+# Database backups created by apply_update.php (old place; now kept outside the site folder, see includes/storage.php)
 backups/
+# Fallback storage folder when the one next to the site folder cannot be created
+storage/
 
 # Local-only notes and scripts (kept in the project folder, never committed)
 *.local.md

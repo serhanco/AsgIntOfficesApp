@@ -12,8 +12,10 @@ if (($_POST['action'] ?? '') === 'logout') { // POST only (CSRF-checked in auth.
 
 
 $db = getDb();
-// Once a day: delete uploaded files no record has used for 30+ days (see includes/upload_cleanup.php)
+// Uploads found in the site folder (old place, or a restored hosting backup) move to the storage folder that deploys
+// cannot delete; then once a day: delete uploaded files no record has used for 30+ days (see includes/upload_cleanup.php)
 require_once __DIR__ . '/includes/upload_cleanup.php';
+$movedUploads = migrate_legacy_uploads();
 maybe_cleanup_unused_uploads($db);
 $one = fn(string $sql) => (int)$db->query($sql)->fetchColumn();
 
@@ -29,6 +31,7 @@ $drafts = array_values(array_filter($events, fn($e) => !$e['is_published']));
 
 // Things that need attention
 $todo = [];
+if (!storage_is_safe()) $todo[] = ['Yüklenen görseller site klasörünün içinde saklanıyor; GitHub\'dan her yayında silinebilir. Site klasörünün yanında klasör açılamadı: config.php içinde STORAGE_DIR ayarlanmalı.', 'Ayarlar', 'settings.php', 'amber'];
 if (!$ready) $todo[] = ['Etkinlik veritabanı yaması bekliyor', 'Yamayı uygula', '../apply_update.php', 'amber'];
 // Database patches that were added to the project but not applied yet
 $pendingPatches = [];

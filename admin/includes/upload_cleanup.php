@@ -3,7 +3,7 @@
  * Unused upload cleanup
  * Acıbadem International Offices App
  *
- * Files uploaded from the admin panel (images and PDFs under assets/images/uploads/) stay on the server when an
+ * Files uploaded from the admin panel (images and PDFs, served at assets/images/uploads/) stay on the server when an
  * image is replaced or a record is deleted. This removes such files once nothing in the database has pointed
  * at them for a while.
  *
@@ -19,9 +19,11 @@
 const UPLOAD_CLEANUP_GRACE_DAYS = 30;
 const UPLOAD_CLEANUP_INTERVAL = 86400; // seconds between two automatic runs
 
-/** Absolute path of the uploads folder. */
+require_once __DIR__ . '/../../includes/storage.php';
+
+/** Absolute path of the uploads folder (outside the site folder, see includes/storage.php). */
 function upload_cleanup_dir(): string {
-    return dirname(__DIR__, 2) . '/assets/images/uploads';
+    return uploads_dir();
 }
 
 /**
@@ -92,7 +94,7 @@ function cleanup_unused_uploads(PDO $db, bool $dryRun = false, int $graceDays = 
 /** Run the cleanup if the last automatic run was more than a day ago. Never throws; errors only skip the run. */
 function maybe_cleanup_unused_uploads(PDO $db): void {
     $marker = upload_cleanup_dir() . '/.last_cleanup';
-    if (!is_dir(dirname($marker))) return;
+    if (!is_dir(dirname($marker)) && !@mkdir(dirname($marker), 0755, true)) return;
     if (is_file($marker) && time() - (int)@filemtime($marker) < UPLOAD_CLEANUP_INTERVAL) return;
     @touch($marker); // claim the run first so two admins opening the dashboard do not both start it
     try {

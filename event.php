@@ -80,8 +80,13 @@ $coverImg = $event['image_url'] ? imageUrl($event['image_url']) : '';
 $heroImg = ($coverImg !== '' && $event['image_hero']) ? $coverImg : '';
 $coverSize = false;
 if ($coverImg !== '') {
-    $local = realpath(__DIR__ . '/' . ltrim((string)$event['image_url'], '/'));
-    $coverSize = ($local && strpos($local, realpath(__DIR__ . '/assets/images')) === 0) ? @getimagesize($local) : false;
+    require_once __DIR__ . '/includes/storage.php';
+    $local = upload_file_path($event['image_url']);
+    if ($local === null) { // a bundled image under assets/images (not an upload)
+        $local = realpath(__DIR__ . '/' . ltrim((string)$event['image_url'], '/'));
+        if (!$local || strpos($local, realpath(__DIR__ . '/assets/images')) !== 0) $local = null;
+    }
+    $coverSize = $local ? @getimagesize($local) : false;
 }
 
 require __DIR__ . '/includes/v2/header.php';

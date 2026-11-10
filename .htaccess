@@ -17,9 +17,13 @@ RewriteRule ^sitemap\.xml$ sitemap.php [L,QSA]
 RewriteRule ^sitemap/?$ sitemap-page.php [L,QSA]
 RewriteRule ^api/offices/?$ api.php [L,QSA]
 RewriteRule ^api/event-request/?$ event_request.php [L,QSA]
+# Admin uploads live outside the site folder so deploys cannot delete them (see includes/storage.php);
+# media.php serves them at their old addresses
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^assets/images/uploads/([A-Za-z0-9_-]+/[A-Za-z0-9][A-Za-z0-9._-]*)$ media.php?f=$1 [L]
 
 # Block direct access to config and private directories
-RewriteRule ^(config\.php|includes/|database/|backups/|admin/includes/|scripts/|node_modules/) - [F,L]
+RewriteRule ^(config\.php|includes/|database/|backups/|storage/|admin/includes/|scripts/|node_modules/) - [F,L]
 
 # Block hidden files/dirs (.git, .env ...) except .well-known (SSL validation)
 RewriteRule (^|/)\.(?!well-known/) - [F,L]
