@@ -76,6 +76,7 @@ $homeEvents = array_slice($homeEvents, 0, 6);
                 </section>
 
                 <div class="nf-search" id="nf-search">
+                    <span class="nf-search__icon" aria-hidden="true"><i class="ph-fill ph-magnifying-glass"></i></span>
                     <label for="nf-search-input" class="nf-search__label"><?= __('nf_search_label') ?></label>
                     <div class="nf-search__box">
                         <i class="ph ph-magnifying-glass" aria-hidden="true"></i>

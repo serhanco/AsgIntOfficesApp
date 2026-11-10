@@ -370,7 +370,13 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
   @media (min-width: 1024px) {
     .home-duo { grid-template-rows: auto auto auto; align-items: stretch; row-gap: 0; }
     .home-duo > .home-pillar { display: grid; grid-row: span 3; grid-template-rows: subgrid; }
-    .home-duo > .home-pillar > :last-child { align-self: start; width: 100%; }
+    /* The boxes under the cards (city search, request an event) match too: same glass box, icon tile, title, height */
+    .home-duo > .home-pillar > :last-child { align-self: stretch; width: 100%; margin-top: 1rem; }
+    .home-duo .nf-search { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: .85rem; padding: .9rem 1.1rem; border-radius: 22px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.22); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+    .home-duo .nf-search__icon { display: inline-flex; grid-row: 1 / 3; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 14px; font-size: 1.3rem; color: #fff; background: rgba(37,170,225,.9); }
+    .home-duo .nf-search__label { grid-column: 2; text-align: start; color: #fff; font-weight: 700; font-size: 1rem; margin-bottom: .45rem; }
+    .home-duo .nf-search__box { grid-column: 2; }
+    .home-duo .nf-search__box input { height: 44px; }
     .home-duo #nf-card:has(> .nf-main) { display: flex; flex-direction: column; }
     .home-duo #nf-card:has(> .nf-main) > .nf-context { align-self: flex-start; }
     .home-duo #nf-card:has(> .nf-main) > :nth-last-child(2) { margin-bottom: 1.75rem; }
@@ -417,6 +423,9 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
     .home-duo #nf-card:has(> .nf-duo) > .nf-footer .nf-refine { padding: .55rem 1rem; font-size: .85rem; }
   }
 }
+.nf-search__icon { display: none; }
+/* The city search suggestions open over the stats tiles below, not under them */
+.home-pillar:focus-within { position: relative; z-index: 5; }
 .ev-request { display: flex; align-items: center; gap: .85rem; margin-top: 1rem; padding: .9rem 1.1rem; border-radius: 22px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.22); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: background-color .25s, border-color .25s, transform .25s var(--ease); }
 .ev-request:hover { background: rgba(255,255,255,.15); border-color: #fff; transform: translateY(-2px); }
 .ev-request__icon { width: 42px; height: 42px; border-radius: 14px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.3rem; background: rgba(242,107,80,.9); color: #fff; }
