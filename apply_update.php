@@ -2,7 +2,7 @@
 /**
  * Acıbadem Micro App - Safe Patch & Backup Script
  *
- * 1. Creates a JSON backup of the data tables in /backups/ (blocked from the web)
+ * 1. Creates a JSON backup of the data tables in the storage folder outside the site (includes/storage.php)
  * 2. Applies every database/patch_*.sql file that has not been applied yet.
  *    Applied patches are recorded in the `schema_patches` table, so running
  *    this script again never re-runs an old patch (e.g. one that TRUNCATEs offices).
@@ -121,9 +121,11 @@ try {
     // ==========================================
     // 1. BACKUP PROCESS
     // ==========================================
-    $backupDir = __DIR__ . '/backups';
-    if (!is_dir($backupDir)) {
-        mkdir($backupDir, 0750, true);
+    // Kept outside the site folder so a deploy from GitHub cannot delete it (see includes/storage.php)
+    require_once __DIR__ . '/includes/storage.php';
+    $backupDir = backups_dir();
+    if (!is_dir($backupDir) && !mkdir($backupDir, 0750, true)) {
+        throw new RuntimeException('Yedek klasörü oluşturulamadı: ' . $backupDir);
     }
     // Deny web access even if the root .htaccess is missing
     if (!is_file($backupDir . '/.htaccess')) {
@@ -141,7 +143,7 @@ try {
     }
 
     file_put_contents($backupFile, json_encode($backupData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-    out("<p style='color: green;'>✅ <b>Backup created:</b> backups/" . basename($backupFile) . "</p>");
+    out("<p style='color: green;'>✅ <b>Backup created:</b> " . htmlspecialchars($backupFile) . "</p>");
 
     // ==========================================
     // 2. APPLY SQL PATCHES
