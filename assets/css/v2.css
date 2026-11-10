@@ -365,21 +365,56 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 .ev-row__wa:hover { transform: scale(1.08); box-shadow: 0 12px 24px rgba(31,184,90,.4); }
 /* Home page, side by side (desktop): the white Offices and Events cards share one height. Each column is a
    subgrid of three rows (heading, card, the box below), so the cards start and end on the same lines and the
-   buttons at the bottom of each card line up. Skipped for the "no office in your country" card, which is much
-   taller than the events list. Older browsers keep the previous layout. */
+   buttons at the bottom of each card line up. Older browsers keep the previous layout. */
 @supports (grid-template-rows: subgrid) and selector(:has(*)) {
   @media (min-width: 1024px) {
-    .home-duo:not(:has(.nf-duo)) { grid-template-rows: auto auto auto; align-items: stretch; row-gap: 0; }
-    .home-duo:not(:has(.nf-duo)) > .home-pillar { display: grid; grid-row: span 3; grid-template-rows: subgrid; }
-    .home-duo:not(:has(.nf-duo)) > .home-pillar > :last-child { align-self: start; width: 100%; }
-    .home-duo:not(:has(.nf-duo)) #nf-card:has(> .nf-main) { display: flex; flex-direction: column; }
-    .home-duo:not(:has(.nf-duo)) #nf-card:has(> .nf-main) > .nf-context { align-self: flex-start; }
-    .home-duo:not(:has(.nf-duo)) #nf-card:has(> .nf-main) > :nth-last-child(2) { margin-bottom: 1.75rem; }
-    .home-duo:not(:has(.nf-duo)) #nf-card:has(> .nf-main) > .nf-footer { margin-top: auto; }
-    .home-duo:not(:has(.nf-duo)) .ev-panel { display: flex; flex-direction: column; }
-    .home-duo:not(:has(.nf-duo)) .ev-panel [data-ev-title] { margin-bottom: 0; } /* flex items: margins no longer collapse */
-    .home-duo:not(:has(.nf-duo)) .ev-panel [data-ev-list] { margin-bottom: 1.25rem; }
-    .home-duo:not(:has(.nf-duo)) .ev-panel__foot { margin-top: auto; }
+    .home-duo { grid-template-rows: auto auto auto; align-items: stretch; row-gap: 0; }
+    .home-duo > .home-pillar { display: grid; grid-row: span 3; grid-template-rows: subgrid; }
+    .home-duo > .home-pillar > :last-child { align-self: start; width: 100%; }
+    .home-duo #nf-card:has(> .nf-main) { display: flex; flex-direction: column; }
+    .home-duo #nf-card:has(> .nf-main) > .nf-context { align-self: flex-start; }
+    .home-duo #nf-card:has(> .nf-main) > :nth-last-child(2) { margin-bottom: 1.75rem; }
+    .home-duo #nf-card:has(> .nf-main) > .nf-footer { margin-top: auto; }
+    .home-duo .ev-panel { display: flex; flex-direction: column; }
+    .home-duo .ev-panel [data-ev-title] { margin-bottom: 0; } /* flex items: margins no longer collapse */
+    .home-duo .ev-panel [data-ev-list] { margin-bottom: 1.25rem; }
+    .home-duo .ev-panel__foot { margin-top: auto; }
+    /* Next to the taller "no office in your country" card the events list shows a fourth event, if there is one */
+    .home-duo:has(.nf-duo) [data-ev-list] > .ev-row:nth-child(4)[hidden] { display: flex; }
+
+    /* "No office in your country" in this narrower column: the same content, packed to the height of the
+       events list. Smaller heading without the globe badge; in each office panel the details sit on the
+       left and the four contact buttons form a 2x2 block on the right; list link and location button share
+       the last line. */
+    .home-duo #nf-card:has(> .nf-duo) { display: flex; flex-wrap: wrap; align-content: flex-start; align-items: center; gap: 0 .5rem; }
+    .home-duo #nf-card:has(> .nf-duo) > * { flex: 0 0 100%; }
+    .home-duo #nf-card:has(> .nf-duo) > .nf-context { flex-basis: auto; margin-bottom: 1rem; }
+    .home-duo #nf-card:has(> .nf-duo) .nf-empty { text-align: start; max-width: none; margin: 0; }
+    .home-duo #nf-card:has(> .nf-duo) .nf-empty__icon { display: none; }
+    .home-duo #nf-card:has(> .nf-duo) .nf-empty__h { font-size: 1.25rem; line-height: 1.25; margin-bottom: .35rem; }
+    .home-duo #nf-card:has(> .nf-duo) .nf-empty__p { font-size: .9rem; line-height: 1.45; }
+    .home-duo #nf-card:has(> .nf-duo) .nf-duo { margin-top: 1.1rem; gap: .75rem; }
+    .home-duo #nf-card .nf-panel { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-rows: repeat(5, min-content) 1fr; align-items: center; column-gap: 0; row-gap: .2rem; padding: 1rem 1.1rem; border-top-width: 3px; border-radius: 20px; }
+    .home-duo #nf-card .nf-panel > * { grid-column: 1 / 3; }
+    .home-duo #nf-card .nf-panel--hq .nf-country { display: none; } /* the name already says Istanbul */
+    .home-duo #nf-card .nf-panel .nf-label { margin-bottom: .1rem; }
+    .home-duo #nf-card .nf-panel .nf-name--sm { font-size: 1.15rem; }
+    .home-duo #nf-card .nf-panel .nf-address { font-size: .85rem; line-height: 1.35; }
+    .home-duo #nf-card .nf-panel .nf-distance { grid-column: 1; grid-row: 5; justify-self: start; margin: .45rem .5rem 0 0; padding: .3rem .75rem; font-size: .8rem; white-space: nowrap; }
+    .home-duo #nf-card .nf-panel .nf-footer { grid-column: 2; grid-row: 5; margin-top: .45rem; }
+    .home-duo #nf-card .nf-panel .nf-actions { grid-column: 3; grid-row: 1 / -1; align-self: center; margin: 0 0 0 1rem; padding: 0; width: auto !important; grid-template-columns: repeat(2, 4.6rem) !important; gap: .4rem; }
+    [dir="rtl"] .home-duo #nf-card .nf-panel .nf-actions { margin: 0 1rem 0 0; }
+    [dir="rtl"] .home-duo #nf-card .nf-panel .nf-distance { margin: .45rem 0 0 .5rem; }
+    .home-duo #nf-card .nf-panel .nf-action { padding: .55rem .2rem .5rem; border-radius: 14px; background: #fff; }
+    .home-duo #nf-card .nf-panel .nf-action i { font-size: 1.2rem; margin-bottom: .15rem; }
+    .home-duo #nf-card .nf-panel .nf-action span { font-size: .68rem; }
+    .home-duo #nf-card .nf-panel .nf-details { padding: .3rem 0; border: 0; background: none; color: var(--navy); font-size: .82rem; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 4px; }
+    .home-duo #nf-card .nf-panel .nf-details:hover { color: var(--navy); text-decoration-color: currentColor; transform: none; }
+    .home-duo #nf-card:has(> .nf-duo) > .nf-links { flex-basis: auto; margin-top: 1rem; justify-content: flex-start; }
+    .home-duo #nf-card:has(> .nf-duo) > .nf-links .nf-link { padding: .5rem 0; border: 0; background: none; color: var(--navy); font-size: .85rem; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 4px; }
+    .home-duo #nf-card:has(> .nf-duo) > .nf-links .nf-link:hover { text-decoration-color: currentColor; }
+    .home-duo #nf-card:has(> .nf-duo) > .nf-footer { flex: 1 1 auto; margin-top: 1rem; padding-top: 0; border-top: 0; justify-content: flex-end; }
+    .home-duo #nf-card:has(> .nf-duo) > .nf-footer .nf-refine { padding: .55rem 1rem; font-size: .85rem; }
   }
 }
 .ev-request { display: flex; align-items: center; gap: .85rem; margin-top: 1rem; padding: .9rem 1.1rem; border-radius: 22px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.22); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: background-color .25s, border-color .25s, transform .25s var(--ease); }
