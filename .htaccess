@@ -13,6 +13,8 @@ RewriteRule ^nearest-beta/?$ / [R=301,L]
 RewriteRule ^contracted-institutions/?$ contracted-institutions.php [L,QSA]
 # Sitemap for search engines, built from the database on each request
 RewriteRule ^sitemap\.xml$ sitemap.php [L,QSA]
+# The same list for people
+RewriteRule ^sitemap/?$ sitemap-page.php [L,QSA]
 RewriteRule ^api/offices/?$ api.php [L,QSA]
 RewriteRule ^api/event-request/?$ event_request.php [L,QSA]
 
@@ -41,8 +43,6 @@ Options -Indexes
 # Fonts served with the right type (self-hosted icon font)
 <IfModule mod_mime.c>
     AddType font/woff2 .woff2
-    # Browsers only apply the sitemap's stylesheet when it is served as XML
-    AddType application/xml .xsl
 </IfModule>
 
 # Compress text responses
