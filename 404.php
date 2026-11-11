@@ -8,6 +8,8 @@ if (!defined('APP_INSTALLED')) {
 http_response_code(404);
 $pageTitle = __('404_title');
 $currentPage = '';
+$pageTemplate = 'not_found';
+$trackContext = [];
 $needsMap = false;
 $noIndex = true;
 $metaDescription = __('404_subtitle');

@@ -42,6 +42,8 @@ $choice = consentChoice();
             gtag('consent', 'update', { ad_storage: s, ad_user_data: s, ad_personalization: s, analytics_storage: s });
             window.dataLayer.push({ event: 'consent_update', consent_choice: v });
         }
+        // Meta Pixel loaded by the site (direct GA4 mode) has no Consent Mode: switch it on or off here
+        if (typeof fbq === 'function') fbq('consent', v === 'yes' ? 'grant' : 'revoke');
         was = v;
         bar.hidden = true;
     }

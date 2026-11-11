@@ -3,7 +3,7 @@
 require __DIR__ . '/../header.php';
 $countryCount = count(array_unique(array_column($offices, 'country')));
 ?>
-<div class="of-theme">
+<div class="of-theme" data-track-area="map">
 
 <div class="relative">
     <div id="global-map" class="w-full z-0" style="height: calc(100vh - var(--header-h)); height: calc(100dvh - var(--header-h));"></div>
@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'display_name' => e($o['display_name']),
         'country' => e($o['country']),
         'url' => officeUrl($o['slug']),
+        'country_code' => strtoupper((string)$o['country_code']),
     ], $offices), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) ?>;
     const map = initMap('global-map', offices, { markerHtml: '<div class="map-pin"><i class="ph-fill ph-buildings"></i></div>' });
     if (map && offices.length && window.innerWidth >= 640) {

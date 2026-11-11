@@ -25,10 +25,10 @@ $tagStyle = [
     'act_tag_webinar'      => ['icon' => 'ph-video-camera',       'chip' => 'from-coral-light to-coral-ink', 'text' => 'text-coral-ink'],
 ];
 ?>
-<div class="of-theme">
+<div class="of-theme" data-track-owner="office"<?= trackAttrs(measureOfficeFields($office)) ?>>
 
 <!-- Hero -->
-<section class="hero">
+<section class="hero" data-track-area="office_hero">
     <img src="<?= e($heroImg) ?>" alt="" class="hero__img" fetchpriority="high" decoding="async">
     <div class="hero__shade"></div>
     <div class="wrap wrap--narrow relative pt-24 pb-10 sm:pt-32 md:pt-40 md:pb-14">
@@ -66,7 +66,7 @@ $tagStyle = [
     <?php if ($hasTeam || $hasActivities): ?>
     <div class="grid gap-6 sm:gap-8 <?= $gridCols ?>">
         <?php if ($hasActivities): ?>
-        <section class="card p-6 sm:p-8 reveal">
+        <section data-track-area="office_events" class="card p-6 sm:p-8 reveal">
             <?php
             // With the events model: upcoming first and linked to the event page; past ones only when nothing is coming up
             $shownActs = $activities;
@@ -121,7 +121,7 @@ $tagStyle = [
         <?php endif; ?>
 
         <?php if ($hasTeam): ?>
-        <section class="card p-6 sm:p-8 reveal" style="--d:.08s">
+        <section data-track-area="office_team" class="card p-6 sm:p-8 reveal" style="--d:.08s">
             <div class="flex items-center justify-between gap-4 mb-6">
                 <h2 class="text-xl font-extrabold text-navy"><?= __('office_team_h') ?></h2>
                 <span class="count-pill"><?= count($team) ?></span>
@@ -165,7 +165,7 @@ $tagStyle = [
 
     <!-- Contact + map -->
     <div class="grid gap-6 sm:gap-8 md:grid-cols-2">
-        <section class="card p-6 sm:p-8 reveal">
+        <section data-track-area="office_contact" class="card p-6 sm:p-8 reveal">
             <h2 class="text-xl sm:text-2xl font-extrabold text-navy mb-6"><?= __('office_contact_info') ?></h2>
             <ul class="space-y-2">
                 <li class="flex items-start gap-4 p-3 -mx-3 rounded-2xl">
@@ -196,7 +196,7 @@ $tagStyle = [
             </ul>
         </section>
 
-        <section class="card relative overflow-hidden min-h-[320px] reveal" style="--d:.08s">
+        <section data-track-area="office_map" class="card relative overflow-hidden min-h-[320px] reveal" style="--d:.08s">
             <div id="office-map" class="absolute inset-0 z-0"></div>
             <a href="<?= e($route) ?>" target="_blank" rel="noopener" class="btn btn--white btn--sm absolute bottom-4 start-4 z-[500]">
                 <i class="ph-fill ph-navigation-arrow" aria-hidden="true"></i><?= __('office_cta_route') ?>
@@ -206,7 +206,7 @@ $tagStyle = [
 
     <!-- FAQ + quick access -->
     <div class="grid gap-6 sm:gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
-        <section class="card p-6 sm:p-8 faq reveal">
+        <section data-track-area="office_faq" class="card p-6 sm:p-8 faq reveal">
             <div class="flex items-center gap-3 mb-5">
                 <span class="icon-chip w-10 h-10 text-xl rounded-xl"><i class="ph-fill ph-question" aria-hidden="true"></i></span>
                 <h2 class="text-xl font-extrabold text-navy"><?= __('office_faq_h') ?></h2>
@@ -224,7 +224,7 @@ $tagStyle = [
             </div>
         </section>
 
-        <section class="card p-6 sm:p-8 reveal" style="--d:.08s">
+        <section data-track-area="office_quick" class="card p-6 sm:p-8 reveal" style="--d:.08s">
             <h2 class="text-xl font-extrabold text-navy mb-5"><?= __('office_quick_h') ?></h2>
             <?php
             $quick = [
@@ -249,7 +249,7 @@ $tagStyle = [
     </div>
 
     <!-- Institutions + partner -->
-    <div class="grid gap-6 sm:gap-8 md:grid-cols-2">
+    <div data-track-area="office_cards" class="grid gap-6 sm:gap-8 md:grid-cols-2">
         <a href="<?= getBaseUrl() ?>/contracted-institutions" class="dark-card group p-7 sm:p-8 flex flex-col justify-between gap-6 reveal transition-transform duration-300 hover:-translate-y-1">
             <div>
                 <span class="w-12 h-12 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center mb-4"><i class="ph-fill ph-shield-check text-2xl text-[#8fd6f3]" aria-hidden="true"></i></span>
@@ -270,7 +270,7 @@ $tagStyle = [
     </div>
 
     <?php if (!empty($relatedOffices)): ?>
-    <section class="pt-6 reveal">
+    <section data-track-area="office_related" class="pt-6 reveal">
         <div class="flex items-center gap-3 mb-5">
             <h2 class="text-2xl font-extrabold text-navy"><?= __('office_other_in', '<bdi>' . e($office['country']) . '</bdi>') ?></h2>
             <span class="count-pill"><?= count($relatedOffices) ?></span>
@@ -298,7 +298,7 @@ $tagStyle = [
 </div>
 
 <!-- Phones: contact buttons stay at hand once the hero buttons scroll away -->
-<nav class="action-dock" data-dock aria-label="<?= e(__('office_contact_info')) ?>">
+<nav data-track-area="office_dock" class="action-dock" data-dock aria-label="<?= e(__('office_contact_info')) ?>">
     <?php foreach ($actions as $a): ?>
     <a href="<?= e($a['href']) ?>"<?= $a['ext'] ? ' target="_blank" rel="noopener"' : '' ?> class="<?= $a['cls'] ?>">
         <i class="ph-fill <?= $a['icon'] ?>" aria-hidden="true"></i><span class="line-clamp-1"><?= $a['label'] ?></span>

@@ -23,7 +23,7 @@ if ($homeCc !== '') {
 }
 $homeEvents = array_slice($homeEvents, 0, 6);
 ?>
-<section class="hero">
+<section class="hero" data-track-area="home_hero">
     <img src="<?= getBaseUrl() ?>/assets/images/home-hero.webp" alt="" class="hero__img" fetchpriority="high" decoding="async">
     <div class="hero__shade"></div>
     <div class="hero__grid"></div>
@@ -68,14 +68,14 @@ $homeEvents = array_slice($homeEvents, 0, 6);
                     </div>
                     <a href="<?= getBaseUrl() ?>/map" class="panel-head__link"><?= __('nav_map') ?><i class="ph ph-arrow-right arrow" aria-hidden="true"></i></a>
                 </div>
-                <section id="nf-card" class="nf-card" aria-live="polite">
+                <section data-track-area="finder_card" id="nf-card" class="nf-card" aria-live="polite">
                     <div class="nf-skeleton">
                         <span class="nf-radar nf-radar--dark" aria-hidden="true"><i class="ph-fill ph-navigation-arrow"></i></span>
                         <span><?= __('nf_detecting') ?></span>
                     </div>
                 </section>
 
-                <div class="nf-search" id="nf-search">
+                <div data-track-area="finder_search" class="nf-search" id="nf-search">
                     <span class="nf-search__icon" aria-hidden="true"><i class="ph-fill ph-magnifying-glass"></i></span>
                     <label for="nf-search-input" class="nf-search__label"><?= __('nf_search_label') ?></label>
                     <div class="nf-search__box">
@@ -98,7 +98,7 @@ $homeEvents = array_slice($homeEvents, 0, 6);
                     </div>
                     <a href="<?= getBaseUrl() ?>/events" class="panel-head__link"><?= __('events_see_all') ?><i class="ph ph-arrow-right arrow" aria-hidden="true"></i></a>
                 </div>
-                <section class="nf-card ev-panel" data-ev-panel data-near="<?= e(__('events_near_h')) ?>" data-all="<?= e(__('events_upcoming')) ?>">
+                <section data-track-area="home_events" class="nf-card ev-panel" data-ev-panel data-near="<?= e(__('events_near_h')) ?>" data-all="<?= e(__('events_upcoming')) ?>">
                     <?php if ($homeEvents): ?>
                     <p class="nf-label" data-ev-title><?= $nearCount ? __('events_near_h') : __('events_upcoming') ?></p>
                     <ul class="mt-4 space-y-2.5" data-ev-list>
@@ -117,7 +117,7 @@ $homeEvents = array_slice($homeEvents, 0, 6);
                     <?php endif; ?>
                 </section>
 
-                <a href="<?= getBaseUrl() ?>/events#request" class="ev-request">
+                <a data-track-area="home_events" href="<?= getBaseUrl() ?>/events#request" class="ev-request">
                     <span class="ev-request__icon"><i class="ph-fill ph-paper-plane-tilt" aria-hidden="true"></i></span>
                     <span class="min-w-0 flex-1">
                         <span class="block font-bold text-white"><?= __('events_req_h') ?></span>
@@ -154,7 +154,7 @@ document.addEventListener('nf:country', function (e) {
 </script>
 
 <!-- Explore -->
-<section class="py-16 sm:py-20 lg:py-24">
+<section data-track-area="home_explore" class="py-16 sm:py-20 lg:py-24">
     <div class="wrap">
         <div class="text-center max-w-2xl mx-auto mb-10 sm:mb-14 reveal">
             <h2 class="text-3xl sm:text-4xl font-extrabold text-navy"><?= __('explore_heading') ?></h2>

@@ -88,7 +88,8 @@ function v2EventBadges(array $ev): string {
 /** href + target attributes for a link to an event (an upcoming external event opens its outside page in a new tab). */
 function v2EventLinkAttrs(array $ev): string {
     $href = $ev['href'] ?? $ev['url'];
-    return 'href="' . e($href) . '"' . (!empty($ev['href_ext']) ? ' target="_blank" rel="noopener" data-ev-external' : '');
+    return 'href="' . e($href) . '"' . (!empty($ev['href_ext']) ? ' target="_blank" rel="noopener" data-ev-external' : '')
+        . trackAttrs(measureEventFields($ev)); // measurement: which event the link is about
 }
 
 /** Small "opens outside" icon for upcoming external events. */

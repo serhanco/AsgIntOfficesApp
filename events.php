@@ -120,7 +120,7 @@ $hqMail = 'international@acibadem.com';
 
 <div class="wrap py-6 sm:py-14">
     <!-- List view -->
-    <div id="view-list" class="ev-list"<?= $view !== 'list' ? ' hidden' : '' ?>>
+    <div data-track-area="events_list" id="view-list" class="ev-list"<?= $view !== 'list' ? ' hidden' : '' ?>>
         <?php if ($upcoming): ?>
         <div class="grid md:grid-cols-2 gap-4 sm:gap-5">
             <?php foreach ($upcoming as $ev): ?>
@@ -155,7 +155,7 @@ $hqMail = 'international@acibadem.com';
     </div>
 
     <!-- Calendar view -->
-    <div id="view-calendar"<?= $view !== 'calendar' ? ' hidden' : '' ?>>
+    <div data-track-area="events_calendar" id="view-calendar"<?= $view !== 'calendar' ? ' hidden' : '' ?>>
         <div class="grid lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] gap-6 items-start">
             <section class="card cal p-4 sm:p-6" aria-label="<?= e(__('events_view_calendar')) ?>">
                 <div class="flex items-center justify-between gap-3 mb-4">
@@ -184,7 +184,7 @@ $hqMail = 'international@acibadem.com';
 <?php endif; ?>
 
 <!-- Request an event: stored for the admin (Talepler) and/or sent through WhatsApp / e-mail with the message filled in -->
-<section id="request" class="pb-16 sm:pb-24 scroll-mt-28">
+<section data-track-area="event_request" data-track-owner="hq" id="request" class="pb-16 sm:pb-24 scroll-mt-28">
     <div class="wrap">
         <div class="dark-card p-6 sm:p-10 grid lg:grid-cols-2 gap-8 items-center">
             <div>
@@ -215,8 +215,8 @@ $hqMail = 'international@acibadem.com';
                 <p class="text-xs text-[#9fb3d1]"><?= __('events_req_note') ?></p>
                 <p id="req-status" class="text-sm font-semibold hidden" role="status" aria-live="polite"></p>
                 <div class="grid sm:grid-cols-2 gap-3 pt-1">
-                    <a href="<?= e($hqWa) ?>" data-req-wa target="_blank" rel="noopener" class="btn btn--ghost"><i class="ph-fill ph-whatsapp-logo" aria-hidden="true"></i><?= __('js_whatsapp') ?></a>
-                    <a href="mailto:<?= e($hqMail) ?>" data-req-mail class="btn btn--ghost"><i class="ph-fill ph-envelope-simple" aria-hidden="true"></i><?= __('js_email') ?></a>
+                    <a href="<?= e($hqWa) ?>" data-track-id="event_request" data-req-wa target="_blank" rel="noopener" class="btn btn--ghost"><i class="ph-fill ph-whatsapp-logo" aria-hidden="true"></i><?= __('js_whatsapp') ?></a>
+                    <a href="mailto:<?= e($hqMail) ?>" data-track-id="event_request" data-req-mail class="btn btn--ghost"><i class="ph-fill ph-envelope-simple" aria-hidden="true"></i><?= __('js_email') ?></a>
                 </div>
             </form>
         </div>
@@ -343,16 +343,24 @@ $hqMail = 'international@acibadem.com';
         try { var u = new URL(location.href); if (view === 'list') u.searchParams.delete('view'); else u.searchParams.set('view', view); history.replaceState(null, '', u); } catch (e) {}
         refresh();
     }
+    // Measurement: each kind of filter counts once per visit of the page (typing in search is not one event per key)
+    var tracked = {};
+    function trackFilter(kind) {
+        if (tracked[kind] || !window.asgTrack) return;
+        tracked[kind] = 1;
+        window.asgTrack('filter_use', { cta_type: 'filter', cta_position: 'events_filters', method: kind });
+    }
     function refresh() {
         applyList();
         var n = (state.type ? 1 : 0) + (state.cc ? 1 : 0), badge = $('[data-filter-count]');
         if (badge) { badge.textContent = n; badge.hidden = !n; }
         if (state.view === 'calendar') renderCal();
     }
-    $$('[data-view]').forEach(function (b) { b.addEventListener('click', function () { show(b.dataset.view); }); });
+    $$('[data-view]').forEach(function (b) { b.addEventListener('click', function () { show(b.dataset.view); trackFilter('view_' + b.dataset.view); }); });
     $$('[data-type-filter]').forEach(function (p) {
         p.addEventListener('click', function () {
             state.type = p.dataset.typeFilter;
+            trackFilter('type');
             $$('[data-type-filter]').forEach(function (q) { q.setAttribute('aria-pressed', String(q === p)); });
             refresh();
         });
@@ -364,8 +372,8 @@ $hqMail = 'international@acibadem.com';
         toggle.setAttribute('aria-expanded', String(open));
         panel.classList.toggle('is-open', open);
     });
-    var country = $('#event-country'); if (country) country.addEventListener('change', function () { state.cc = country.value; refresh(); });
-    var search = $('#event-search'); if (search) search.addEventListener('input', function () { state.q = search.value.trim().toLowerCase(); refresh(); });
+    var country = $('#event-country'); if (country) country.addEventListener('change', function () { state.cc = country.value; refresh(); trackFilter('country'); });
+    var search = $('#event-search'); if (search) search.addEventListener('input', function () { state.q = search.value.trim().toLowerCase(); refresh(); trackFilter('search'); });
     var prev = $('[data-cal-prev]'), next = $('[data-cal-next]');
     if (prev) prev.addEventListener('click', function () { shiftMonth(-1); });
     if (next) next.addEventListener('click', function () { shiftMonth(1); });
@@ -428,6 +436,7 @@ $hqMail = 'international@acibadem.com';
             fetch(form.dataset.url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload('form') })
                 .then(function (r) { return r.json().then(function (j) { return r.ok && j.ok; }); })
                 .then(function (ok) {
+                    if (ok && window.asgTrack) window.asgTrack('event_request_submit', { cta_type: 'form', cta_owner: 'hq', cta_position: 'event_request', cta_id: type.value, method: 'form' });
                     if (ok) { say(form.dataset.ok, true); send.style.display = 'none'; where.value = ''; contact.value = ''; update(); }
                     else { say(form.dataset.err, false); send.disabled = false; }
                 })

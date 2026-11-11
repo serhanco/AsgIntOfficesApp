@@ -27,6 +27,7 @@ seoRedirectToClean($seoPath);
 $relatedOffices = getOfficesByCountry($office['country'], $office['id']);
 $pageTitle = $office['display_name'] . ' — ' . $office['country'];
 $currentPage = 'office';
+$trackContext = measureOfficeFields($office); // measurement: which office this page is about
 $needsMap = true;
 $metaDescription = 'Acıbadem Information Office in ' . $office['display_name'] . ', ' . $office['country'] . '. Contact: ' . $office['phone'] . ' | ' . $office['email'];
 
