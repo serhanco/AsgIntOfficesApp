@@ -2,6 +2,7 @@
 require_once __DIR__ . '/language.php';
 require_once __DIR__ . '/events.php';
 require_once __DIR__ . '/seo.php';
+require_once __DIR__ . '/measurement.php';
 
 /**
  * Helper Functions

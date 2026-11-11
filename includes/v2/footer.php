@@ -1,12 +1,12 @@
     </main>
 
-    <footer class="site-footer mt-auto">
+    <footer class="site-footer mt-auto" data-track-area="footer">
         <div class="wrap py-14 md:py-16 grid gap-10 md:grid-cols-12">
             <div class="md:col-span-5 text-center md:text-start">
                 <img class="h-7 w-auto mx-auto md:mx-0 mb-5" src="<?= getBaseUrl() ?>/assets/images/acibadem-white-logo.webp" alt="Acıbadem" width="175" height="28" loading="lazy">
                 <p class="text-sm font-semibold text-white/90"><?= __('site_name') ?></p>
                 <p class="text-sm mt-1">acibadem.world</p>
-                <div class="mt-6 flex flex-wrap justify-center md:justify-start gap-2">
+                <div class="mt-6 flex flex-wrap justify-center md:justify-start gap-2" data-track-owner="hq">
                     <a href="https://wa.me/905359650466" target="_blank" rel="noopener noreferrer" class="btn btn--sm bg-wa/15 text-[#7ef0a8] hover:!bg-wa hover:!text-white">
                         <i class="ph-fill ph-whatsapp-logo" aria-hidden="true"></i><?= __('js_whatsapp') ?>
                     </a>
@@ -32,7 +32,7 @@
 
             <div class="md:col-span-4 text-center md:text-start">
                 <h3 class="footer-h"><?= __('footer_contact') ?></h3>
-                <ul class="space-y-3 text-sm">
+                <ul class="space-y-3 text-sm" data-track-owner="hq">
                     <li><a href="https://wa.me/905359650466" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2.5"><i class="ph-fill ph-whatsapp-logo text-lg text-[#4ee38a]" aria-hidden="true"></i><span dir="ltr">+90 535 965 0466</span></a></li>
                     <li><a href="tel:+902164445544" class="inline-flex items-center gap-2.5"><i class="ph-fill ph-phone text-lg text-aqua" aria-hidden="true"></i><span dir="ltr">+90 216 444 5544</span></a></li>
                     <li><a href="mailto:international@acibadem.com" class="inline-flex items-center gap-2.5"><i class="ph-fill ph-envelope-simple text-lg text-aqua" aria-hidden="true"></i><span dir="ltr">international@acibadem.com</span></a></li>

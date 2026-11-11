@@ -2,6 +2,8 @@
 /**
  * Page head + site header. Pages set $pageTitle, $currentPage,
  * $needsMap, $metaDescription (and optionally $ogImage, $extraHead) first.
+ * Measurement: optionally $pageTemplate (else taken from $currentPage) and $trackContext (office/event fields,
+ * see includes/measurement.php).
  */
 $pageTitle       = $pageTitle ?? __('site_name');
 $currentPage     = $currentPage ?? 'home';
@@ -78,19 +80,7 @@ $navItems = [
     <link rel="icon" type="image/x-icon" href="<?= getBaseUrl() ?>/assets/images/favicon.ico">
     <script>document.documentElement.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('js-anim');</script>
 
-    <?= consentDefaultScript() ?>
-    <?php $ga4Id = ga4Id(); ?>
-    <?php if ($ga4Id !== '' && !isAdminVisitor() && analyticsAllowed()): ?>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=<?= e($ga4Id) ?>"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', '<?= e($ga4Id) ?>');
-    </script>
-    <?php else: ?>
-    <!-- ga4: <?= e(ga4SkipReason()) ?> -->
-    <?php endif; ?>
+    <?= measurementHead(measurePageContext(measureTemplate($currentPage, $pageTemplate ?? null), $trackContext ?? [])) ?>
 
     <!-- Fonts: Plus Jakarta Sans (brand), Inter for Cyrillic, Noto for Arabic/Persian and Georgian.
          Each face only downloads when the page has characters it is needed for. -->
@@ -116,13 +106,15 @@ $navItems = [
     ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) ?>;</script>
     <script defer src="<?= asset('assets/js/app.js') ?>"></script>
     <script defer src="<?= asset('assets/js/v2.js') ?>"></script>
+    <script defer src="<?= asset('assets/js/track.js') ?>"></script>
     <?= $extraHead ?>
     <?= customCode('head_code') ?>
 </head>
 <body class="v2 min-h-screen flex flex-col antialiased">
+    <?= measurementBody() ?>
     <?= customCode('body_code') ?>
 
-    <header class="site-header" data-header>
+    <header class="site-header" data-header data-track-area="header">
         <div class="wrap site-header__bar">
             <a href="<?= getBaseUrl() ?>/" class="flex items-center min-w-0 flex-shrink" dir="ltr" aria-label="Acıbadem">
                 <img class="h-6 sm:h-7 lg:h-8 w-auto max-w-full object-contain" src="<?= getBaseUrl() ?>/assets/images/acibadem-white-logo.webp" alt="Acıbadem" width="200" height="32">
@@ -145,7 +137,7 @@ $navItems = [
         </div>
     </header>
 
-    <div id="site-drawer" class="drawer lg:hidden" data-drawer aria-hidden="true">
+    <div id="site-drawer" class="drawer lg:hidden" data-drawer aria-hidden="true" data-track-area="mobile_menu">
         <div class="drawer__panel">
             <nav class="grid gap-2" aria-label="Main">
                 <?php foreach ($navItems as $n): ?>
@@ -162,7 +154,7 @@ $navItems = [
                     <i class="ph ph-arrow-right arrow text-white/50" aria-hidden="true"></i>
                 </a>
             </nav>
-            <div class="mt-5 grid grid-cols-3 gap-2 text-center text-xs font-bold">
+            <div class="mt-5 grid grid-cols-3 gap-2 text-center text-xs font-bold" data-track-owner="hq">
                 <a href="https://wa.me/905359650466" target="_blank" rel="noopener" class="rounded-2xl bg-white/5 py-3 text-white"><i class="ph-fill ph-whatsapp-logo text-2xl text-[#4ee38a] block mb-1" aria-hidden="true"></i><?= __('js_whatsapp') ?></a>
                 <a href="tel:+902164445544" class="rounded-2xl bg-white/5 py-3 text-white"><i class="ph-fill ph-phone text-2xl text-[#8fd6f3] block mb-1" aria-hidden="true"></i><?= __('js_call') ?></a>
                 <a href="mailto:international@acibadem.com" class="rounded-2xl bg-white/5 py-3 text-white"><i class="ph-fill ph-envelope-simple text-2xl text-[#8fd6f3] block mb-1" aria-hidden="true"></i><?= __('js_email') ?></a>

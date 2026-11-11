@@ -33,6 +33,8 @@
     selected: null,     // office picked from search
     locating: false,
     countdown: null,
+    src: null,          // how the country was guessed: ip / timezone / language / test (measurement)
+    pickedBy: null,     // chip when an office was picked from the card (measurement)
   };
 
   // ---------- helpers ----------
@@ -94,8 +96,8 @@
   // ---------- country guess ----------
   function guessCountry() {
     const known = (cc) => cc && /^[a-z]{2}$/.test(cc);
-    if (known(C.testCountry)) return { country: C.testCountry };
-    if (known(C.serverCountry)) return { country: C.serverCountry };
+    if (known(C.testCountry)) return { country: C.testCountry, src: 'test' };
+    if (known(C.serverCountry)) return { country: C.serverCountry, src: 'ip' };
 
     let tz = '';
     try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { /* ignore */ }
@@ -109,11 +111,11 @@
       const byRegion = langRegions.find((r) => shared.codes.includes(r));
       const byLang = langs.map((l) => shared.byLang[l.split('-')[0].toLowerCase()]).find(Boolean);
       const hit = byRegion || byLang;
-      return hit ? { country: hit } : { region: shared.codes };
+      return hit ? { country: hit, src: 'timezone' } : { region: shared.codes, src: 'timezone' };
     }
     const fromTz = (window.TZ_COUNTRIES || {})[tz];
-    if (fromTz) return { country: fromTz };
-    if (langRegions.length) return { country: langRegions[0] };
+    if (fromTz) return { country: fromTz, src: 'timezone' };
+    if (langRegions.length) return { country: langRegions[0], src: 'language' };
     return {};
   }
 
@@ -135,7 +137,11 @@
       btn(route, 'ph-navigation-arrow', T.route),
     ].filter(Boolean);
     // Fewer than four buttons (e.g. office WhatsApp switched off in the admin): the grid adapts, see finder-v2.css
-    return `<div class="nf-actions nf-actions--${items.length}">
+    // Measurement: whose buttons these are (assets/js/track.js reads the nearest data-* around a click)
+    const slug = o.url ? (o.url.match(/\/office\/([a-z0-9-]+)/) || [])[1] || '' : '';
+    const ctx = o.isHq ? 'data-track-owner="hq"'
+      : `data-track-owner="office" data-office-slug="${esc(slug)}" data-office-country="${esc((o.cc || '').toUpperCase())}"`;
+    return `<div class="nf-actions nf-actions--${items.length}" ${ctx}>
       ${items.join('\n      ')}
     </div>`;
   }
@@ -179,7 +185,7 @@
   }
 
   function hqOffice() {
-    return { name: T.hqName, cc: HQ_COUNTRY, address: C.hq.address, phone: C.hq.phone, whatsapp: C.hq.whatsapp, email: C.hq.email };
+    return { isHq: true, name: T.hqName, cc: HQ_COUNTRY, address: C.hq.address, phone: C.hq.phone, whatsapp: C.hq.whatsapp, email: C.hq.email };
   }
 
   function hqCard() {
@@ -265,38 +271,64 @@
     }
   }
 
+  // Measurement: one finder_result per distinct answer the card gives (not on every re-render)
+  let lastResult = '';
+  function trackResult(result) {
+    if (!window.asgTrack || !result) return;
+    const o = typeof result === 'object' ? result : null;
+    const slug = o && o.url ? (o.url.match(/\/office\/([a-z0-9-]+)/) || [])[1] || '' : '';
+    const method = state.selected ? (state.pickedBy || 'search') : state.position ? 'gps' : (state.src || 'none');
+    const key = method + '|' + (slug || result);
+    if (key === lastResult) return;
+    lastResult = key;
+    window.asgTrack('finder_result', {
+      cta_type: 'finder', cta_position: 'finder_card', method,
+      cta_id: o ? 'office' : result, office_slug: slug, office_country: o ? (o.cc || '').toUpperCase() : '',
+    });
+  }
+
   function render() {
     announceCountry();
     let html;
+    let result = null; // measurement: the office the card leads with, or hq / no_office / unknown
     if (state.selected) {
       html = officeCard(state.selected, [], T.selectedLabel);
+      result = state.selected;
     } else if (state.country === HQ_COUNTRY && !officesIn([HQ_COUNTRY]).length) {
       // A visitor who shared the location gets the office nearest to them when one is within reach
       const near = state.position ? byDistance(offices)[0] : null;
       if (near && near.distance <= FAR_KM) {
         html = officeCard(near, byDistance(officesIn([near.cc])).filter((o) => o.url !== near.url), T.nearestLabel);
         focus = near;
+        result = near;
       } else {
         html = hqCard();
+        result = 'hq';
       }
     } else if (state.country && officesIn([state.country]).length) {
       const list = byDistance(officesIn([state.country]));
       html = officeCard(list[0], list.slice(1), T.nearestLabel);
+      result = list[0];
     } else if (state.country) {
       html = noOfficeCard();
+      result = 'no_office';
     } else if (state.position) {
       const near = byDistance(offices)[0];
       html = near && near.distance <= FAR_KM
         ? officeCard(near, byDistance(officesIn([near.cc])).filter((o) => o.url !== near.url), T.nearestLabel)
         : noOfficeCard();
+      result = near && near.distance <= FAR_KM ? near : 'no_office';
     } else if (state.region && officesIn(state.region).length) {
       // Country with the most offices first
       const count = (cc) => officesIn([cc]).length;
       const list = officesIn(state.region).sort((a, b) => count(b.cc) - count(a.cc));
       html = officeCard(list[0], list.slice(1), T.regionLabel);
+      result = list[0];
     } else {
       html = unknownCard();
+      result = 'unknown';
     }
+    trackResult(result);
     card.innerHTML = html;
     card.classList.remove('nf-card--in');
     void card.offsetWidth; // restart the entrance animation
@@ -320,6 +352,7 @@
 
   function onPosition(lat, lon) {
     setLocating(false);
+    if (window.asgTrack) window.asgTrack('location_prompt', { cta_type: 'location', cta_position: 'finder_card', method: 'granted' });
     state.position = { lat, lon };
     state.selected = null;
     render();
@@ -328,6 +361,7 @@
 
   function onLocationError() {
     setLocating(false);
+    if (window.asgTrack) window.asgTrack('location_prompt', { cta_type: 'location', cta_position: 'finder_card', method: 'denied' });
     startCountdown();
   }
 
@@ -437,7 +471,10 @@
   function choose(o, fromSearch) {
     if (!o) return;
     stopCountdown();
+    const slug = (String(o.url || '').match(/\/office\/([a-z0-9-]+)/) || [])[1];
+    if (window.asgTrack) window.asgTrack('office_select', { cta_type: 'office_link', cta_position: fromSearch ? 'finder_search' : 'finder_card', method: fromSearch ? 'search' : 'chip', office_slug: slug, office_country: (o.cc || '').toUpperCase() });
     if (fromSearch) { input.value = o.name; closeList(); window.location.href = o.url; return; }
+    state.pickedBy = 'chip';
     state.selected = state.position ? { ...o, distance: distanceKm(state.position.lat, state.position.lon, o.lat, o.lon) } : o;
     input.value = o.name;
     closeList();

@@ -66,6 +66,8 @@ $others = array_slice($others, 0, 2);
 
 $pageTitle = $event['title'];
 $currentPage = 'events';
+$pageTemplate = 'event';
+$trackContext = measureEventFields($event); // measurement: which event this page is about
 $needsMap = (bool)$mapStops;
 // Google / link preview text: the admin's short description, else the start of the description cut at a word
 $metaDescription = $event['meta_description'];
@@ -92,9 +94,9 @@ if ($coverImg !== '') {
 
 require __DIR__ . '/includes/v2/header.php';
 ?>
-<div class="ev-theme">
+<div class="ev-theme"<?= trackAttrs(measureEventFields($event)) ?>>
 
-<section class="page-head<?= $heroImg ? ' page-head--img' : '' ?>">
+<section data-track-area="event_head" class="page-head<?= $heroImg ? ' page-head--img' : '' ?>">
     <?php if ($heroImg): ?><img src="<?= e($heroImg) ?>" alt="" class="hero__img opacity-40" fetchpriority="high" decoding="async"><?php endif; ?>
     <div class="wrap wrap--narrow py-10 sm:py-16">
         <a href="<?= getBaseUrl() ?>/events" class="rise inline-flex items-center gap-2 text-sm font-semibold text-[#9fc6f5] hover:text-white transition-colors">
@@ -153,7 +155,7 @@ require __DIR__ . '/includes/v2/header.php';
         . ' loading="eager" decoding="async" class="block w-full h-auto max-h-[80vh] object-contain mx-auto"></a>';
     ob_start();
     ?>
-            <section class="reveal">
+            <section data-track-area="event_locations" class="reveal">
                 <div class="flex items-center gap-3 mb-4">
                     <h2 class="text-xl sm:text-2xl font-extrabold text-navy"><?= __('event_stops') ?></h2>
                     <span class="count-pill"><?= count($stops) ?></span>
@@ -164,7 +166,7 @@ require __DIR__ . '/includes/v2/header.php';
                         $wa  = $waOn && $l['whatsapp'] !== '' ? 'https://wa.me/' . $l['whatsapp'] . '?text=' . rawurlencode(__('event_wa_msg', $event['title'])) : '';
                         $stopPast = $l['ends_on'] && $l['ends_on'] < date('Y-m-d');
                     ?>
-                    <li data-stop="<?= $i + 1 ?>" class="card p-5 sm:p-6 scroll-mt-28<?= $stopPast && !$past ? ' opacity-60' : '' ?>">
+                    <li data-track-owner="event_location"<?= $l['office'] ? trackAttrs(measureOfficeFields($l['office'])) : '' ?> data-stop="<?= $i + 1 ?>" class="card p-5 sm:p-6 scroll-mt-28<?= $stopPast && !$past ? ' opacity-60' : '' ?>">
                         <div class="flex gap-4">
                             <?= v2DateBadge($l['starts_on'], $l['ends_on'], $past || $stopPast) ?>
                             <div class="flex-1 min-w-0">
@@ -219,7 +221,7 @@ require __DIR__ . '/includes/v2/header.php';
             <?php endif; ?>
 
             <?php if ($people): ?>
-            <section class="reveal">
+            <section data-track-area="event_people" class="reveal">
                 <div class="flex items-center gap-3 mb-4">
                     <h2 class="text-xl sm:text-2xl font-extrabold text-navy"><?= __('event_people') ?></h2>
                     <span class="count-pill"><?= count($people) ?></span>
@@ -249,7 +251,7 @@ require __DIR__ . '/includes/v2/header.php';
                 $days = [];
                 foreach ($program as $r) $days[(string)$r['day']][] = $r;
             ?>
-            <section class="reveal">
+            <section data-track-area="event_program" class="reveal">
                 <div class="flex items-center gap-3 mb-4">
                     <h2 class="text-xl sm:text-2xl font-extrabold text-navy"><?= __('event_program') ?></h2>
                 </div>
@@ -283,7 +285,7 @@ require __DIR__ . '/includes/v2/header.php';
             <div class="<?= $hasAside ? 'lg:hidden' : '' ?>"><?= $stopsHtmlMobile ?></div>
 
             <?php if ($event['relates_hq'] || $event['relations']): ?>
-            <section class="reveal">
+            <section data-track-area="event_offices" class="reveal">
                 <h2 class="text-xl sm:text-2xl font-extrabold text-navy mb-4"><?= __('event_related') ?></h2>
                 <div class="flex flex-wrap gap-2">
                     <?php if ($event['relates_hq']): ?><span class="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5 text-sm font-semibold text-ink"><i class="ph-fill ph-seal-check text-azure" aria-hidden="true"></i><?= __('event_from_hq') ?></span><?php endif; ?>
@@ -302,7 +304,7 @@ require __DIR__ . '/includes/v2/header.php';
                 $ctel = $contact['phone'] !== '' ? 'tel:' . preg_replace('/[^0-9+]/', '', $contact['phone']) : '';
                 $cwa  = $waOn && $contact['whatsapp'] !== '' ? 'https://wa.me/' . $contact['whatsapp'] . '?text=' . rawurlencode(__('event_wa_msg', $event['title'])) : '';
             ?>
-            <section class="card p-5 sm:p-6 reveal">
+            <section data-track-area="event_contact" data-track-owner="<?= $contact['office'] ? 'event_contact' : 'hq' ?>"<?= $contact['office'] ? trackAttrs(measureOfficeFields($contact['office'])) : '' ?> class="card p-5 sm:p-6 reveal">
                 <h2 class="text-lg font-extrabold text-navy"><?= __('event_contact_h') ?></h2>
                 <p class="mt-1 text-sm text-muted"><?= $contact['office'] ? '<bdi>' . e($contact['office']['display_name']) . '</bdi>' : __('event_contact_hq') ?></p>
                 <div class="mt-4 grid grid-cols-2 odd-span sm:flex sm:flex-wrap gap-2">
@@ -315,7 +317,7 @@ require __DIR__ . '/includes/v2/header.php';
         </div>
 
         <?php if ($hasAside): ?>
-        <aside class="space-y-6 sm:space-y-8 min-w-0 self-start">
+        <aside data-track-area="event_side" class="space-y-6 sm:space-y-8 min-w-0 self-start">
             <?php if ($coverRight): ?>
             <section class="hidden lg:block card overflow-hidden reveal" style="--d:.06s"><?= $coverHtml ?></section>
             <?php endif; ?>
@@ -330,7 +332,7 @@ require __DIR__ . '/includes/v2/header.php';
     </div>
 
     <?php if ($others): ?>
-    <section class="pt-4 reveal">
+    <section data-track-area="event_others" class="pt-4 reveal">
         <div class="flex items-center justify-between gap-4 mb-4">
             <h2 class="text-xl sm:text-2xl font-extrabold text-navy"><?= __('event_other') ?></h2>
             <a href="<?= getBaseUrl() ?>/events" class="text-sm font-bold text-azure hover:text-navy inline-flex items-center gap-1.5"><?= __('events_see_all') ?><i class="ph ph-arrow-right arrow" aria-hidden="true"></i></a>

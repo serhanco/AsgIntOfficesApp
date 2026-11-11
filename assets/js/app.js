@@ -125,6 +125,8 @@ function initMap(containerId, offices, options = {}) {
         );
         
         marker.on('click', () => {
+          const slug = (String(office.url || '').match(/\/office\/([a-z0-9-]+)/) || [])[1];
+          if (window.asgTrack) window.asgTrack('office_select', { cta_type: 'office_link', cta_position: 'map_marker', office_slug: slug, office_country: office.country_code });
           window.location.href = office.url;
         });
       }

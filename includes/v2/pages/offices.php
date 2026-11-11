@@ -53,7 +53,7 @@ require __DIR__ . '/../header.php';
         $cSlug = strtolower(preg_replace('/[^a-zA-Z0-9]+/', '-', $countryName));
         $cCode = $countryOffices[0]['country_code'];
     ?>
-    <section id="country-<?= e($cSlug) ?>" class="country-group card break-inside-avoid mb-5 p-2 reveal">
+    <section data-track-area="offices_list" id="country-<?= e($cSlug) ?>" class="country-group card break-inside-avoid mb-5 p-2 reveal">
         <div class="flex items-center gap-3 px-4 pt-4 pb-3">
             <?= getFlagImg($countryName, $cCode) ?>
             <h2 class="text-lg font-extrabold text-navy flex-1 min-w-0 truncate"><bdi><?= e($countryName) ?></bdi></h2>
@@ -61,7 +61,7 @@ require __DIR__ . '/../header.php';
         </div>
         <div class="space-y-1">
             <?php foreach ($countryOffices as $o): ?>
-            <a href="<?= officeUrl($o['slug']) ?>"
+            <a href="<?= officeUrl($o['slug']) ?>"<?= trackAttrs(measureOfficeFields($o)) ?>
                class="office-card group flex items-center gap-3.5 p-3 rounded-2xl hover:bg-surface transition-colors"
                data-name="<?= strtolower(e($o['display_name'])) ?>"
                data-country="<?= strtolower(e($o['country'])) ?>"

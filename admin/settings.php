@@ -7,8 +7,8 @@ $db = getDb();
 $ready = (bool)$db->query("SHOW TABLES LIKE 'site_settings'")->fetchColumn();
 
 $fields = [
-    'head_code'   => ['<head> içine eklenecek kod', 'Her sayfanın <head> bölümünün sonuna eklenir. Google Tag Manager (üst parça), Meta Pixel, doğrulama etiketleri (meta) ve ek stil için uygundur.'],
-    'body_code'   => ['<body> başlangıcına eklenecek kod', 'Açılan <body> etiketinden hemen sonra eklenir. Google Tag Manager\'ın <noscript> parçası burada olmalıdır.'],
+    'head_code'   => ['<head> içine eklenecek kod', 'Her sayfanın <head> bölümünün sonuna eklenir. Doğrulama etiketleri (meta) ve ek stil için uygundur. Google Tag Manager, GA4 ve Meta Pixel için buraya kod koymayın; yukarıdaki Ölçüm bölümündeki alanları kullanın.'],
+    'body_code'   => ['<body> başlangıcına eklenecek kod', 'Açılan <body> etiketinden hemen sonra eklenir. Google Tag Manager\'ın <noscript> parçasını site kendisi ekler, buraya koymanıza gerek yoktur.'],
     'footer_code' => ['Sayfa sonuna eklenecek kod', 'Kapanan </body> etiketinden hemen önce eklenir. Sohbet (chat) araçları, ısı haritası ve gecikmesi sorun olmayan izleme kodları için uygundur.'],
 ];
 $maxLen = 20000;
@@ -27,6 +27,17 @@ if ($ready && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $err = 'GA4 ölçüm kimliği "G-XXXXXXXXXX" biçiminde olmalı (kapatmak için "kapat" yazın, varsayılan için boş bırakın).';
     }
     $values['ga4_id'] = $ga === 'KAPAT' ? 'kapat' : $ga;
+    // Measurement method (direct GA4 / Google Tag Manager / off), GTM ID and Meta Pixel IDs.
+    // A pasted snippet is accepted: only the ID is kept.
+    $method = (string)($_POST['measure_method'] ?? 'ga4');
+    $values['measure_method'] = in_array($method, ['ga4', 'gtm', 'off'], true) ? $method : 'ga4';
+    $gtmRaw = trim((string)($_POST['gtm_id'] ?? ''));
+    $values['gtm_id'] = parseGtmId($gtmRaw);
+    if ($values['measure_method'] === 'gtm' && $values['gtm_id'] === '') $err = 'Google Tag Manager seçildi ama GTM kimliği girilmedi.';
+    if ($gtmRaw !== '' && $values['gtm_id'] === '') $err = 'Google Tag Manager kimliği bulunamadı. "GTM-XXXXXXX" biçiminde yazın ya da GTM\'in verdiği kodu olduğu gibi yapıştırın.';
+    $pixelRaw = trim((string)($_POST['meta_pixel_id'] ?? ''));
+    $values['meta_pixel_id'] = parseMetaPixelId($pixelRaw);
+    if ($pixelRaw !== '' && $values['meta_pixel_id'] === '') $err = 'Meta Pixel kimliği bulunamadı. Yalnızca rakamlardan oluşan kimliği (ör. 1234567890123456) yazın ya da Meta\'nın verdiği kodu yapıştırın.';
     $values['consent_mode'] = ($_POST['consent_mode'] ?? '') === 'advanced' ? 'advanced' : 'basic';
     $served = trim((string)($_POST['stat_served'] ?? ''));
     if ($served !== '' && !preg_match('/^\d{1,5}\+?$/', $served)) $err = 'Hizmet verilen ülke sayısı bir sayı olmalı (ör. 90 veya 90+).';
@@ -44,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $err !== '') {
     $cur = $_POST;
 } else {
     $cur = [];
-    if ($ready) foreach (array_merge(array_keys($fields), ['ga4_id', 'consent_mode', 'stat_served', 'office_whatsapp']) as $k) $cur[$k] = siteSetting($k);
+    if ($ready) foreach (array_merge(array_keys($fields), ['ga4_id', 'consent_mode', 'stat_served', 'office_whatsapp', 'measure_method', 'gtm_id', 'meta_pixel_id']) as $k) $cur[$k] = siteSetting($k);
 }
 $h = fn($v) => htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
 $nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => 'Ekipler', 'events.php' => 'Etkinlikler', 'people.php' => 'Kişiler', 'event_requests.php' => 'Talepler', 'settings.php' => 'Ayarlar', 'admins.php' => 'Yöneticiler', '../apply_update.php' => 'Güncellemeler'];
@@ -107,22 +118,60 @@ $nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => '
                     </section>
 
                     <section class="bg-white border border-gray-200 rounded-lg shadow-sm p-5 md:p-6">
-                        <h3 class="font-semibold text-gray-900">Google Analytics (GA4)</h3>
-                        <p class="text-sm text-gray-600 mt-1">Sitenin ölçüm kimliği. Boş bırakırsanız mevcut kimlik (<code><?= $h(ga4Id()) ?></code>) kullanılır. Ölçümü kapatmak için <code>kapat</code> yazın.</p>
-                        <input type="text" name="ga4_id" value="<?= $h($cur['ga4_id'] ?? '') ?>" placeholder="G-XXXXXXXXXX" maxlength="30"
-                               class="mt-3 w-full sm:w-72 border border-gray-300 rounded-md px-3 py-2 text-sm font-mono">
+                        <h3 class="font-semibold text-gray-900">Ölçüm: Google Analytics (GA4), Google Tag Manager, Meta Pixel</h3>
+                        <p class="text-sm text-gray-600 mt-1">Site, her sayfada ve her tıklamada (WhatsApp, telefon, e-posta, yol tarifi, form…) ne olduğunu sabit adlarla kendisi bildirir. Burada bu bilgilerin hangi yolla ölçüleceğini seçersiniz. Aynı anda yalnızca biri yüklenir, bu yüzden ziyaretler iki kez sayılmaz.</p>
+                        <?php $mm = $cur['measure_method'] ?? ''; $mm = in_array($mm, ['ga4', 'gtm', 'off'], true) ? $mm : 'ga4'; ?>
+                        <div class="mt-4 space-y-4 text-sm text-gray-800">
+                            <label class="flex gap-3 items-start"><input type="radio" name="measure_method" value="ga4" class="mt-1" <?= $mm === 'ga4' ? 'checked' : '' ?>>
+                                <span><strong>Doğrudan GA4</strong> (varsayılan): GA4 kodu sitede doğrudan yüklenir, tıklamalar da GA4'e doğrudan gider.</span></label>
+                            <div class="ms-7">
+                                <label for="ga4_id" class="block text-xs font-medium text-gray-700">GA4 ölçüm kimliği</label>
+                                <input type="text" id="ga4_id" name="ga4_id" value="<?= $h($cur['ga4_id'] ?? '') ?>" placeholder="G-XXXXXXXXXX" maxlength="30"
+                                       class="mt-1 w-full sm:w-72 border border-gray-300 rounded-md px-3 py-2 text-sm font-mono">
+                                <p class="text-xs text-gray-500 mt-1">Boş bırakırsanız mevcut kimlik (<code><?= $h(ga4Id() ?: 'yok') ?></code>) kullanılır. Ölçümü tamamen kapatmak için <code>kapat</code> yazın. Google Tag Manager kullanırken bu kimlik GTM'in içinde tanımlanır.</p>
+                            </div>
+                            <label class="flex gap-3 items-start"><input type="radio" name="measure_method" value="gtm" class="mt-1" <?= $mm === 'gtm' ? 'checked' : '' ?>>
+                                <span><strong>Google Tag Manager:</strong> Sitede yalnızca GTM yüklenir; GA4 ve diğer etiketler GTM'in içinden yönetilir. Doğrudan GA4 kodu otomatik olarak kapanır.</span></label>
+                            <div class="ms-7">
+                                <label for="gtm_id" class="block text-xs font-medium text-gray-700">GTM kapsayıcı kimliği</label>
+                                <input type="text" id="gtm_id" name="gtm_id" value="<?= $h($cur['gtm_id'] ?? '') ?>" placeholder="GTM-XXXXXXX" maxlength="5000"
+                                       class="mt-1 w-full sm:w-72 border border-gray-300 rounded-md px-3 py-2 text-sm font-mono">
+                                <p class="text-xs text-gray-500 mt-1">Yalnızca kimliği yazın. GTM'in verdiği uzun kodu yapıştırırsanız kimlik kendiliğinden ayıklanır; kodu aşağıdaki özel kod alanlarına <strong>koymayın</strong>. Kimliği kaydedip yöntemi henüz değiştirmeden GTM'in "Önizleme" düğmesiyle canlı sitede deneme yapabilirsiniz.</p>
+                            </div>
+                            <label class="flex gap-3 items-start"><input type="radio" name="measure_method" value="off" class="mt-1" <?= $mm === 'off' ? 'checked' : '' ?>>
+                                <span><strong>Kapalı:</strong> Hiçbir ölçüm kodu yüklenmez.</span></label>
+                            <div class="pt-2 border-t border-gray-200">
+                                <label for="meta_pixel_id" class="block text-sm font-medium text-gray-800">Meta Pixel kimliği</label>
+                                <input type="text" id="meta_pixel_id" name="meta_pixel_id" value="<?= $h($cur['meta_pixel_id'] ?? '') ?>" placeholder="1234567890123456" maxlength="5000"
+                                       class="mt-1 w-full sm:w-72 border border-gray-300 rounded-md px-3 py-2 text-sm font-mono">
+                                <p class="text-xs text-gray-500 mt-1">Boşken Pixel yüklenmez. Doluyken: Doğrudan GA4 modunda site Pixel'i kendisi yükler; Google Tag Manager modunda kimlik GTM'e iletilir ve GTM'deki Meta etiketi kullanır. Her iki durumda da onay şeridi gösterilen ziyaretçide Pixel ancak "Kabul et"ten sonra çalışır. WhatsApp, telefon, e-posta ve yol tarifi tıklamaları Meta'ya "Contact", etkinlik talebi ve konsültasyon tıklaması "Lead" olarak gider.</p>
+                            </div>
+                        </div>
                         <?php
                         $gaSrc = ga4IdSource();
                         $gaSrcText = ['admin' => 'bu sayfadaki alan', 'config' => 'sunucudaki config.php (GA4_ID)', 'default' => 'yerleşik varsayılan', 'off' => 'ölçüm kapalı'][$gaSrc];
                         $cc = cfCountry();
+                        $mode = measureMode();
+                        $modeText = ['ga4' => 'Doğrudan GA4 (' . (ga4Id() ?: '-') . ')', 'gtm' => 'Google Tag Manager (' . gtmId() . ')', 'off' => 'kapalı'][$mode];
+                        $warnings = customCodeMeasureWarnings();
+                        if (measureMethodSetting() === 'gtm' && $mode !== 'gtm') $warnings[] = 'Google Tag Manager seçili ama geçerli GTM kimliği yok: site doğrudan GA4 ile ölçmeye devam ediyor.';
                         ?>
                         <div class="mt-4 rounded-md border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700 space-y-1.5">
                             <p class="font-medium text-gray-900">Ölçüm durumu</p>
-                            <p>Sitede kullanılan kimlik: <code class="font-mono"><?= $h(ga4Id() ?: 'yok') ?></code> (kaynak: <?= $h($gaSrcText) ?>)</p>
+                            <p>Sitede şu an kullanılan yöntem: <strong><?= $h($modeText) ?></strong></p>
+                            <p>GA4 kimliğinin kaynağı: <?= $h($gaSrcText) ?></p>
+                            <p>Meta Pixel: <?= metaPixelId() !== '' ? '<code class="font-mono">' . $h(metaPixelId()) . '</code>' . ($mode === 'gtm' ? ' (GTM içindeki Meta etiketi kullanır)' : ($mode === 'ga4' ? ' (site yükler)' : ' (ölçüm kapalı olduğu için yüklenmez)')) : 'yok' ?></p>
                             <p>Cloudflare ülke bilgisi (sizin bu isteğiniz): <?php if ($cc !== ''): ?><code><?= $h($cc) ?></code><?php else: ?><strong class="text-red-700">gelmiyor</strong>. Bu durumda tüm ziyaretçiler "ülkesi bilinmeyen" sayılır, çerez şeridi herkese çıkar ve Temel modda onay vermeyen hiçbir ziyaretçi ölçülmez. Cloudflare'de "IP Geolocation" ayarını açın.<?php endif; ?></p>
                             <p>Çerez onayı modu: <?= ($cur['consent_mode'] ?? '') === 'advanced' ? 'Gelişmiş' : 'Temel' ?></p>
-                            <p class="text-gray-600">Yönetici olarak giriş yapmış tarayıcıda GA4 kodu yüklenmez, kendi ziyaretleriniz ölçülmez. Ölçümü denemek için siteyi gizli pencerede açın ve GA4'te <em>Raporlar &gt; Gerçek zamanlı</em> ekranına bakın. Sayfa kaynağında <code>ga4:</code> ile başlayan not, o sayfada kodun neden yüklenmediğini söyler.</p>
+                            <p class="text-gray-600">Yönetici olarak giriş yapmış tarayıcıda ölçüm kodu yüklenmez, kendi ziyaretleriniz ölçülmez (GTM önizlemesi hariç). Ölçümü denemek için siteyi gizli pencerede açın ve GA4'te <em>Raporlar &gt; Gerçek zamanlı</em> ekranına bakın. Sayfa kaynağında <code>olcum:</code> ile başlayan not, o sayfada neyin yüklendiğini ya da neden yüklenmediğini söyler.</p>
                         </div>
+                        <?php if ($warnings): ?>
+                        <div class="mt-3 rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 space-y-1.5">
+                            <p class="font-medium">Dikkat: ölçüm iki kez yüklenebilir veya beklenenden farklı çalışıyor</p>
+                            <?php foreach ($warnings as $w): ?><p>• <?= $h($w) ?></p><?php endforeach; ?>
+                            <p class="text-xs">Özel kod alanlarındaki GA4/GTM/Meta kodları yukarıdaki seçimden bağımsız yüklenir. Ölçüm kodunu yalnızca bu bölümdeki alanlara girin, özel kod alanından silin.</p>
+                        </div>
+                        <?php endif; ?>
                     </section>
 
                     <section class="bg-white border border-gray-200 rounded-lg shadow-sm p-5 md:p-6">
@@ -132,7 +181,7 @@ $nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => '
                             <label class="flex gap-3 items-start"><input type="radio" name="consent_mode" value="basic" class="mt-1" <?= ($cur['consent_mode'] ?? '') !== 'advanced' ? 'checked' : '' ?>>
                                 <span><strong>Temel (önerilen başlangıç):</strong> GA4 ve aşağıdaki özel kodlar onay verilmeden hiç yüklenmez. En güvenli seçenek, onaysız ziyaretçi ölçülmez.</span></label>
                             <label class="flex gap-3 items-start"><input type="radio" name="consent_mode" value="advanced" class="mt-1" <?= ($cur['consent_mode'] ?? '') === 'advanced' ? 'checked' : '' ?>>
-                                <span><strong>Gelişmiş:</strong> GA4 ve özel kodlar her zaman yüklenir, ama Google etiketleri onay verilene kadar çerez kullanmadan (denied) çalışır. Google Tag Manager kullanacaksanız bu moddur. <em>Dikkat: bu modda özel alanlara Google dışı araçlar (Meta Pixel, sohbet vb.) koymayın, onaysız çalışırlar. Onları GTM içinde onay koşuluna bağlayın.</em></span></label>
+                                <span><strong>Gelişmiş:</strong> GA4/GTM ve özel kodlar her zaman yüklenir, ama Google etiketleri onay verilene kadar çerez kullanmadan (denied) çalışır; Meta Pixel ise onaya kadar bekletilir. Google Tag Manager ile önerilen moddur. <em>Dikkat: bu modda özel alanlara Google dışı araçlar (Meta Pixel, sohbet vb.) koymayın, onaysız çalışırlar. Onları GTM içinde onay koşuluna bağlayın.</em></span></label>
                         </div>
                     </section>
 
