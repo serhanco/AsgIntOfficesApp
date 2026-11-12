@@ -87,6 +87,11 @@ return [
     // Footer
     'footer_quick_links'  => 'Быстрые ссылки',
     'footer_home'         => 'Главная',
+    'sitemap_title'       => 'Карта сайта',
+    'sitemap_subtitle'    => 'Все открытые страницы сайта: офисы, мероприятия и многое другое.',
+    'sitemap_pages'       => 'Страницы',
+    'sitemap_offices'     => 'Офисы',
+    'sitemap_events'      => 'Мероприятия',
     'footer_contact'      => 'Контакты',
     'footer_partner'      => 'Стать партнёром',
     'footer_copyright'    => '&copy; 2026 Acıbadem Healthcare Group. Все права защищены.',
