@@ -86,7 +86,7 @@ function measureTemplate(string $currentPage, ?string $override): string {
     if ($override !== null && $override !== '') return $override;
     $map = [
         'home' => 'home', 'nearest' => 'nearest', 'offices' => 'offices', 'office' => 'office', 'map' => 'map',
-        'events' => 'events', 'contracted-institutions' => 'institutions', 'sitemap' => 'sitemap',
+        'events' => 'events', 'contracted-institutions' => 'institutions', 'sitemap' => 'sitemap', 'api-docs' => 'api_docs',
     ];
     return $map[$currentPage] ?? ($currentPage !== '' ? $currentPage : 'not_found');
 }

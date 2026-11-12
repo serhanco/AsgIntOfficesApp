@@ -15,6 +15,7 @@ RewriteRule ^contracted-institutions/?$ contracted-institutions.php [L,QSA]
 RewriteRule ^sitemap\.xml$ sitemap.php [L,QSA]
 # The same list for people
 RewriteRule ^sitemap/?$ sitemap-page.php [L,QSA]
+RewriteRule ^api/?$ api-docs.php [L,QSA]
 RewriteRule ^api/offices/?$ api.php [L,QSA]
 RewriteRule ^api/event-request/?$ event_request.php [L,QSA]
 # Admin uploads live outside the site folder so deploys cannot delete them (see includes/storage.php);
