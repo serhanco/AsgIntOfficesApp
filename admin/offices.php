@@ -70,9 +70,15 @@ $msg = $_GET['msg'] ?? '';
         <!-- Top header -->
         <header class="h-16 bg-white shadow-sm flex items-center justify-between px-8">
             <h2 class="text-xl font-semibold text-gray-800">Ofis Yönetimi</h2>
-            <a href="office_edit.php" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
-                + Yeni Ofis Ekle
-            </a>
+            <div class="flex items-center gap-3">
+                <a href="offices_export.php" class="inline-flex items-center gap-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-md text-sm font-medium" title="Tüm ofisleri ve özelliklerini Excel dosyası olarak indir">
+                    <svg class="w-4 h-4 text-green-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg>
+                    Excel indir
+                </a>
+                <a href="office_edit.php" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+                    + Yeni Ofis Ekle
+                </a>
+            </div>
         </header>
 
         <!-- Content Area -->
@@ -82,6 +88,8 @@ $msg = $_GET['msg'] ?? '';
                 <div class="mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">Ofis başarıyla silindi.</div>
             <?php elseif ($msg === 'updated'): ?>
                 <div class="mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">Güncelleme başarılı.</div>
+            <?php elseif ($msg === 'export_failed'): ?>
+                <div class="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">Excel dosyası oluşturulamadı. Lütfen tekrar deneyin.</div>
             <?php endif; ?>
 
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
