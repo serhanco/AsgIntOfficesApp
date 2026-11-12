@@ -76,8 +76,10 @@ $navItems = [
     <meta property="og:description" content="<?= e($metaDescription) ?>">
     <meta property="og:image" content="<?= e($ogImage) ?>">
     <meta property="og:type" content="website">
-    <link rel="icon" type="image/png" href="<?= getBaseUrl() ?>/assets/images/favicon.png">
-    <link rel="icon" type="image/x-icon" href="<?= getBaseUrl() ?>/assets/images/favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="<?= getBaseUrl() ?>/assets/images/favicon.svg?v=2">
+    <link rel="icon" type="image/png" href="<?= getBaseUrl() ?>/assets/images/favicon.png?v=2">
+    <link rel="icon" type="image/x-icon" href="<?= getBaseUrl() ?>/assets/images/favicon.ico?v=2">
+    <link rel="apple-touch-icon" href="<?= getBaseUrl() ?>/assets/images/apple-touch-icon.png?v=2">
     <script>document.documentElement.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('js-anim');</script>
 
     <?= measurementHead(measurePageContext(measureTemplate($currentPage, $pageTemplate ?? null), $trackContext ?? [])) ?>
