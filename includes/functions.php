@@ -193,6 +193,24 @@ function getAllOffices(bool $activeOnly = true): array {
     return $stmt->fetchAll();
 }
 
+/** One office as /api/offices returns it. Shared with the API documentation page (/api) so the two never drift apart. */
+function apiOfficePayload(array $o): array {
+    return [
+        'id' => (int)$o['id'],
+        'name' => $o['name'],
+        'display_name' => $o['display_name'],
+        'slug' => $o['slug'],
+        'country' => $o['country'],
+        'country_code' => $o['country_code'],
+        'address' => $o['address'],
+        'phone' => $o['phone'],
+        'whatsapp' => officeWhatsappEnabled() ? (array_key_exists('whatsapp', $o) ? $o['whatsapp'] : $o['phone']) : '',
+        'email' => $o['email'],
+        'latitude' => (float)$o['latitude'],
+        'longitude' => (float)$o['longitude']
+    ];
+}
+
 /** Number of active offices (menu badge). */
 function activeOfficeCount(): int {
     static $n = null;
