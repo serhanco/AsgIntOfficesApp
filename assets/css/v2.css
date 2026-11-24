@@ -728,16 +728,23 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 .acb__cta { margin-top: 2rem; }
 .acb__media { position: relative; isolation: isolate; overflow: hidden; border-radius: 30px; aspect-ratio: 4 / 3.4; box-shadow: var(--shadow-lg); background: var(--navy-900); }
 .acb__media img { width: 100%; height: 100%; object-fit: cover; object-position: 30% 50%; }
-.acb__media::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 45%, rgba(3,16,43,.78)); }
+.acb__media::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(3,16,43,.85)); }
 .acb__seal { position: absolute; z-index: 2; top: 18px; inset-inline-end: 18px; display: inline-flex; gap: 8px; align-items: center; padding: 9px 14px; border-radius: 99px; background: #fff; color: var(--navy); font-size: .85rem; font-weight: 800; box-shadow: var(--shadow); }
 .acb__seal i { font-size: 18px; color: var(--aqua-deep); }
-.acb__stats { margin-top: clamp(32px, 4.5vw, 56px); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-@media (min-width: 640px) { .acb__stats { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (min-width: 1024px) { .acb__stats { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); } }
-.acb__stat { position: relative; overflow: hidden; padding: 18px 18px 16px; background: #fff; border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow-sm); }
-.acb__stat::before { content: ''; position: absolute; inset-inline: 0; top: 0; height: 3px; background: linear-gradient(90deg, var(--aqua), var(--navy)); opacity: .8; }
-.acb__stat-ico { display: block; font-size: 20px; color: var(--aqua-deep); }
-.acb__stat b { display: block; margin-top: 10px; font-size: clamp(1.6rem, 2.8vw, 2.2rem); font-weight: 800; line-height: 1; letter-spacing: -.03em; color: var(--navy); font-variant-numeric: tabular-nums; }
-.acb__stat span { display: block; margin-top: 6px; font-size: .72rem; font-weight: 700; line-height: 1.35; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); overflow-wrap: anywhere; }
-.acb__stat span:lang(ar), .acb__stat span:lang(fa) { letter-spacing: normal; }
+.acb__stats { position: absolute; z-index: 2; inset-inline: 14px; bottom: 14px; display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); padding-block: 12px; border-radius: 18px; color: #fff; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.acb__stat { padding-inline: 12px; min-width: 0; }
+.acb__stat + .acb__stat { border-inline-start: 1px solid rgba(255,255,255,.18); }
+.acb__stat b { display: block; font-size: clamp(1.15rem, 2vw, 1.55rem); font-weight: 800; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.acb__stat span { display: block; margin-top: 5px; font-size: .62rem; font-weight: 700; line-height: 1.3; letter-spacing: .06em; text-transform: uppercase; color: #cfe0f4; overflow-wrap: break-word; hyphens: auto; }
+.acb__stat span:lang(ar), .acb__stat span:lang(fa) { letter-spacing: normal; font-size: .7rem; }
 .acb__stat span:lang(ka) { text-transform: none; letter-spacing: .02em; }
+@media (max-width: 639px) {
+  .acb__stat { padding-inline: 10px; }
+  .acb__stat span { text-transform: none; letter-spacing: 0; font-size: .68rem; font-weight: 600; }
+  .acb__stats--many { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 12px; }
+  .acb__stats--many .acb__stat:nth-child(3n + 1) { border-inline-start: 0; }
+}
+@media (min-width: 640px) { .acb__stats--many .acb__stat { padding-inline: 9px; } .acb__stats--many .acb__stat span { text-transform: none; letter-spacing: 0; font-size: .66rem; font-weight: 600; } }
+@media (max-width: 639px) { .acb__stat span::first-letter { text-transform: uppercase; } }
+@media (min-width: 640px) { .acb__stats--many .acb__stat span::first-letter { text-transform: uppercase; } }
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) { .acb__stats { background: rgba(6,26,71,.78); } }

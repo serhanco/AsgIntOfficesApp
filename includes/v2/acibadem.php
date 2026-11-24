@@ -3,7 +3,7 @@
  * Home page: "about Acıbadem" section (text + three pillars, photo with number badges).
  * Numbers: offices/countries come from the DB, 'countries served' from Ayarlar (stat_served); hospitals and years are Ayarlar fields (acb_hospitals, acb_years) and their badge
  * is hidden while the field is empty. The world map button is an Ayarlar switch (acb_map_btn), off by default.
- * Holds the number tiles that used to sit in the hero. Expects $countryCount and $officeCount from the home page.
+ * Shows the numbers that used to sit in the hero as one glass strip on the photo. Expects $countryCount and $officeCount from the home page.
  */
 $acbNum = function (string $key): string {
     $v = trim(siteSetting($key));
@@ -12,12 +12,12 @@ $acbNum = function (string $key): string {
 // Number tiles: Acıbadem-wide numbers from Ayarlar first (hidden while empty), then the former hero stats (DB / Ayarlar)
 $served = statServed();
 $acbStats = array_values(array_filter([
-    ['icon' => 'ph-buildings',            'n' => $acbNum('acb_hospitals'), 'l' => __('acb_b_hospitals')],
-    ['icon' => 'ph-medal',                'n' => $acbNum('acb_years'),     'l' => __('acb_b_years')],
-    ['icon' => 'ph-globe-hemisphere-west','n' => $served[0] . $served[1],   'l' => __('stat_served')],
-    ['icon' => 'ph-map-pin',              'n' => (string)$officeCount,     'l' => __('stat_offices')],
-    ['icon' => 'ph-flag',                 'n' => (string)$countryCount,    'l' => __('stat_countries')],
-    ['icon' => 'ph-headset',              'n' => '24/7',                   'l' => __('stat_support')],
+    ['n' => $acbNum('acb_hospitals'), 'l' => __('acb_b_hospitals')],
+    ['n' => $acbNum('acb_years'),     'l' => __('acb_b_years')],
+    ['n' => $served[0] . $served[1],   'l' => __('stat_served')],
+    ['n' => (string)$officeCount,     'l' => __('stat_offices')],
+    ['n' => (string)$countryCount,    'l' => __('stat_countries')],
+    ['n' => '24/7',                   'l' => __('stat_support')],
 ], fn($b) => $b['n'] !== '' && $b['n'] !== '0'));
 $acbPillars = [
     ['icon' => 'ph-buildings',  'h' => __('acb_p1_h'), 'p' => __('acb_p1_p')],
@@ -49,16 +49,16 @@ $acbPillars = [
             <div class="acb__media reveal" style="--d:.12s">
                 <img src="<?= asset('assets/images/office-hero.webp') ?>" alt="" width="1600" height="892" loading="lazy" decoding="async">
                 <span class="acb__seal"><i class="ph-fill ph-seal-check" aria-hidden="true"></i><?= e(__('acb_seal')) ?></span>
+                <dl class="acb__stats<?= count($acbStats) > 4 ? ' acb__stats--many' : '' ?>" style="--n:<?= count($acbStats) ?>">
+                    <?php foreach ($acbStats as $t):
+                        $cnt = preg_match('/^(\d+)(\+?)$/', $t['n'], $m) ? ' data-count="' . $m[1] . '"' . ($m[2] ? ' data-suffix="+"' : '') : ''; ?>
+                    <div class="acb__stat">
+                        <dt class="sr-only"><?= e($t['l']) ?></dt>
+                        <dd><b><bdi dir="ltr"<?= $cnt ?>><?= e($t['n']) ?></bdi></b><span aria-hidden="true"><?= e($t['l']) ?></span></dd>
+                    </div>
+                    <?php endforeach; ?>
+                </dl>
             </div>
         </div>
-        <dl class="acb__stats reveal" style="--d:.2s">
-            <?php foreach ($acbStats as $t):
-                $cnt = preg_match('/^(\d+)(\+?)$/', $t['n'], $m) ? ' data-count="' . $m[1] . '"' . ($m[2] ? ' data-suffix="+"' : '') : ''; ?>
-            <div class="acb__stat">
-                <dt class="sr-only"><?= e($t['l']) ?></dt>
-                <dd><i class="ph-fill <?= $t['icon'] ?> acb__stat-ico" aria-hidden="true"></i><b><bdi dir="ltr"<?= $cnt ?>><?= e($t['n']) ?></bdi></b><span aria-hidden="true"><?= e($t['l']) ?></span></dd>
-            </div>
-            <?php endforeach; ?>
-        </dl>
     </div>
 </section>
