@@ -42,6 +42,12 @@ if ($ready && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $served = trim((string)($_POST['stat_served'] ?? ''));
     if ($served !== '' && !preg_match('/^\d{1,5}\+?$/', $served)) $err = 'Hizmet verilen ülke sayısı bir sayı olmalı (ör. 90 veya 90+).';
     $values['stat_served'] = $served;
+    foreach (['acb_hospitals' => 'Hastane sayısı', 'acb_years' => 'Yıllık deneyim'] as $k => $lbl) {
+        $v = trim((string)($_POST[$k] ?? ''));
+        if ($v !== '' && !preg_match('/^\d{1,5}\+?$/', $v)) $err = $lbl . ' bir sayı olmalı (ör. 20 veya 20+).';
+        $values[$k] = $v;
+    }
+    $values['acb_map_btn'] = ($_POST['acb_map_btn'] ?? '') === '1' ? '1' : '0';
     $values['office_whatsapp'] = ($_POST['office_whatsapp'] ?? '') === '1' ? '1' : '0';
     if ($err === '') {
         $st = $db->prepare("INSERT INTO site_settings (skey, svalue) VALUES (?, ?) ON DUPLICATE KEY UPDATE svalue = VALUES(svalue)");
@@ -55,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $err !== '') {
     $cur = $_POST;
 } else {
     $cur = [];
-    if ($ready) foreach (array_merge(array_keys($fields), ['ga4_id', 'consent_mode', 'stat_served', 'office_whatsapp', 'measure_method', 'gtm_id', 'meta_pixel_id']) as $k) $cur[$k] = siteSetting($k);
+    if ($ready) foreach (array_merge(array_keys($fields), ['ga4_id', 'consent_mode', 'stat_served', 'acb_hospitals', 'acb_years', 'acb_map_btn', 'office_whatsapp', 'measure_method', 'gtm_id', 'meta_pixel_id']) as $k) $cur[$k] = siteSetting($k);
 }
 $h = fn($v) => htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
 $nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => 'Ekipler', 'events.php' => 'Etkinlikler', 'people.php' => 'Kişiler', 'event_requests.php' => 'Talepler', 'settings.php' => 'Ayarlar', 'admins.php' => 'Yöneticiler', '../apply_update.php' => 'Güncellemeler'];
@@ -190,6 +196,17 @@ $nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => '
                         <p class="text-sm text-gray-600 mt-1">Ofis ve ülke sayıları veritabanından otomatik hesaplanır. Hastalara hizmet verilen ülke sayısı veritabanında olmadığı için buradan girilir (ör. <code>90+</code> veya <code>92</code>). Boşsa 90+ gösterilir.</p>
                         <input type="text" name="stat_served" value="<?= $h($cur['stat_served'] ?? '') ?>" placeholder="90+" maxlength="6"
                                class="mt-3 w-full sm:w-40 border border-gray-300 rounded-md px-3 py-2 text-sm">
+                    </section>
+
+                    <section class="bg-white border border-gray-200 rounded-lg shadow-sm p-5 md:p-6">
+                        <h3 class="font-semibold text-gray-900">Ana sayfa: Acıbadem tanıtım bölümü</h3>
+                        <p class="text-sm text-gray-600 mt-1">Fotoğraf üzerindeki rakam kutuları. Ofis bulunan ülke sayısı veritabanından otomatik gelir. Hastane sayısı ve yıllık deneyim buradan girilir (ör. <code>20</code> veya <code>20+</code>); boş bırakılan kutu sitede görünmez.</p>
+                        <div class="mt-3 flex flex-wrap gap-4">
+                            <label class="text-sm text-gray-700">Hastane sayısı<input type="text" name="acb_hospitals" value="<?= $h($cur['acb_hospitals'] ?? '') ?>" maxlength="6" class="mt-1 block w-32 border border-gray-300 rounded-md px-3 py-2 text-sm"></label>
+                            <label class="text-sm text-gray-700">Yıllık deneyim<input type="text" name="acb_years" value="<?= $h($cur['acb_years'] ?? '') ?>" maxlength="6" class="mt-1 block w-32 border border-gray-300 rounded-md px-3 py-2 text-sm"></label>
+                        </div>
+                        <label class="mt-4 flex gap-3 items-start text-sm text-gray-800"><input type="checkbox" name="acb_map_btn" value="1" class="mt-0.5 h-4 w-4" <?= ($cur['acb_map_btn'] ?? '') === '1' ? 'checked' : '' ?>>
+                            <span><strong>"Dünya haritasında gör" butonunu göster</strong> (bölümün altında, /map sayfasına gider). Varsayılan: gizli.</span></label>
                     </section>
 
                     <section class="bg-white border border-gray-200 rounded-lg shadow-sm p-5 md:p-6 space-y-6">

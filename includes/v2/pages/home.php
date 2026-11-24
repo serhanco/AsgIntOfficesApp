@@ -279,6 +279,8 @@ document.addEventListener('nf:country', function (e) {
     </div>
 </section>
 
+<?php require __DIR__ . '/../acibadem.php'; ?>
+
 <?php require __DIR__ . '/../social-proof.php'; ?>
 
 <script>window.NF_CONFIG = <?= json_encode($finderConfig, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) ?>;</script>
