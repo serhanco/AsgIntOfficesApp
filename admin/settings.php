@@ -200,7 +200,7 @@ $nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => '
 
                     <section class="bg-white border border-gray-200 rounded-lg shadow-sm p-5 md:p-6">
                         <h3 class="font-semibold text-gray-900">Ana sayfa: Acıbadem tanıtım bölümü</h3>
-                        <p class="text-sm text-gray-600 mt-1">Fotoğraf üzerindeki rakam kutuları. Ofis bulunan ülke sayısı veritabanından otomatik gelir. Hastane sayısı ve yıllık deneyim buradan girilir (ör. <code>20</code> veya <code>20+</code>); boş bırakılan kutu sitede görünmez.</p>
+                        <p class="text-sm text-gray-600 mt-1">Bölümün altındaki rakam kutuları. Ofis ve ülke sayıları veritabanından, hizmet verilen ülke yukarıdaki alandan gelir. Hastane sayısı ve yıllık deneyim buradan girilir (ör. <code>20</code> veya <code>20+</code>); boş bırakılan kutu sitede görünmez.</p>
                         <div class="mt-3 flex flex-wrap gap-4">
                             <label class="text-sm text-gray-700">Hastane sayısı<input type="text" name="acb_hospitals" value="<?= $h($cur['acb_hospitals'] ?? '') ?>" maxlength="6" class="mt-1 block w-32 border border-gray-300 rounded-md px-3 py-2 text-sm"></label>
                             <label class="text-sm text-gray-700">Yıllık deneyim<input type="text" name="acb_years" value="<?= $h($cur['acb_years'] ?? '') ?>" maxlength="6" class="mt-1 block w-32 border border-gray-300 rounded-md px-3 py-2 text-sm"></label>
