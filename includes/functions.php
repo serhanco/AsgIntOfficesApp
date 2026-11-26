@@ -234,6 +234,15 @@ function officeWhatsappEnabled(): bool {
 }
 
 /**
+ * Head office WhatsApp button and number in the site footer, switched on in the admin (Ayarlar).
+ * Hidden by default (temporarily, 2026-11): an unset setting (or no site_settings table yet) counts as off.
+ * Header, head office card and event request form keep their head office WhatsApp.
+ */
+function footerWhatsappEnabled(): bool {
+    return siteSetting('footer_whatsapp') === '1';
+}
+
+/**
  * WhatsApp number of an office, digits only ('' = none, the button is hidden).
  * Before the whatsapp column exists (patch not applied yet) the phone number is used, as before.
  */
