@@ -23,7 +23,7 @@ require_once __DIR__ . '/admin/includes/auth.php'; // config, db, session, CSRF 
 $keyOk = !$isCli
     && defined('UPDATE_KEY') && is_string(UPDATE_KEY) && UPDATE_KEY !== ''
     && is_string($_GET['key'] ?? null) && hash_equals(UPDATE_KEY, $_GET['key']);
-$isAdmin = !$isCli && is_admin_logged_in();
+$isAdmin = !$isCli && is_full_admin(); // contributors cannot run updates
 
 if (!$isCli && !$isAdmin && !$keyOk) {
     http_response_code(403);

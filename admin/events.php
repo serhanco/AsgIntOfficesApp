@@ -5,8 +5,33 @@ require_admin_login();
 
 $db = getDb();
 $ready = eventsReady();
+$isContrib = is_contributor();
+$meId = (int)$_SESSION['admin_user_id'];
+// Who entered each event (empty before patch_20261127_contributor_role.sql)
+$owners = [];
+if ($ready && eventsCreatedByReady()) {
+    foreach ($db->query("SELECT e.id, e.created_by, u.username FROM events e LEFT JOIN admin_users u ON u.id = e.created_by")->fetchAll() as $r) {
+        $owners[(int)$r['id']] = ['id' => (int)$r['created_by'], 'name' => (string)$r['username']];
+    }
+}
+$postId = (int)($_POST['id'] ?? 0);
+// A contributor may change only their own drafts
+$canEdit = function (int $eventId, bool $published) use ($isContrib, $owners, $meId): bool {
+    return !$isContrib || (!$published && ($owners[$eventId]['id'] ?? 0) === $meId);
+};
+$isPublished = function (int $eventId) use ($db): bool {
+    $st = $db->prepare("SELECT is_published FROM events WHERE id = ?");
+    $st->execute([$eventId]);
+    return (bool)$st->fetchColumn();
+};
 
-if ($ready && ($_POST['action'] ?? '') === 'delete' && isset($_POST['id'])) {
+if ($ready && ($_POST['action'] ?? '') === 'publish' && !$isContrib && $postId > 0) {
+    $db->prepare("UPDATE events SET is_published = 1, updated_at = CURRENT_TIMESTAMP WHERE id = ?")->execute([$postId]);
+    header('Location: events.php?msg=published');
+    exit;
+}
+
+if ($ready && ($_POST['action'] ?? '') === 'delete' && isset($_POST['id']) && $canEdit($postId, $isPublished($postId))) {
     // Its address keeps working: QR codes and old links open the events page
     $stmt = $db->prepare("SELECT slug FROM events WHERE id = ?");
     $stmt->execute([(int)$_POST['id']]);
@@ -18,6 +43,9 @@ if ($ready && ($_POST['action'] ?? '') === 'delete' && isset($_POST['id'])) {
 }
 
 $events = $ready ? sortEvents(getEvents(false, 'all')) : [];
+// Drafts first, so what waits for approval is on top
+usort($events, fn($a, $b) => (int)$a['is_published'] <=> (int)$b['is_published']);
+$draftCount = count(array_filter($events, fn($e) => !$e['is_published']));
 $typeLabels = eventTypeLabelsTr();
 $msg = $_GET['msg'] ?? '';
 $fmt = fn($d) => $d ? date('d.m.Y', strtotime($d)) : '';
@@ -31,21 +59,7 @@ $fmt = fn($d) => $d ? date('d.m.Y', strtotime($d)) : '';
     <link rel="stylesheet" href="../assets/css/tailwind.css?v=<?= @filemtime(__DIR__ . '/../assets/css/tailwind.css') ?>">
 </head>
 <body class="bg-gray-100 flex min-h-screen">
-    <aside class="w-64 bg-gray-900 text-white flex flex-col hidden md:flex">
-        <div class="h-16 flex items-center px-6 border-b border-gray-800 font-bold text-lg">Acıbadem Admin</div>
-        <nav class="flex-1 px-4 py-6 space-y-2">
-            <a href="index.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Dashboard</a>
-            <a href="offices.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Ofisler</a>
-            <a href="teams.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Ekipler</a>
-            <a href="events.php" class="block px-4 py-2 rounded-md bg-gray-800 text-white">Etkinlikler</a>
-            <a href="people.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Kişiler</a>
-            <a href="event_requests.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Talepler</a>
-            <a href="settings.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Ayarlar</a>
-            <a href="admins.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Yöneticiler</a>
-            <a href="../apply_update.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Güncellemeler</a>
-            <a href="../" target="_blank" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Siteyi gör ↗</a>
-        </nav>
-    </aside>
+    <?= admin_sidebar('events.php') ?>
 
     <main class="flex-1 flex flex-col min-w-0">
         <header class="h-16 bg-white shadow-sm flex items-center justify-between px-4 md:px-8 gap-4">
@@ -54,6 +68,7 @@ $fmt = fn($d) => $d ? date('d.m.Y', strtotime($d)) : '';
             <a href="event_edit.php" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">+ Yeni Etkinlik</a>
             <?php endif; ?>
         </header>
+        <?= admin_mobile_nav('events.php') ?>
 
         <div class="p-4 md:p-8 flex-1 overflow-y-auto">
             <?php if (!$ready): ?>
@@ -64,8 +79,13 @@ $fmt = fn($d) => $d ? date('d.m.Y', strtotime($d)) : '';
                     <a href="activities.php?legacy=1" class="inline-block mt-3 ml-3 text-sm underline">Eski etkinlik ekranı</a>
                 </div>
             <?php else: ?>
-                <?php if ($msg === 'deleted'): ?>
-                    <div class="mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">Etkinlik silindi.</div>
+                <?php if ($msg === 'deleted' || $msg === 'published'): ?>
+                    <div class="mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg"><?= $msg === 'deleted' ? 'Etkinlik silindi.' : 'Etkinlik yayına alındı.' ?></div>
+                <?php endif; ?>
+                <?php if ($isContrib): ?>
+                    <div class="mb-4 bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-lg text-sm">Eklediğiniz etkinlikler <b>taslak</b> olarak kaydedilir ve sitede görünmez. Bir yönetici kontrol edip yayına alır. Yayına alınana kadar kendi taslaklarınızı düzenleyebilir veya silebilirsiniz; diğer taslakları yalnızca inceleyebilirsiniz.</div>
+                <?php elseif ($draftCount): ?>
+                    <div class="mb-4 bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-lg text-sm"><?= $draftCount ?> etkinlik taslakta. Kontrol edip "Yayınla" ile yayına alabilir ya da "Düzenle" ekranında "Yayında" kutusunu işaretleyebilirsiniz.</div>
                 <?php endif; ?>
 
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
@@ -93,6 +113,7 @@ $fmt = fn($d) => $d ? date('d.m.Y', strtotime($d)) : '';
                                         <?php if ($ev['visibility'] === 'link'): ?>· <span class="text-gray-600">Yalnız linkle</span><?php elseif ($ev['visibility'] === 'internal'): ?>· <span class="text-gray-600">İç kayıt</span><?php endif; ?>
                                         <?php if ($ev['external']): ?>· <span class="text-gray-600">Dış link ↗</span><?php endif; ?>
                                         <?php if ($ev['is_global']): ?>· <span class="text-gray-600">Konumdan bağımsız</span><?php endif; ?></div>
+                                    <?php if (!empty($owners[$ev['id']]['name'])): ?><div class="text-xs text-gray-500 mt-1">Ekleyen: <?= htmlspecialchars($owners[$ev['id']]['name']) ?><?= $owners[$ev['id']]['id'] === $meId ? ' (siz)' : '' ?></div><?php endif; ?>
                                 </td>
                                 <td class="px-4 py-4 text-sm text-gray-700">
                                     <?php foreach ($ev['locations'] as $l): ?>
@@ -101,19 +122,25 @@ $fmt = fn($d) => $d ? date('d.m.Y', strtotime($d)) : '';
                                     <?php if (!$ev['locations']): ?><span class="text-red-600">Lokasyon yok</span><?php endif; ?>
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap text-sm">
-                                    <?php if (!$ev['is_published']): ?><span class="px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">Taslak</span>
+                                    <?php if (!$ev['is_published']): ?><span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700">Taslak · onay bekliyor</span>
                                     <?php elseif ($ev['status'] === 'past'): ?><span class="px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">Geçmiş</span>
                                     <?php else: ?><span class="px-2 py-0.5 rounded-full bg-green-50 text-green-700">Yayında</span><?php endif; ?>
                                 </td>
                                 <td class="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="<?= htmlspecialchars($ev['url']) ?>" target="_blank" class="text-gray-500 hover:text-gray-800 mr-4">Gör</a>
-                                    <a href="event_edit.php?id=<?= $ev['id'] ?>" class="text-indigo-600 hover:text-indigo-900 mr-4">Düzenle</a>
+                                    <?php $mine = $canEdit((int)$ev['id'], (bool)$ev['is_published']); ?>
+                                    <a href="<?= htmlspecialchars($ev['url']) ?>" target="_blank" class="text-gray-500 hover:text-gray-800 mr-4"><?= $ev['is_published'] ? 'Gör' : 'Önizle' ?></a>
+                                    <?php if (!$ev['is_published'] && !$isContrib): ?>
+                                    <form method="POST" action="events.php" class="inline mr-4" onsubmit="return confirm('Bu etkinlik sitede yayınlansın mı?');"><?= csrf_field() ?><input type="hidden" name="action" value="publish"><input type="hidden" name="id" value="<?= $ev['id'] ?>"><button type="submit" class="text-green-700 hover:text-green-900">Yayınla</button></form>
+                                    <?php endif; ?>
+                                    <a href="event_edit.php?id=<?= $ev['id'] ?>" class="text-indigo-600 hover:text-indigo-900<?= $mine ? ' mr-4' : '' ?>"><?= $mine ? 'Düzenle' : 'İncele' ?></a>
+                                    <?php if ($mine): ?>
                                     <form method="POST" action="events.php" class="inline" onsubmit="return confirm('Bu etkinlik ve tüm lokasyonları silinecek. Emin misiniz?');">
                                         <?= csrf_field() ?>
                                         <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="id" value="<?= $ev['id'] ?>">
                                         <button type="submit" class="text-red-600 hover:text-red-900">Sil</button>
                                     </form>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

@@ -16,6 +16,62 @@ function request_is_https(): bool {
     return strpos($_SERVER['HTTP_CF_VISITOR'] ?? '', '"scheme":"https"') !== false;
 }
 
+// Roles: 'admin' sees everything. 'contributor' (Katkıda bulunan) only enters events as drafts; an admin reviews and publishes them.
+// Before patch_20261127_contributor_role.sql the role column does not exist and everyone is an admin, as before.
+const ADMIN_ROLES = ['admin' => 'Yönetici', 'contributor' => 'Katkıda bulunan'];
+// Pages a contributor may open (everything else sends them to the events list)
+const CONTRIBUTOR_PAGES = ['events.php', 'event_edit.php', 'admins.php', 'index.php'];
+
+function admin_role_of($row): string {
+    $r = is_array($row) ? (string)($row['role'] ?? 'admin') : 'admin';
+    return isset(ADMIN_ROLES[$r]) ? $r : 'admin';
+}
+
+function admin_roles_ready(): bool {
+    static $ready = null;
+    if ($ready === null) {
+        try { $ready = (bool)getDb()->query("SHOW COLUMNS FROM admin_users LIKE 'role'")->fetchColumn(); } catch (\Throwable $e) { $ready = false; }
+    }
+    return $ready;
+}
+
+function is_contributor(): bool {
+    return ($_SESSION['admin_role'] ?? 'admin') === 'contributor';
+}
+
+/** Full admin (not a contributor): may open every screen and publish */
+function is_full_admin(): bool {
+    return is_admin_logged_in() && !is_contributor();
+}
+
+/** Side menu items for the current user */
+function admin_nav(): array {
+    if (is_contributor()) return ['events.php' => 'Etkinlikler', 'admins.php' => 'Şifremi değiştir'];
+    return ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => 'Ekipler', 'events.php' => 'Etkinlikler', 'people.php' => 'Kişiler', 'event_requests.php' => 'Talepler', 'settings.php' => 'Ayarlar', 'admins.php' => 'Yöneticiler', '../apply_update.php' => 'Güncellemeler'];
+}
+
+/** Side menu (desktop) with logout, for the pages a contributor can see */
+function admin_sidebar(string $current): string {
+    $out = '<aside class="w-64 bg-gray-900 text-white flex-col hidden md:flex"><div class="h-16 flex items-center px-6 border-b border-gray-800 font-bold text-lg">Acıbadem Admin</div><nav class="flex-1 px-4 py-6 space-y-2">';
+    foreach (admin_nav() as $href => $label) {
+        $out .= '<a href="' . $href . '" class="block px-4 py-2 rounded-md ' . ($href === $current ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white') . '">' . $label . '</a>';
+    }
+    $out .= '<a href="../" target="_blank" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">Siteyi gör ↗</a></nav>';
+    $out .= '<div class="p-4 border-t border-gray-800 text-xs text-gray-400"><div class="mb-2 truncate">' . htmlspecialchars((string)($_SESSION['admin_username'] ?? ''), ENT_QUOTES, 'UTF-8') . ' · ' . ADMIN_ROLES[is_contributor() ? 'contributor' : 'admin'] . '</div>';
+    $out .= '<form method="POST" action="index.php">' . csrf_field() . '<input type="hidden" name="action" value="logout"><button type="submit" class="block w-full text-center px-4 py-2 border border-gray-600 rounded-md text-sm text-gray-300 hover:bg-gray-800 hover:text-white">Çıkış Yap</button></form></div></aside>';
+    return $out;
+}
+
+/** Menu strip for phones */
+function admin_mobile_nav(string $current): string {
+    $out = '<nav class="md:hidden bg-gray-900 text-sm flex overflow-x-auto">';
+    foreach (admin_nav() as $href => $label) {
+        $out .= '<a href="' . $href . '" class="px-4 py-3 whitespace-nowrap ' . ($href === $current ? 'text-white bg-gray-800' : 'text-gray-300') . '">' . $label . '</a>';
+    }
+    $out .= '<form method="POST" action="index.php" class="ml-auto">' . csrf_field() . '<input type="hidden" name="action" value="logout"><button type="submit" class="px-4 py-3 text-gray-300 whitespace-nowrap">Çıkış</button></form></nav>';
+    return $out;
+}
+
 // Harden the session cookie before starting the session
 if (session_status() === PHP_SESSION_NONE) {
     ini_set('session.use_strict_mode', '1');
@@ -52,13 +108,17 @@ if (isset($_SESSION['admin_user_id'])) {
         $_SESSION['admin_last_seen'] = $now;
         // The account must still exist and its password must be unchanged since this login
         // (so deleting an admin or resetting a password ends that person's open sessions)
-        $st = getDb()->prepare('SELECT password_hash FROM admin_users WHERE id = ?');
+        $st = getDb()->prepare('SELECT * FROM admin_users WHERE id = ?');
         $st->execute([(int)$_SESSION['admin_user_id']]);
-        $hash = $st->fetchColumn();
+        $me = $st->fetch();
+        $hash = $me['password_hash'] ?? '';
         if (!$hash || !hash_equals((string)($_SESSION['admin_pw_fp'] ?? ''), hash('sha256', $hash))) {
             $_SESSION = [];
             session_destroy();
             session_start();
+        } else {
+            // Read on every request, so a role change on Yöneticiler takes effect at once
+            $_SESSION['admin_role'] = admin_role_of($me);
         }
     }
 }
@@ -135,7 +195,7 @@ function clear_login_failures(string $username = ''): void {
 
 function admin_login(string $username, string $password): bool {
     $db = getDb();
-    $stmt = $db->prepare("SELECT id, password_hash FROM admin_users WHERE username = ?");
+    $stmt = $db->prepare("SELECT * FROM admin_users WHERE username = ?");
     $stmt->execute([$username]);
     $user = $stmt->fetch();
 
@@ -147,6 +207,7 @@ function admin_login(string $username, string $password): bool {
         session_regenerate_id(true);
         $_SESSION['admin_user_id'] = $user['id'];
         $_SESSION['admin_username'] = $username;
+        $_SESSION['admin_role'] = admin_role_of($user);
         $_SESSION['admin_pw_fp'] = hash('sha256', $user['password_hash']);
         $_SESSION['admin_login_at'] = time();
         $_SESSION['admin_last_seen'] = time();
@@ -174,6 +235,11 @@ function is_admin_logged_in(): bool {
 function require_admin_login(): void {
     if (!is_admin_logged_in()) {
         header('Location: login.php');
+        exit;
+    }
+    // Contributors see only the event screens and their own password
+    if (is_contributor() && !in_array(basename((string)($_SERVER['SCRIPT_NAME'] ?? '')), CONTRIBUTOR_PAGES, true)) {
+        header('Location: events.php');
         exit;
     }
 }

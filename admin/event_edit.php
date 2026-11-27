@@ -21,6 +21,10 @@ $v2 = eventsV2Ready(); // stage 1 columns and tables (patch_20261011_events_rela
 $extReady = eventsExternalReady(); // events.external_only (patch_20261015_events_external.sql)
 $metaReady = eventsMetaReady(); // events.meta_description (patch_20261109_event_meta_description.sql)
 $heroReady = eventsImageHeroReady(); // events.image_hero (patch_20261109_event_image_hero.sql)
+$ownerReady = eventsCreatedByReady(); // events.created_by (patch_20261127_contributor_role.sql)
+$isContrib = is_contributor();
+$meId = (int)$_SESSION['admin_user_id'];
+$readOnly = false; // a contributor looking at someone else's draft or at a published event
 
 // Countries that have an office (a country relation means all of its offices)
 $countries = [];
@@ -45,6 +49,7 @@ if ($isEdit) {
     if (!$row) { header('Location: events.php'); exit; }
     $event = array_merge($event, $row);
     $oldSlug = (string)$row['slug'];
+    if ($isContrib) $readOnly = $row['is_published'] || !$ownerReady || (int)($row['created_by'] ?? 0) !== $meId;
     $stmt = $db->prepare("SELECT * FROM event_locations WHERE event_id = ? ORDER BY sort_order, id");
     $stmt->execute([$id]);
     $stops = array_map(function ($s) {
@@ -76,7 +81,13 @@ if ($isEdit) {
     }
 }
 
+if ($isContrib && !$isEdit) $event['is_published'] = 0;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $readOnly) {
+    http_response_code(403);
+    die('Bu etkinliği düzenleme yetkiniz yok. <a href="events.php">Etkinlikler</a>');
+}
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $keep = ['is_published' => $event['is_published'], 'featured_rank' => $event['featured_rank'], 'sort_order' => $event['sort_order']];
     $event['title'] = trim($_POST['title'] ?? '');
     $event['slug'] = trim($_POST['slug'] ?? '');
     $event['tag_key'] = array_key_exists($_POST['tag_key'] ?? '', $typeLabels) ? $_POST['tag_key'] : 'act_tag_doctor';
@@ -88,10 +99,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($extReady) $event['external_only'] = ($_POST['where'] ?? '') === 'external' ? 1 : 0;
     $event['is_published'] = isset($_POST['is_published']) ? 1 : 0;
     $event['sort_order'] = (int)($_POST['sort_order'] ?? 0);
+    if ($isContrib) { // contributors enter drafts; publishing and featuring stay with the admins
+        $event['is_published'] = 0;
+        $event['sort_order'] = (int)$keep['sort_order'];
+    }
     if ($v2) {
         $event['audience'] = in_array($_POST['audience'] ?? '', EVENT_AUDIENCES, true) ? $_POST['audience'] : 'b2c';
         $event['visibility'] = in_array($_POST['visibility'] ?? '', EVENT_VISIBILITY, true) ? $_POST['visibility'] : 'listed';
-        $event['featured_rank'] = max(0, min(3, (int)($_POST['featured_rank'] ?? 0)));
+        $event['featured_rank'] = $isContrib ? (int)$keep['featured_rank'] : max(0, min(3, (int)($_POST['featured_rank'] ?? 0)));
         $event['relates_hq'] = isset($_POST['relates_hq']) ? 1 : 0;
         $validOffice = array_map('intval', array_column($offices, 'id'));
         $relOffices = array_values(array_unique(array_filter(array_map('intval', (array)($_POST['rel_offices'] ?? [])), fn($i) => in_array($i, $validOffice, true))));
@@ -183,6 +198,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                    ->execute(array_merge(array_values($cols), [$id]));
                 $db->prepare("DELETE FROM event_locations WHERE event_id = ?")->execute([$id]);
             } else {
+                if ($ownerReady) $cols['created_by'] = $meId;
                 $db->prepare("INSERT INTO events (" . implode(', ', array_keys($cols)) . ") VALUES (" . implode(', ', array_fill(0, count($cols), '?')) . ")")
                    ->execute(array_values($cols));
                 $id = (int)$db->lastInsertId();
@@ -254,7 +270,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $allPeople = $db->query("SELECT id, name, title, is_acibadem FROM people ORDER BY name ASC")->fetchAll();
     }
 }
-if (isset($_GET['saved'])) $success = 'Etkinlik kaydedildi.';
+if (isset($_GET['saved'])) $success = $isContrib ? 'Taslak kaydedildi. Bir yönetici kontrol edip yayına alacak.' : 'Etkinlik kaydedildi.';
 
 $h = fn($v) => htmlspecialchars((string)$v);
 $input = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2 border';
@@ -355,35 +371,24 @@ function sessionRow(int $i, array $r, callable $h, string $input): string {
     <link rel="stylesheet" href="../assets/css/tailwind.css?v=<?= @filemtime(__DIR__ . '/../assets/css/tailwind.css') ?>">
 </head>
 <body class="bg-gray-100 flex min-h-screen">
-    <aside class="w-64 bg-gray-900 text-white flex flex-col hidden md:flex">
-        <div class="h-16 flex items-center px-6 border-b border-gray-800 font-bold text-lg">Acıbadem Admin</div>
-        <nav class="flex-1 px-4 py-6 space-y-2">
-            <a href="index.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Dashboard</a>
-            <a href="offices.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Ofisler</a>
-            <a href="teams.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Ekipler</a>
-            <a href="events.php" class="block px-4 py-2 rounded-md bg-gray-800 text-white">Etkinlikler</a>
-            <a href="people.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Kişiler</a>
-            <a href="event_requests.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Talepler</a>
-            <a href="settings.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Ayarlar</a>
-            <a href="admins.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Yöneticiler</a>
-            <a href="../apply_update.php" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Güncellemeler</a>
-            <a href="../" target="_blank" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800">Siteyi gör ↗</a>
-        </nav>
-    </aside>
+    <?= admin_sidebar('events.php') ?>
 
     <main class="flex-1 flex flex-col min-w-0">
         <header class="h-16 bg-white shadow-sm flex items-center px-4 md:px-8 gap-4">
             <a href="events.php" class="text-gray-500 hover:text-gray-700">← Geri</a>
-            <h2 class="text-xl font-semibold text-gray-800"><?= $isEdit ? 'Etkinlik Düzenle' : 'Yeni Etkinlik' ?></h2>
-            <?php if ($isEdit): ?><a href="<?= $h(eventUrl($event['slug'])) ?><?= !empty($event['external_only']) ? '?page=1' : '' ?>" target="_blank" class="ml-auto text-sm text-blue-600 hover:underline">Sitede gör ↗</a><?php endif; ?>
+            <h2 class="text-xl font-semibold text-gray-800"><?= $readOnly ? 'Etkinliği İncele' : ($isEdit ? 'Etkinlik Düzenle' : ($isContrib ? 'Yeni Etkinlik (taslak)' : 'Yeni Etkinlik')) ?></h2>
+            <?php if ($isEdit): ?><a href="<?= $h(eventUrl($event['slug'])) ?><?= !empty($event['external_only']) ? '?page=1' : '' ?>" target="_blank" class="ml-auto text-sm text-blue-600 hover:underline"><?= $event['is_published'] ? 'Sitede gör' : 'Önizle' ?> ↗</a><?php endif; ?>
         </header>
+        <?= admin_mobile_nav('events.php') ?>
 
         <div class="p-4 md:p-8 flex-1 overflow-y-auto">
             <?php if ($error): ?><div class="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg max-w-3xl"><?= $h($error) ?></div><?php endif; ?>
             <?php if ($success): ?><div class="mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg max-w-3xl"><?= $h($success) ?></div><?php endif; ?>
 
+            <?php if ($readOnly): ?><div class="mb-4 bg-gray-50 border border-gray-200 text-gray-700 px-4 py-3 rounded-lg max-w-3xl text-sm"><?= $event['is_published'] ? 'Bu etkinlik yayında; değişiklikleri yöneticiler yapar.' : 'Bu taslağı başka biri ekledi; yalnızca inceleyebilirsiniz.' ?></div><?php endif; ?>
             <form method="POST" enctype="multipart/form-data" class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 max-w-3xl space-y-6">
                 <?= csrf_field() ?>
+                <fieldset class="space-y-6 min-w-0" <?= $readOnly ? 'disabled' : '' ?>>
 
                 <?php if ($extReady): ?>
                 <div class="rounded-lg border border-blue-100 bg-blue-50/60 p-4">
@@ -527,6 +532,9 @@ function sessionRow(int $i, array $r, callable $h, string $input): string {
                 </div>
                 <?php endif; ?>
 
+                <?php if ($isContrib): ?>
+                <p class="text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-md px-3 py-2">Taslak olarak kaydedilir. Yayına alma ve öne çıkarma yöneticidedir.</p>
+                <?php else: ?>
                 <div class="flex flex-wrap items-center gap-6">
                     <label class="inline-flex items-center gap-2 text-sm"><input type="checkbox" name="is_published" value="1" <?= $event['is_published'] ? 'checked' : '' ?>> Yayında</label>
                     <?php if ($v2): ?>
@@ -539,10 +547,12 @@ function sessionRow(int $i, array $r, callable $h, string $input): string {
                     <?php endif; ?>
                     <label class="inline-flex items-center gap-2 text-sm" title="Aynı derecede ve aynı tarihteki etkinlikleri ayırır">Sıra no <input type="number" name="sort_order" value="<?= $h($event['sort_order']) ?>" class="w-20 rounded-md border-gray-300 border px-2 py-1"></label>
                 </div>
+                <?php endif; ?>
+                </fieldset>
 
                 <div class="pt-5 border-t border-gray-200 flex justify-end gap-3">
-                    <a href="events.php" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">İptal</a>
-                    <button type="submit" class="py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">Kaydet</button>
+                    <a href="events.php" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"><?= $readOnly ? 'Listeye dön' : 'İptal' ?></a>
+                    <?php if (!$readOnly): ?><button type="submit" class="py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"><?= $isContrib ? 'Taslağı kaydet' : 'Kaydet' ?></button><?php endif; ?>
                 </div>
             </form>
         </div>
