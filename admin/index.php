@@ -9,6 +9,10 @@ if (($_POST['action'] ?? '') === 'logout') { // POST only (CSRF-checked in auth.
     header('Location: login.php');
     exit;
 }
+if (is_contributor()) { // the dashboard is for admins
+    header('Location: events.php');
+    exit;
+}
 
 
 $db = getDb();

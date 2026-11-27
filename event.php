@@ -10,6 +10,11 @@ require_once __DIR__ . '/includes/v2/events-ui.php';
 
 $slug = (string)($_GET['slug'] ?? '');
 $event = $slug !== '' ? getEventBySlug($slug) : null;
+// Logged-in panel users (admins, contributors) can preview a draft or internal event before it is published
+$preview = false;
+if (!$event && $slug !== '' && isAdminVisitor() && eventsReady()) {
+    foreach (getEvents(false, 'all') as $ev) if ($ev['slug'] === $slug) { $event = $ev; $preview = true; }
+}
 
 if (!$event) {
     // Address changed or event deleted in the admin: forward to where it lives now
@@ -35,7 +40,8 @@ if (isset($_GET['ics'])) {
 $seoPath = '/event/' . $event['slug'];
 seoRedirectToClean($seoPath);
 // Reachable only with its address (invitation, QR): open to visitors, kept out of search results and the sitemap
-$noIndex = $event['visibility'] === 'link';
+$noIndex = $event['visibility'] === 'link' || $preview;
+if ($preview) header('Cache-Control: no-store');
 
 // Registration on an outside page: while the event is ahead, our address (QR codes, old links) forwards there.
 // After it ends, this short page opens instead. Admins can still look at our page with ?page=1.
@@ -94,6 +100,7 @@ if ($coverImg !== '') {
 
 require __DIR__ . '/includes/v2/header.php';
 ?>
+<?php if ($preview): ?><div style="background:#fef3c7;color:#92400e;text-align:center;padding:8px 16px;font:600 14px/1.4 system-ui,sans-serif" dir="ltr" lang="tr">Önizleme: bu etkinlik <?= $event['is_published'] ? 'iç kayıt olarak işaretli' : 'taslakta' ?>, ziyaretçiler göremez.</div><?php endif; ?>
 <div class="ev-theme"<?= trackAttrs(measureEventFields($event)) ?>>
 
 <section data-track-area="event_head" class="page-head<?= $heroImg ? ' page-head--img' : '' ?>">

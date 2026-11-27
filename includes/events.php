@@ -92,6 +92,19 @@ function eventsMetaReady(): bool {
     return $ready;
 }
 
+/** Has patch_20261127_contributor_role.sql been applied (events.created_by)? */
+function eventsCreatedByReady(): bool {
+    static $ready = null;
+    if ($ready === null) {
+        try {
+            $ready = eventsReady() && (bool)getDb()->query("SHOW COLUMNS FROM events LIKE 'created_by'")->fetchColumn();
+        } catch (\Throwable $e) {
+            $ready = false;
+        }
+    }
+    return $ready;
+}
+
 /** Has patch_20261109_event_image_hero.sql been applied (events.image_hero)? */
 function eventsImageHeroReady(): bool {
     static $ready = null;
