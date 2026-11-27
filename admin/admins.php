@@ -9,6 +9,9 @@ $meId = (int)$_SESSION['admin_user_id'];
 $msg = $_GET['msg'] ?? '';
 $err = '';
 $errIn = '';
+// Password rule: 8+ characters with at least one capital letter, one digit and ! or ?
+$pwRule = 'En az 8 karakter; en az bir büyük harf, bir rakam ve bir ! veya ? içermeli.';
+$pwOk = fn(string $p): bool => mb_strlen($p) >= 8 && preg_match('/\p{Lu}/u', $p) && preg_match('/\d/', $p) && preg_match('/[!?]/', $p);
 $rolesReady = admin_roles_ready();
 $isContrib = is_contributor();
 
@@ -31,8 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif (!$hash || !password_verify($cur_pw, $hash)) {
             record_login_failure((string)$_SESSION['admin_username']);
             $ownErr = 'Mevcut şifre yanlış.';
-        } elseif (mb_strlen($new_pw) < 12) {
-            $ownErr = 'Yeni şifre en az 12 karakter olmalı.';
+        } elseif (!$pwOk($new_pw)) {
+            $ownErr = 'Yeni şifre: ' . $pwRule;
         } elseif ($new_pw !== $new_pw2) {
             $ownErr = 'Yeni şifreler aynı değil.';
         } elseif ($new_pw === $cur_pw) {
@@ -55,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $exists->execute([$u]);
         if (!preg_match('/^[A-Za-z0-9._@-]{3,60}$/', $u)) $err = 'Kullanıcı adı 3-60 karakter olmalı (harf, rakam, . _ @ -).';
         elseif ($exists->fetchColumn()) $err = 'Bu kullanıcı adı zaten var.';
-        elseif (mb_strlen($p1) < 12) $err = 'Şifre en az 12 karakter olmalı.';
+        elseif (!$pwOk($p1)) $err = 'Şifre: ' . $pwRule;
         elseif ($p1 !== $p2) $err = 'Şifreler aynı değil.';
         else {
             $role = $rolesReady && isset(ADMIN_ROLES[$_POST['role'] ?? '']) ? $_POST['role'] : 'admin';
@@ -66,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } elseif ($act === 'reset' && $id > 0 && $id !== $meId) {
         $p1 = is_string($_POST['password'] ?? null) ? $_POST['password'] : '';
-        if (mb_strlen($p1) < 12) $err = 'Yeni şifre en az 12 karakter olmalı.';
+        if (!$pwOk($p1)) $err = 'Yeni şifre: ' . $pwRule;
         else {
             $db->prepare('UPDATE admin_users SET password_hash = ? WHERE id = ?')->execute([password_hash($p1, PASSWORD_DEFAULT), $id]);
             header('Location: admins.php?msg=reset');
@@ -148,7 +151,7 @@ $input = 'border border-gray-300 rounded-md px-3 py-2 text-sm';
                                 <form method="POST" class="inline-flex flex-wrap items-center justify-end gap-2">
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="id" value="<?= (int)$a['id'] ?>">
-                                    <input type="password" name="password" minlength="12" placeholder="Yeni şifre (12+)" autocomplete="new-password" class="<?= $input ?> w-36 !py-1 text-xs">
+                                    <input type="password" name="password" minlength="8" placeholder="Yeni şifre (8+, A, 1, !)" autocomplete="new-password" class="<?= $input ?> w-36 !py-1 text-xs">
                                     <button name="action" value="reset" class="text-indigo-600 hover:underline text-xs">Şifre sıfırla</button>
                                     <button name="action" value="delete" class="text-red-600 hover:underline text-xs" formnovalidate onclick="return confirm('<?= $h($a['username']) ?> yöneticisi silinsin mi?');">Sil</button>
                                 </form>
@@ -166,7 +169,7 @@ $input = 'border border-gray-300 rounded-md px-3 py-2 text-sm';
                 <input type="hidden" name="action" value="change_own">
                 <div>
                     <h3 class="font-semibold text-gray-900">Şifremi değiştir <span class="font-normal text-gray-500">(<?= $h($_SESSION['admin_username']) ?>)</span></h3>
-                    <p class="text-sm text-gray-600 mt-1">Yalnızca kendi hesabınızın şifresini değiştirir. Yeni şifre en az 12 karakter olmalı; uzun bir cümle en iyisidir. <?= $isContrib ? 'Şifrenizi unutursanız bir yöneticiden sıfırlamasını isteyin.' : 'Başkasının şifresi için yukarıdaki listede "Şifre sıfırla" kullanılır.' ?></p>
+                    <p class="text-sm text-gray-600 mt-1">Yalnızca kendi hesabınızın şifresini değiştirir. Yeni şifre: <?= $pwRule ?> <?= $isContrib ? 'Şifrenizi unutursanız bir yöneticiden sıfırlamasını isteyin.' : 'Başkasının şifresi için yukarıdaki listede "Şifre sıfırla" kullanılır.' ?></p>
                 </div>
                 <?php if ($err && $errIn === 'own'): ?>
                     <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm"><?= $h($err) ?></div>
@@ -175,9 +178,9 @@ $input = 'border border-gray-300 rounded-md px-3 py-2 text-sm';
                     <label class="block text-sm text-gray-700">Mevcut şifre
                         <input type="password" name="current_password" required autocomplete="current-password" class="mt-1 w-full <?= $input ?>"></label>
                     <label class="block text-sm text-gray-700">Yeni şifre
-                        <input type="password" name="new_password" required minlength="12" autocomplete="new-password" class="mt-1 w-full <?= $input ?>"></label>
+                        <input type="password" name="new_password" required minlength="8" autocomplete="new-password" class="mt-1 w-full <?= $input ?>"></label>
                     <label class="block text-sm text-gray-700">Yeni şifre (tekrar)
-                        <input type="password" name="new_password2" required minlength="12" autocomplete="new-password" class="mt-1 w-full <?= $input ?>"></label>
+                        <input type="password" name="new_password2" required minlength="8" autocomplete="new-password" class="mt-1 w-full <?= $input ?>"></label>
                 </div>
                 <button type="submit" class="bg-gray-800 hover:bg-gray-900 text-white px-5 py-2 rounded-md text-sm font-medium">Şifremi değiştir</button>
             </form>
@@ -188,7 +191,7 @@ $input = 'border border-gray-300 rounded-md px-3 py-2 text-sm';
                 <input type="hidden" name="action" value="add">
                 <div>
                     <h3 class="font-semibold text-gray-900">Yeni kullanıcı ekle</h3>
-                    <p class="text-sm text-gray-600 mt-1"><b>Yönetici</b> tüm ekranlara erişir. <b>Katkıda bulunan</b> yalnız etkinlik ekranını görür: etkinlikleri taslak olarak girer, diğer taslakları görür, yalnız kendi taslaklarını düzenler; ofis, ayar ve kullanıcı ekranlarına giremez. Taslakları bir yönetici kontrol edip yayına alır. Şifre en az 12 karakter olmalı; ilk girişten sonra kişi şifresini bu sayfadaki "Şifremi değiştir" bölümünden değiştirebilir. Silinen veya şifresi sıfırlanan kişinin açık oturumları hemen kapanır.</p>
+                    <p class="text-sm text-gray-600 mt-1"><b>Yönetici</b> tüm ekranlara erişir. <b>Katkıda bulunan</b> yalnız etkinlik ekranını görür: etkinlikleri taslak olarak girer, diğer taslakları görür, yalnız kendi taslaklarını düzenler; ofis, ayar ve kullanıcı ekranlarına giremez. Taslakları bir yönetici kontrol edip yayına alır. Şifre kuralı: <?= $pwRule ?> İlk girişten sonra kişi şifresini bu sayfadaki "Şifremi değiştir" bölümünden değiştirebilir. Silinen veya şifresi sıfırlanan kişinin açık oturumları hemen kapanır.</p>
                 </div>
                 <?php if ($rolesReady): ?>
                 <fieldset class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-700">
@@ -202,9 +205,9 @@ $input = 'border border-gray-300 rounded-md px-3 py-2 text-sm';
                     <label class="block text-sm text-gray-700">Kullanıcı adı
                         <input type="text" name="username" required maxlength="60" autocomplete="off" class="mt-1 w-full <?= $input ?>"></label>
                     <label class="block text-sm text-gray-700">Şifre
-                        <input type="password" name="password" required minlength="12" autocomplete="new-password" class="mt-1 w-full <?= $input ?>"></label>
+                        <input type="password" name="password" required minlength="8" autocomplete="new-password" class="mt-1 w-full <?= $input ?>"></label>
                     <label class="block text-sm text-gray-700">Şifre (tekrar)
-                        <input type="password" name="password2" required minlength="12" autocomplete="new-password" class="mt-1 w-full <?= $input ?>"></label>
+                        <input type="password" name="password2" required minlength="8" autocomplete="new-password" class="mt-1 w-full <?= $input ?>"></label>
                 </div>
                 <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md text-sm font-medium">Kullanıcı ekle</button>
             </form>
