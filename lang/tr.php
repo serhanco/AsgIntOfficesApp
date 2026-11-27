@@ -163,6 +163,9 @@ return [
     'event_date_tba'          => 'Tarih yakında açıklanacak',
     'event_past_badge'        => 'Geçmiş',
     'event_ended'             => 'Bu etkinlik sona erdi.',
+    'events_past_more'        => 'Daha eski etkinlikleri göster',
+    'event_missed_p'          => 'Bu etkinliği kaçırdınız mı? Bize ulaşın, bir sonrakini ya da benzerini size haber verelim.',
+    'event_req_similar'       => 'Benzer bir etkinlik talep edin',
     'event_other'             => 'Diğer yaklaşan etkinlikler',
     'act_tag_webinar'         => 'Webinar',
 

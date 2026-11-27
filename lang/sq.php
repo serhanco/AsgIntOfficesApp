@@ -165,6 +165,9 @@ return [
     'event_date_tba'          => 'Data do të njoftohet',
     'event_past_badge'        => 'I kaluar',
     'event_ended'             => 'Ky event ka përfunduar.',
+    'events_past_more'        => 'Shfaq evente më të vjetra',
+    'event_missed_p'          => 'E humbët këtë event? Na kontaktoni dhe do t\'ju njoftojmë për eventin e radhës ose një të ngjashëm.',
+    'event_req_similar'       => 'Kërkoni një event të ngjashëm',
     'event_other'             => 'Evente të tjera të ardhshme',
     'act_tag_webinar'         => 'Webinar',
 

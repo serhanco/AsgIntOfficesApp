@@ -328,9 +328,7 @@ select.field { padding-inline: 1.25rem 2.75rem; cursor: pointer; }
 .filter-pill:hover { border-color: var(--aqua); color: var(--navy); }
 .filter-pill[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
 .filter-pill i { color: var(--aqua); }
-.past-events summary { list-style: none; }
-.past-events summary::-webkit-details-marker { display: none; }
-.past-events[open] summary .ph-caret-down { transform: rotate(180deg); }
+.past-events[hidden], .past-events [hidden] { display: none !important; }
 .page-head--img::before { opacity: .88; }
 [dir="rtl"] .arrow-back { transform: scaleX(-1); }
 

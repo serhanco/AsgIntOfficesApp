@@ -165,6 +165,9 @@ return [
     'event_date_tba'          => 'Tarix sonra elan olunacaq',
     'event_past_badge'        => 'Keçmiş',
     'event_ended'             => 'Bu tədbir başa çatıb.',
+    'events_past_more'        => 'Daha köhnə tədbirləri göstər',
+    'event_missed_p'          => 'Bu tədbiri qaçırdınız? Bizimlə əlaqə saxlayın, növbəti və ya oxşar tədbir barədə sizə xəbər verək.',
+    'event_req_similar'       => 'Oxşar tədbir tələb edin',
     'event_other'             => 'Digər qarşıdakı tədbirlər',
     'act_tag_webinar'         => 'Vebinar',
 

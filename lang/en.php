@@ -215,6 +215,9 @@ return [
     'event_date_tba'          => 'Date to be announced',
     'event_past_badge'        => 'Past',
     'event_ended'             => 'This event has ended.',
+    'events_past_more'        => 'Show older events',
+    'event_missed_p'          => 'Missed this event? Contact us and we will tell you about the next one or a similar one.',
+    'event_req_similar'       => 'Request a similar event',
     'event_other'             => 'Other upcoming events',
     'act_tag_webinar'         => 'Webinar',
 
