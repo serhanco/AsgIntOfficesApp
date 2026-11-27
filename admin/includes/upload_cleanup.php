@@ -8,7 +8,7 @@
  * at them for a while.
  *
  * A file is deleted only when BOTH are true:
- *   - its name appears in no text column of any table in the database (offices, events, people, settings, …),
+ *   - its name appears in no text column of any table in the database (offices, events, settings, …),
  *   - it is older than UPLOAD_CLEANUP_GRACE_DAYS (so a just-replaced image can still be put back, and a
  *     restored database backup from the last weeks still finds its images).
  * When the database cannot be read completely the run stops without deleting anything.

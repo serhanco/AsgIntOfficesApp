@@ -96,6 +96,15 @@ if (!$isCli) {
 // ------------------------------------------------------------
 if (!$shouldRun) {
     out('<p><b>Bekleyen patch:</b> ' . ($pending ? htmlspecialchars(implode(', ', $pending)) : 'yok') . '</p>');
+    // Tell before a patch that deletes data how many rows it will drop (they stay in the backup)
+    if (in_array('patch_20261127_drop_event_people_program.sql', $pending, true)) {
+        $drop = [];
+        foreach (['people' => 'kişi (Kişiler listesi)', 'event_people' => 'etkinlik-katılımcı bağlantısı', 'event_sessions' => 'program satırı'] as $t => $label) {
+            try { $drop[] = (int)$db->query("SELECT COUNT(*) FROM `$t`")->fetchColumn() . ' ' . $label; } catch (\Throwable $e) {}
+        }
+        if ($drop) out('<p style="background:#fff7e6;border:1px solid #f0c36d;padding:8px 12px;border-radius:6px">⚠️ <b>patch_20261127_drop_event_people_program.sql</b> şunları silecek: '
+            . htmlspecialchars(implode(', ', $drop)) . '. Uygulamadan önce otomatik yedek alınır.</p>');
+    }
     if ($pending) {
         echo '<form method="POST">' . csrf_field() . '<button type="submit" style="padding:8px 16px">Yedek al ve bekleyenleri uygula</button></form>';
     }

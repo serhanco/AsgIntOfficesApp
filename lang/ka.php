@@ -214,17 +214,10 @@ return [
     'aud_b2b' => 'ორგანიზაციებისთვის',
     'events_filter_aud' => 'ყველა',
     'event_from_hq' => 'ცენტრალური ოფისიდან',
-    'event_people' => 'მონაწილეები',
-    'event_program' => 'პროგრამა',
     'event_download' => 'განცხადების ჩამოტვირთვა',
     'event_related' => 'დაკავშირებულია',
     'event_contact_h' => 'კონტაქტი',
     'event_contact_hq' => 'Acıbadem-ის ცენტრალური ოფისი',
-    'event_role_speaker' => 'მომხსენებელი',
-    'event_role_moderator' => 'მოდერატორი',
-    'event_role_chair' => 'თავმჯდომარე',
-    'event_role_executive' => 'ხელმძღვანელი',
-    'event_role_guest' => 'სტუმარი',
     'event_ext_link' => 'ხსნის რეგისტრაციის გვერდს',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)

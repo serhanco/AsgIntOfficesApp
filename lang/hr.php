@@ -214,17 +214,10 @@ return [
     'aud_b2b' => 'Za institucije',
     'events_filter_aud' => 'Svi',
     'event_from_hq' => 'Iz središnjice',
-    'event_people' => 'Tko sudjeluje',
-    'event_program' => 'Program',
     'event_download' => 'Preuzmi najavu',
     'event_related' => 'Povezano s',
     'event_contact_h' => 'Kontakt',
     'event_contact_hq' => 'Središnjica Acıbadem',
-    'event_role_speaker' => 'Govornik',
-    'event_role_moderator' => 'Moderator',
-    'event_role_chair' => 'Predsjedatelj',
-    'event_role_executive' => 'Rukovoditelj',
-    'event_role_guest' => 'Gost',
     'event_ext_link' => 'Otvara stranicu za prijavu',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)

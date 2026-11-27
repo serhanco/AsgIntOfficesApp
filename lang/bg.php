@@ -214,17 +214,10 @@ return [
     'aud_b2b' => 'За институции',
     'events_filter_aud' => 'Всички',
     'event_from_hq' => 'От централния офис',
-    'event_people' => 'Участници',
-    'event_program' => 'Програма',
     'event_download' => 'Изтегли обявата',
     'event_related' => 'Свързано с',
     'event_contact_h' => 'Контакт',
     'event_contact_hq' => 'Централен офис на Acıbadem',
-    'event_role_speaker' => 'Лектор',
-    'event_role_moderator' => 'Модератор',
-    'event_role_chair' => 'Председател',
-    'event_role_executive' => 'Ръководител',
-    'event_role_guest' => 'Гост',
     'event_ext_link' => 'Отваря страницата за регистрация',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)

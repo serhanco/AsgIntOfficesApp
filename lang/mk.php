@@ -214,17 +214,10 @@ return [
     'aud_b2b' => 'За институции',
     'events_filter_aud' => 'Сите',
     'event_from_hq' => 'Од централата',
-    'event_people' => 'Учесници',
-    'event_program' => 'Програма',
     'event_download' => 'Преземи ја најавата',
     'event_related' => 'Поврзано со',
     'event_contact_h' => 'Контакт',
     'event_contact_hq' => 'Централа на Acıbadem',
-    'event_role_speaker' => 'Говорник',
-    'event_role_moderator' => 'Модератор',
-    'event_role_chair' => 'Претседавач',
-    'event_role_executive' => 'Раководител',
-    'event_role_guest' => 'Гост',
     'event_ext_link' => 'Ја отвора страницата за пријава',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)

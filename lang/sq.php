@@ -214,17 +214,10 @@ return [
     'aud_b2b' => 'Për institucionet',
     'events_filter_aud' => 'Të gjithë',
     'event_from_hq' => 'Nga zyra qendrore',
-    'event_people' => 'Pjesëmarrësit',
-    'event_program' => 'Programi',
     'event_download' => 'Shkarko njoftimin',
     'event_related' => 'Lidhur me',
     'event_contact_h' => 'Kontakt',
     'event_contact_hq' => 'Zyra qendrore e Acıbadem',
-    'event_role_speaker' => 'Folës',
-    'event_role_moderator' => 'Moderator',
-    'event_role_chair' => 'Kryesues',
-    'event_role_executive' => 'Drejtues',
-    'event_role_guest' => 'I ftuar',
     'event_ext_link' => 'Hap faqen e regjistrimit',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)
