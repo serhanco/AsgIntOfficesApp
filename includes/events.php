@@ -40,16 +40,12 @@ const EVENT_ADMIN_VISIBILITY = [
     'link'     => 'Yalnız linkle (listelerde yok, adresi/QR\'ı olan açabilir)',
     'internal' => 'İç kayıt (sitede hiç görünmez, yalnız yönetimde)',
 ];
-const EVENT_ADMIN_ROLES = ['speaker' => 'Konuşmacı', 'moderator' => 'Moderatör', 'chair' => 'Başkan / heyet başkanı', 'executive' => 'Yönetici', 'guest' => 'Misafir / katılımcı'];
 
 /** Who an event is for. */
 const EVENT_AUDIENCES = ['b2c', 'b2b'];
 
 /** listed = in lists, calendar and on the home page. link = only reachable with its address (QR, invitation). internal = not on the site at all. */
 const EVENT_VISIBILITY = ['listed', 'link', 'internal'];
-
-/** What a person does at an event (label key event_role_*). */
-const EVENT_ROLES = ['speaker', 'moderator', 'chair', 'executive', 'guest'];
 
 function eventsReady(): bool {
     static $ready = null;
@@ -71,7 +67,7 @@ function eventsV2Ready(): bool {
             $db = getDb();
             $ready = eventsReady()
                 && (bool)$db->query("SHOW COLUMNS FROM events LIKE 'audience'")->fetchColumn()
-                && (bool)$db->query("SHOW TABLES LIKE 'event_sessions'")->fetchColumn();
+                && (bool)$db->query("SHOW TABLES LIKE 'event_relations'")->fetchColumn();
         } catch (\Throwable $e) {
             $ready = false;
         }
@@ -157,14 +153,12 @@ function countryNameFor(?string $code, string $fallback = ''): string {
 }
 
 /**
- * All events with their locations, relations, people and program. Each event:
+ * All events with their locations and relations. Each event:
  *   id, slug, url (our page), href (where links go: the outside page of an upcoming external event, else url), href_ext,
  *   external (registration on an outside page), tag_key, icon, audience, visibility, featured_rank, relates_hq, title, description, image_url, link_url,
  *   file_url, is_published, start, end (Y-m-d or null), status ('upcoming' | 'past'), countries [codes],
  *   is_global (no place, no office, no country, not head office), office_ids [offices it is linked to],
  *   relations: [{kind: office|country, office (row|null), country_code, country}],
- *   people: [{id, name, title, specialty, organization, photo_url, is_acibadem, role}],
- *   program: [{day, start_time, end_time, kind, title, speakers}],
  *   locations: [office (row|null), name, city, country_code, country, address, lat, lon, floating,
  *               is_online, starts_on, ends_on, start_time, end_time, phone, email, whatsapp, maps_url]
  *
@@ -188,8 +182,6 @@ function getEvents(bool $publishedOnly = true, string $scope = 'listed'): array 
         $events = $db->query("SELECT * FROM events" . ($where ? ' WHERE ' . implode(' AND ', $where) : '') . " ORDER BY sort_order ASC, id ASC")->fetchAll();
         $stops = $db->query("SELECT * FROM event_locations ORDER BY sort_order ASC, starts_on IS NULL, starts_on ASC, id ASC")->fetchAll();
         $rels = $v2 ? $db->query("SELECT * FROM event_relations ORDER BY id ASC")->fetchAll() : [];
-        $ppl = $v2 ? $db->query("SELECT ep.event_id, ep.role, p.* FROM event_people ep JOIN people p ON p.id = ep.person_id ORDER BY ep.sort_order ASC, ep.id ASC")->fetchAll() : [];
-        $sess = $v2 ? $db->query("SELECT * FROM event_sessions ORDER BY day IS NULL, day ASC, sort_order ASC, id ASC")->fetchAll() : [];
     } catch (\Throwable $e) {
         return $cache[$key] = [];
     }
@@ -197,11 +189,9 @@ function getEvents(bool $publishedOnly = true, string $scope = 'listed'): array 
     $offices = [];
     foreach (getAllOffices(false) as $o) $offices[(int)$o['id']] = $o;
 
-    $byEvent = $relByEvent = $pplByEvent = $sessByEvent = [];
+    $byEvent = $relByEvent = [];
     foreach ($stops as $s) $byEvent[(int)$s['event_id']][] = $s;
     foreach ($rels as $r) $relByEvent[(int)$r['event_id']][] = $r;
-    foreach ($ppl as $p) $pplByEvent[(int)$p['event_id']][] = $p;
-    foreach ($sess as $r) $sessByEvent[(int)$r['event_id']][] = $r;
 
     $today = date('Y-m-d');
     $out = [];
@@ -265,18 +255,6 @@ function getEvents(bool $publishedOnly = true, string $scope = 'listed'): array 
             }
         }
 
-        $people = array_map(fn($p) => [
-            'id' => (int)$p['id'], 'name' => $p['name'], 'title' => (string)$p['title'], 'specialty' => (string)$p['specialty'],
-            'organization' => (string)$p['organization'], 'photo_url' => (string)$p['photo_url'], 'is_acibadem' => (bool)$p['is_acibadem'],
-            'role' => in_array($p['role'], EVENT_ROLES, true) ? $p['role'] : 'speaker',
-        ], $pplByEvent[(int)$ev['id']] ?? []);
-
-        $program = array_map(fn($r) => [
-            'day' => $r['day'], 'start_time' => $r['start_time'] ? substr($r['start_time'], 0, 5) : null,
-            'end_time' => $r['end_time'] ? substr($r['end_time'], 0, 5) : null,
-            'kind' => $r['kind'] === 'heading' ? 'heading' : 'session', 'title' => $r['title'], 'speakers' => (string)$r['speakers'],
-        ], $sessByEvent[(int)$ev['id']] ?? []);
-
         $relatesHq = $v2 && !empty($ev['relates_hq']);
         $hasPlace = (bool)array_filter($locations, fn($l) => !$l['floating']);
         $start = $starts ? min($starts) : null;
@@ -315,8 +293,6 @@ function getEvents(bool $publishedOnly = true, string $scope = 'listed'): array 
             'office_ids'   => array_keys($officeIds),
             'is_global'    => !$countries && !$officeIds && !$hasPlace && !$relatesHq,
             'relations'    => $relations,
-            'people'       => $people,
-            'program'      => $program,
             'locations'    => $locations,
         ];
     }

@@ -35,12 +35,8 @@ $event = ['title' => '', 'slug' => '', 'tag_key' => 'act_tag_doctor', 'audience'
           'description' => '', 'meta_description' => '', 'image_url' => '', 'image_hero' => 0, 'link_url' => '', 'external_only' => 0, 'file_url' => '', 'is_published' => 1, 'sort_order' => 0];
 $blankStop = ['kind' => 'office', 'office_id' => '', 'venue_name' => '', 'city' => '', 'country_code' => '', 'address' => '', 'coords' => '',
               'starts_on' => '', 'ends_on' => '', 'start_time' => '', 'end_time' => ''];
-$blankPerson = ['person_id' => '', 'role' => 'speaker', 'name' => '', 'title' => '', 'specialty' => '', 'organization' => '', 'photo_url' => '', 'is_acibadem' => '1'];
-$blankSession = ['day' => '', 'start_time' => '', 'end_time' => '', 'kind' => 'session', 'title' => '', 'speakers' => ''];
 $stops = [$blankStop];
 $relOffices = $relCountries = [];
-$eventPeople = $program = [];
-$allPeople = $v2 ? $db->query("SELECT id, name, title, is_acibadem FROM people ORDER BY name ASC")->fetchAll() : [];
 
 if ($isEdit) {
     $stmt = $db->prepare("SELECT * FROM events WHERE id = ?");
@@ -69,15 +65,6 @@ if ($isEdit) {
             if ($r['office_id'] !== null) $relOffices[] = (int)$r['office_id'];
             elseif ($r['country_code'] !== null) $relCountries[] = strtolower($r['country_code']);
         }
-        $stmt = $db->prepare("SELECT ep.role, ep.person_id FROM event_people ep WHERE ep.event_id = ? ORDER BY ep.sort_order, ep.id");
-        $stmt->execute([$id]);
-        $eventPeople = array_map(fn($r) => array_merge($blankPerson, ['person_id' => (string)$r['person_id'], 'role' => $r['role']]), $stmt->fetchAll());
-        $stmt = $db->prepare("SELECT * FROM event_sessions WHERE event_id = ? ORDER BY sort_order, id");
-        $stmt->execute([$id]);
-        $program = array_map(fn($r) => [
-            'day' => $r['day'], 'start_time' => $r['start_time'] ? substr($r['start_time'], 0, 5) : '', 'end_time' => $r['end_time'] ? substr($r['end_time'], 0, 5) : '',
-            'kind' => $r['kind'], 'title' => $r['title'], 'speakers' => (string)$r['speakers'],
-        ], $stmt->fetchAll());
     }
 }
 
@@ -132,24 +119,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$empty) $stops[] = $stop;
     }
 
-    // People of this event: an existing person, or a new one typed in the row
-    $eventPeople = [];
-    if ($v2) {
-        foreach ((array)($_POST['people'] ?? []) as $r) {
-            $r = array_merge($blankPerson, array_map(fn($v) => is_string($v) ? trim($v) : '', (array)$r));
-            if (!in_array($r['role'], EVENT_ROLES, true)) $r['role'] = 'speaker';
-            if ($r['person_id'] === '' && $r['name'] === '') continue;
-            $eventPeople[] = $r;
-        }
-        $program = [];
-        foreach ((array)($_POST['program'] ?? []) as $r) {
-            $r = array_merge($blankSession, array_map(fn($v) => is_string($v) ? trim($v) : '', (array)$r));
-            if ($r['title'] === '') continue;
-            if (!in_array($r['kind'], ['session', 'heading'], true)) $r['kind'] = 'session';
-            $program[] = $r;
-        }
-    }
-
     if (!$error && $event['title'] === '') $error = 'Başlık zorunludur.';
     if (!$error && !$stops) $error = 'En az bir lokasyon ekleyin (ofis, ofis dışı mekân, online ya da konumdan bağımsız tarih).';
     if (!$error && $event['link_url'] !== '' && !preg_match('#^https?://#i', $event['link_url'])) $error = 'Kayıt/bilgi linki http:// veya https:// ile başlamalı.';
@@ -162,12 +131,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         elseif ($s['kind'] === 'venue' && $s['office_id'] === '' && !preg_match('/^[a-z]{2}$/i', $s['country_code'])) $error = "$n. lokasyon: ofis seçmediyseniz ülke kodunu girin (ör. US).";
         elseif ($s['coords'] !== '' && !preg_match('/^\s*-?\d{1,2}(\.\d+)?\s*,\s*-?\d{1,3}(\.\d+)?\s*$/', $s['coords'])) $error = "$n. lokasyon: koordinat \"40.4093, 49.8671\" biçiminde olmalı.";
         elseif ($s['ends_on'] !== '' && $s['starts_on'] !== '' && $s['ends_on'] < $s['starts_on']) $error = "$n. lokasyon: bitiş tarihi başlangıçtan önce olamaz.";
-    }
-    if ($v2) {
-        foreach ($eventPeople as $i => $r) {
-            if ($error) break;
-            if ($r['person_id'] === '' && $r['name'] === '') $error = ($i + 1) . '. katılımcı: kişi seçin ya da yeni kişinin adını yazın.';
-        }
     }
 
     if (!$error) {
@@ -222,31 +185,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $rel = $db->prepare("INSERT INTO event_relations (event_id, office_id, country_code) VALUES (?, ?, ?)");
                 foreach ($relOffices as $oid) $rel->execute([$id, $oid, null]);
                 foreach ($relCountries as $cc) $rel->execute([$id, null, $cc]);
-                // People
-                $db->prepare("DELETE FROM event_people WHERE event_id = ?")->execute([$id]);
-                $newPerson = $db->prepare("INSERT INTO people (name, title, specialty, organization, photo_url, is_acibadem) VALUES (?, ?, ?, ?, ?, ?)");
-                $link = $db->prepare("INSERT INTO event_people (event_id, person_id, role, sort_order) VALUES (?, ?, ?, ?)");
-                $seen = [];
-                foreach ($eventPeople as $i => $r) {
-                    if ($r['person_id'] !== '') {
-                        $pid = (int)$r['person_id'];
-                    } else {
-                        $newPerson->execute([$r['name'], $r['title'] ?: null, $r['specialty'] ?: null, $r['organization'] ?: null,
-                                             preg_match('#^(https?://|assets/)#i', $r['photo_url']) ? $r['photo_url'] : null, $r['is_acibadem'] === '0' ? 0 : 1]);
-                        $pid = (int)$db->lastInsertId();
-                    }
-                    if (isset($seen[$pid])) continue; // the same person twice in one event
-                    $seen[$pid] = true;
-                    $link->execute([$id, $pid, $r['role'], $i]);
-                }
-                // Program
-                $db->prepare("DELETE FROM event_sessions WHERE event_id = ?")->execute([$id]);
-                $sess = $db->prepare("INSERT INTO event_sessions (event_id, day, start_time, end_time, kind, title, speakers, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                foreach ($program as $i => $r) {
-                    $sess->execute([$id, $r['day'] ?: null, $r['start_time'] ?: null, $r['end_time'] ?: null, $r['kind'], $r['title'], $r['speakers'] ?: null, $i]);
-                }
             }
-            // Date of last change for the sitemap (people, program and places are in other tables)
+            // Date of last change for the sitemap (places and relations are in other tables)
             $db->prepare("UPDATE events SET updated_at = CURRENT_TIMESTAMP WHERE id = ?")->execute([$id]);
             $db->commit();
             // A newly uploaded cover gets a readable name from the event address and first date, ending in the event id
@@ -265,10 +205,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     if (!$stops) $stops = [$blankStop];
-    // Re-selected people keep the row values; a person that does not exist anymore is dropped
-    if ($v2) {
-        $allPeople = $db->query("SELECT id, name, title, is_acibadem FROM people ORDER BY name ASC")->fetchAll();
-    }
 }
 if (isset($_GET['saved'])) $success = $isContrib ? 'Taslak kaydedildi. Bir yönetici kontrol edip yayına alacak.' : 'Etkinlik kaydedildi.';
 
@@ -312,55 +248,6 @@ function stopRow(int $i, array $s, array $offices, callable $h, string $input): 
     <?php return ob_get_clean();
 }
 
-function personRow(int $i, array $r, array $allPeople, callable $h, string $input): string {
-    ob_start(); ?>
-    <div class="rounded-lg border border-gray-200 bg-gray-50 p-4" data-person data-row>
-        <div class="grid grid-cols-1 md:grid-cols-[1fr_12rem_auto] gap-3 items-end">
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Kişi</label>
-                <select name="people[<?= $i ?>][person_id]" class="<?= $input ?>" data-person-select>
-                    <option value="">+ Yeni kişi ekle…</option>
-                    <?php foreach ($allPeople as $p): ?>
-                    <option value="<?= $p['id'] ?>" <?= (string)$r['person_id'] === (string)$p['id'] ? 'selected' : '' ?>><?= $h($p['name']) ?><?= $p['title'] ? ' · ' . $h($p['title']) : '' ?><?= $p['is_acibadem'] ? '' : ' (Acıbadem dışı)' ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Bu etkinlikteki rolü</label>
-                <select name="people[<?= $i ?>][role]" class="<?= $input ?>">
-                    <?php foreach (EVENT_ADMIN_ROLES as $k => $label): ?><option value="<?= $k ?>" <?= $r['role'] === $k ? 'selected' : '' ?>><?= $label ?></option><?php endforeach; ?>
-                </select>
-            </div>
-            <button type="button" class="text-sm text-red-600 hover:text-red-800 pb-2" data-row-remove>Kaldır</button>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3" data-new-person>
-            <div><label class="block text-sm font-medium text-gray-700">Ad soyad *</label><input type="text" dir="auto" name="people[<?= $i ?>][name]" value="<?= $h($r['name']) ?>" class="<?= $input ?>"></div>
-            <div><label class="block text-sm font-medium text-gray-700">Unvan</label><input type="text" dir="auto" name="people[<?= $i ?>][title]" value="<?= $h($r['title']) ?>" placeholder="Prof. Dr., Genel Müdür …" class="<?= $input ?>"></div>
-            <div><label class="block text-sm font-medium text-gray-700">Branş / görev</label><input type="text" dir="auto" name="people[<?= $i ?>][specialty]" value="<?= $h($r['specialty']) ?>" placeholder="Ortopedi, Kardiyoloji …" class="<?= $input ?>"></div>
-            <div><label class="block text-sm font-medium text-gray-700">Kurum</label><input type="text" dir="auto" name="people[<?= $i ?>][organization]" value="<?= $h($r['organization']) ?>" class="<?= $input ?>"></div>
-            <div><label class="block text-sm font-medium text-gray-700">Fotoğraf linki (isteğe bağlı)</label><input type="text" name="people[<?= $i ?>][photo_url]" value="<?= $h($r['photo_url']) ?>" placeholder="https://… ya da assets/images/…" class="<?= $input ?>"><p class="mt-1 text-xs text-gray-500">Fotoğraf yüklemek için Kişiler sayfasını kullanın.</p></div>
-            <div class="flex items-end pb-2"><label class="inline-flex items-center gap-2 text-sm"><input type="checkbox" name="people[<?= $i ?>][is_acibadem]" value="1" <?= $r['is_acibadem'] !== '0' ? 'checked' : '' ?> onchange="this.nextElementSibling.disabled=this.checked"><input type="hidden" name="people[<?= $i ?>][is_acibadem]" value="0" <?= $r['is_acibadem'] !== '0' ? 'disabled' : '' ?>> Acıbadem'de çalışıyor</label></div>
-        </div>
-    </div>
-    <?php return ob_get_clean();
-}
-
-function sessionRow(int $i, array $r, callable $h, string $input): string {
-    ob_start(); ?>
-    <div class="rounded-lg border border-gray-200 bg-gray-50 p-3" data-session data-row>
-        <div class="grid grid-cols-2 md:grid-cols-[9rem_6rem_6rem_9rem_1fr_auto] gap-2 items-end">
-            <div><label class="block text-xs font-medium text-gray-600">Gün</label><input type="date" name="program[<?= $i ?>][day]" value="<?= $h($r['day']) ?>" class="<?= $input ?>"></div>
-            <div><label class="block text-xs font-medium text-gray-600">Başlangıç</label><input type="time" name="program[<?= $i ?>][start_time]" value="<?= $h($r['start_time']) ?>" class="<?= $input ?>"></div>
-            <div><label class="block text-xs font-medium text-gray-600">Bitiş</label><input type="time" name="program[<?= $i ?>][end_time]" value="<?= $h($r['end_time']) ?>" class="<?= $input ?>"></div>
-            <div><label class="block text-xs font-medium text-gray-600">Tür</label>
-                <select name="program[<?= $i ?>][kind]" class="<?= $input ?>"><option value="session" <?= $r['kind'] === 'session' ? 'selected' : '' ?>>Oturum / satır</option><option value="heading" <?= $r['kind'] === 'heading' ? 'selected' : '' ?>>Bölüm başlığı</option></select></div>
-            <div class="col-span-2 md:col-span-1"><label class="block text-xs font-medium text-gray-600">Başlık *</label><input type="text" dir="auto" name="program[<?= $i ?>][title]" value="<?= $h($r['title']) ?>" class="<?= $input ?>"></div>
-            <button type="button" class="text-sm text-red-600 hover:text-red-800 pb-2" data-row-remove>Kaldır</button>
-        </div>
-        <div class="mt-2"><input type="text" dir="auto" name="program[<?= $i ?>][speakers]" value="<?= $h($r['speakers']) ?>" placeholder="Konuşmacı / moderatör (isteğe bağlı)" class="<?= $input ?>"></div>
-    </div>
-    <?php return ob_get_clean();
-}
 ?>
 <!DOCTYPE html>
 <html lang="tr">
@@ -505,29 +392,9 @@ function sessionRow(int $i, array $r, callable $h, string $input): string {
                         </div>
                     </div>
                 </div>
-
-                <div data-detail>
-                    <h3 class="text-base font-semibold text-gray-900">Katılımcılar</h3>
-                    <p class="text-xs text-gray-500 mb-3">Hekim, heyet ya da yönetici; hiç katılımcı da olmayabilir. Kişiler ortak bir listede tutulur: bir kez girin, sonraki etkinliklerde listeden seçin. Acıbadem dışı konuşmacılar da eklenebilir. Kişileri düzenlemek için <a href="people.php" class="text-blue-600 hover:underline">Kişiler</a> sayfasına bakın.</p>
-                    <div class="space-y-3" data-list="people">
-                        <?php foreach ($eventPeople as $i => $r) echo personRow($i, $r, $allPeople, $h, $input); ?>
-                    </div>
-                    <template data-template="people"><?= personRow(999, $blankPerson, $allPeople, $h, $input) ?></template>
-                    <button type="button" class="mt-3 text-sm font-medium text-blue-600 hover:text-blue-800" data-add="people">+ Katılımcı ekle</button>
-                </div>
-
-                <div data-detail>
-                    <h3 class="text-base font-semibold text-gray-900">Program <span class="font-normal text-gray-500">(isteğe bağlı)</span></h3>
-                    <p class="text-xs text-gray-500 mb-3">Çok günlü ya da oturumlu etkinlikler için gün gün satırlar. "Bölüm başlığı" satırı, altındaki oturumları gruplar (ör. Ameliyat Öncesi). Kısa etkinliklerde boş bırakın.</p>
-                    <div class="space-y-2" data-list="program">
-                        <?php foreach ($program as $i => $r) echo sessionRow($i, $r, $h, $input); ?>
-                    </div>
-                    <template data-template="program"><?= sessionRow(999, $blankSession, $h, $input) ?></template>
-                    <button type="button" class="mt-3 text-sm font-medium text-blue-600 hover:text-blue-800" data-add="program">+ Satır ekle</button>
-                </div>
                 <?php else: ?>
                 <div class="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-lg text-sm">
-                    Kitle, görünürlük, ilişkiler, katılımcılar, program ve PDF alanları için <code>patch_20261011_events_relations.sql</code> yaması gerekiyor.
+                    Kitle, görünürlük, ilişkiler ve PDF alanları için <code>patch_20261011_events_relations.sql</code> yaması gerekiyor.
                     <a href="../apply_update.php" class="underline font-medium">Güncellemeler</a> ekranından uygulayabilirsiniz; o zamana kadar etkinlikler eskisi gibi çalışır.
                 </div>
                 <?php endif; ?>
@@ -599,32 +466,6 @@ function sessionRow(int $i, array $r, callable $h, string $input): string {
         syncWhere();
     }
 
-    // People and program rows: add / remove, keep the field indexes in order
-    document.querySelectorAll('[data-list]').forEach((box) => {
-        const name = box.dataset.list;
-        const tplEl = document.querySelector('[data-template="' + name + '"]');
-        const addBtn = document.querySelector('[data-add="' + name + '"]');
-        const renum = () => box.querySelectorAll('[data-row]').forEach((row, i) => {
-            row.querySelectorAll('[name^="' + name + '["]').forEach((el) => { el.name = el.name.replace(new RegExp('^' + name + '\\[\\d+\\]'), name + '[' + i + ']'); });
-        });
-        const syncPerson = (row) => {
-            const sel = row.querySelector('[data-person-select]');
-            if (sel) row.querySelector('[data-new-person]').hidden = sel.value !== '';
-        };
-        box.querySelectorAll('[data-row]').forEach(syncPerson);
-        box.addEventListener('change', (e) => { if (e.target.matches('[data-person-select]')) syncPerson(e.target.closest('[data-row]')); });
-        box.addEventListener('click', (e) => {
-            if (!e.target.matches('[data-row-remove]')) return;
-            e.target.closest('[data-row]').remove();
-            renum();
-        });
-        addBtn.addEventListener('click', () => {
-            const node = tplEl.content.firstElementChild.cloneNode(true);
-            box.appendChild(node);
-            renum();
-            syncPerson(node);
-        });
-    });
     document.querySelector('[data-stop-add]').addEventListener('click', () => {
         const stops = list.querySelectorAll('[data-stop]');
         const node = tpl.content.firstElementChild.cloneNode(true);

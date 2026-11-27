@@ -264,17 +264,10 @@ return [
     'aud_b2b' => 'For institutions',
     'events_filter_aud' => 'Everyone',
     'event_from_hq' => 'From head office',
-    'event_people' => 'Who takes part',
-    'event_program' => 'Program',
     'event_download' => 'Download announcement',
     'event_related' => 'Related to',
     'event_contact_h' => 'Contact',
     'event_contact_hq' => 'Acıbadem head office',
-    'event_role_speaker' => 'Speaker',
-    'event_role_moderator' => 'Moderator',
-    'event_role_chair' => 'Chair',
-    'event_role_executive' => 'Executive',
-    'event_role_guest' => 'Guest',
     'event_ext_link' => 'Opens the registration page',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)

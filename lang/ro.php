@@ -214,17 +214,10 @@ return [
     'aud_b2b' => 'Pentru instituții',
     'events_filter_aud' => 'Toți',
     'event_from_hq' => 'De la sediul central',
-    'event_people' => 'Cine participă',
-    'event_program' => 'Program',
     'event_download' => 'Descarcă anunțul',
     'event_related' => 'Legat de',
     'event_contact_h' => 'Contact',
     'event_contact_hq' => 'Sediul central Acıbadem',
-    'event_role_speaker' => 'Vorbitor',
-    'event_role_moderator' => 'Moderator',
-    'event_role_chair' => 'Președinte',
-    'event_role_executive' => 'Reprezentant al conducerii',
-    'event_role_guest' => 'Invitat',
     'event_ext_link' => 'Deschide pagina de înscriere',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)

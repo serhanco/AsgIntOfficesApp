@@ -214,17 +214,10 @@ return [
     'aud_b2b' => 'Qurumlar üçün',
     'events_filter_aud' => 'Hamı',
     'event_from_hq' => 'Mərkəzdən',
-    'event_people' => 'İştirakçılar',
-    'event_program' => 'Proqram',
     'event_download' => 'Elanı yüklə',
     'event_related' => 'Aid olduğu yerlər',
     'event_contact_h' => 'Əlaqə',
     'event_contact_hq' => 'Acıbadem mərkəz ofisi',
-    'event_role_speaker' => 'Natiq',
-    'event_role_moderator' => 'Moderator',
-    'event_role_chair' => 'Sədr',
-    'event_role_executive' => 'Rəhbər',
-    'event_role_guest' => 'Qonaq',
     'event_ext_link' => 'Qeydiyyat səhifəsini açır',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)

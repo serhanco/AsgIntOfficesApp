@@ -214,17 +214,10 @@ return [
     'aud_b2b' => 'برای سازمان‌ها',
     'events_filter_aud' => 'همه',
     'event_from_hq' => 'از دفتر مرکزی',
-    'event_people' => 'شرکت‌کنندگان',
-    'event_program' => 'برنامه',
     'event_download' => 'دانلود اطلاعیه',
     'event_related' => 'مرتبط با',
     'event_contact_h' => 'تماس',
     'event_contact_hq' => 'دفتر مرکزی Acıbadem',
-    'event_role_speaker' => 'سخنران',
-    'event_role_moderator' => 'مدیر جلسه',
-    'event_role_chair' => 'رئیس',
-    'event_role_executive' => 'مدیر ارشد',
-    'event_role_guest' => 'مهمان',
     'event_ext_link' => 'صفحه ثبت‌نام را باز می‌کند',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)

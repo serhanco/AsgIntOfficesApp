@@ -212,17 +212,10 @@ return [
     'aud_b2b' => 'Kurumlar için',
     'events_filter_aud' => 'Herkes',
     'event_from_hq' => 'Merkezden',
-    'event_people' => 'Katılımcılar',
-    'event_program' => 'Program',
     'event_download' => 'Duyuruyu indir',
     'event_related' => 'İlgili olduğu yerler',
     'event_contact_h' => 'İletişim',
     'event_contact_hq' => 'Acıbadem merkez ofis',
-    'event_role_speaker' => 'Konuşmacı',
-    'event_role_moderator' => 'Moderatör',
-    'event_role_chair' => 'Başkan',
-    'event_role_executive' => 'Yönetici',
-    'event_role_guest' => 'Konuk',
     'event_ext_link' => 'Kayıt sayfasını açar',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)

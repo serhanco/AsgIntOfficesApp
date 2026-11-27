@@ -33,7 +33,7 @@ if ($ready) {
 }
 $typeLabels = eventTypeLabelsTr();
 $channels = ['form' => 'Form', 'whatsapp' => 'WhatsApp açtı', 'email' => 'E-posta açtı'];
-$nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => 'Ekipler', 'events.php' => 'Etkinlikler', 'people.php' => 'Kişiler', 'event_requests.php' => 'Talepler', 'settings.php' => 'Ayarlar', 'admins.php' => 'Yöneticiler', '../apply_update.php' => 'Güncellemeler'];
+$nav = ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => 'Ekipler', 'events.php' => 'Etkinlikler', 'event_requests.php' => 'Talepler', 'settings.php' => 'Ayarlar', 'admins.php' => 'Yöneticiler', '../apply_update.php' => 'Güncellemeler'];
 
 function contactLink(string $c): string {
     if ($c === '') return '<span class="text-gray-400">–</span>';

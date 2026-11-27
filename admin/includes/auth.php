@@ -47,7 +47,7 @@ function is_full_admin(): bool {
 /** Side menu items for the current user */
 function admin_nav(): array {
     if (is_contributor()) return ['events.php' => 'Etkinlikler', 'admins.php' => 'Şifremi değiştir'];
-    return ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => 'Ekipler', 'events.php' => 'Etkinlikler', 'people.php' => 'Kişiler', 'event_requests.php' => 'Talepler', 'settings.php' => 'Ayarlar', 'admins.php' => 'Yöneticiler', '../apply_update.php' => 'Güncellemeler'];
+    return ['index.php' => 'Dashboard', 'offices.php' => 'Ofisler', 'teams.php' => 'Ekipler', 'events.php' => 'Etkinlikler', 'event_requests.php' => 'Talepler', 'settings.php' => 'Ayarlar', 'admins.php' => 'Yöneticiler', '../apply_update.php' => 'Güncellemeler'];
 }
 
 /** Side menu (desktop) with logout, for the pages a contributor can see */

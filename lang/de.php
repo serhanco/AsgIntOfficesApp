@@ -212,17 +212,10 @@ return [
     'aud_b2b' => 'Für Institutionen',
     'events_filter_aud' => 'Alle',
     'event_from_hq' => 'Von der Zentrale',
-    'event_people' => 'Wer teilnimmt',
-    'event_program' => 'Programm',
     'event_download' => 'Ankündigung herunterladen',
     'event_related' => 'Bezug zu',
     'event_contact_h' => 'Kontakt',
     'event_contact_hq' => 'Acıbadem Zentrale',
-    'event_role_speaker' => 'Referent',
-    'event_role_moderator' => 'Moderator',
-    'event_role_chair' => 'Vorsitz',
-    'event_role_executive' => 'Führungskraft',
-    'event_role_guest' => 'Gast',
     'event_ext_link' => 'Öffnet die Anmeldeseite',
 
     // Home: social proof band (static texts; patient stories stay in the patients' own languages)
