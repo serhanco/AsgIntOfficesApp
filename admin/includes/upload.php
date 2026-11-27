@@ -187,6 +187,42 @@ function handle_image_upload(string $field, string $subdir, int $maxWidth, int $
 }
 
 /**
+ * A smaller copy of an uploaded image next to it, at most $maxWidth px wide, e.g. for
+ * "assets/images/uploads/offices/offices_20261127_3fa9c01b22aa.webp" and tag "md":
+ * "assets/images/uploads/offices/offices-md_20261127_3fa9c01b22aa.webp". The copy keeps the unique key of the
+ * name, so the unused-upload cleanup treats both files alike. Returns the copy's relative path, or null when the
+ * server cannot process images or the source is not an upload with such a name.
+ */
+function upload_make_variant(string $relPath, string $tag, int $maxWidth): ?string {
+    if (!upload_can_process()) return null;
+    $abs = upload_file_path($relPath);
+    $base = basename($relPath);
+    if ($abs === null || !preg_match('/^([a-z0-9-]+)_(\d{8}_[0-9a-f]{12})\.(webp|jpe?g|png)$/i', $base, $m)) return null;
+    $name = $m[1] . '-' . preg_replace('/[^a-z0-9]/', '', strtolower($tag)) . '_' . $m[2] . '.' . $m[3];
+    $ext = strtolower($m[3]);
+    $loaders = ['webp' => 'imagecreatefromwebp', 'jpg' => 'imagecreatefromjpeg', 'jpeg' => 'imagecreatefromjpeg', 'png' => 'imagecreatefrompng'];
+    $src = function_exists($loaders[$ext]) ? @$loaders[$ext]($abs) : false;
+    if (!$src) return null;
+    [$w, $h] = [imagesx($src), imagesy($src)];
+    if ($w > $maxWidth) {
+        $newW = $maxWidth;
+        $newH = max(1, (int)round($h * $maxWidth / $w));
+        $dst = imagecreatetruecolor($newW, $newH);
+        imagealphablending($dst, false);
+        imagesavealpha($dst, true);
+        imagecopyresampled($dst, $src, 0, 0, 0, 0, $newW, $newH, $w, $h);
+        imagedestroy($src);
+        $src = $dst;
+    }
+    $out = dirname($abs) . '/' . $name;
+    if ($ext === 'webp') { imagesavealpha($src, true); $ok = imagewebp($src, $out, 80); }
+    elseif ($ext === 'png') { $ok = imagepng($src, $out); }
+    else { $ok = imagejpeg($src, $out, 82); }
+    imagedestroy($src);
+    return $ok ? dirname($relPath) . '/' . $name : null;
+}
+
+/**
  * Give an uploaded file a readable, search-friendly name in the same folder: <slug>-<random 8 hex>-<suffix>.<ext>,
  * e.g. "consultation-bulent-tiras-wien-2026-11-26-3fa9c01b-12.webp". The random part makes a replaced image get a
  * new address, so browsers and Cloudflare never keep showing the old one. Returns the new relative path, or the

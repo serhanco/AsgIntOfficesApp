@@ -28,11 +28,15 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/includes/office_photos.php';
 
 try {
     $offices = getAllOffices(true);
     
-    $data = array_map('apiOfficePayload', $offices);
+    // Photos: cover_image + photos for every office; ?photos=0 leaves the photos list out (cover only)
+    $photosByOffice = office_photos_for(array_column($offices, 'id'));
+    $withPhotoList = ($_GET['photos'] ?? '1') !== '0';
+    $data = array_map(fn($o) => apiOfficePayload($o, $photosByOffice[(int)$o['id']] ?? [], $withPhotoList), $offices);
 
     echo json_encode([
         'success' => true,

@@ -194,8 +194,12 @@ function getAllOffices(bool $activeOnly = true): array {
 }
 
 /** One office as /api/offices returns it. Shared with the API documentation page (/api) so the two never drift apart. */
-function apiOfficePayload(array $o): array {
-    return [
+/**
+ * One office in the offices API. With $photos (rows from office_photos_for(), [] for none) the record also gets
+ * cover_image and, unless $withPhotoList is false, photos. New fields are only ever added, never renamed or removed.
+ */
+function apiOfficePayload(array $o, ?array $photos = null, bool $withPhotoList = true): array {
+    $base = [
         'id' => (int)$o['id'],
         'name' => $o['name'],
         'display_name' => $o['display_name'],
@@ -209,6 +213,9 @@ function apiOfficePayload(array $o): array {
         'latitude' => (float)$o['latitude'],
         'longitude' => (float)$o['longitude']
     ];
+    if ($photos === null) return $base;
+    require_once __DIR__ . '/office_photos.php';
+    return $base + office_photos_api_fields($o, $photos, $withPhotoList);
 }
 
 /** Number of active offices (menu badge). */
