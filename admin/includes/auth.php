@@ -52,12 +52,12 @@ function admin_nav(): array {
 
 /** Side menu (desktop) with logout, for the pages a contributor can see */
 function admin_sidebar(string $current): string {
-    $out = '<aside class="w-64 bg-gray-900 text-white flex-col hidden md:flex"><div class="h-16 flex items-center px-6 border-b border-gray-800 font-bold text-lg">Acıbadem Admin</div><nav class="flex-1 px-4 py-6 space-y-2">';
+    $out = '<aside class="w-64 shrink-0 bg-gray-900 text-white md:sticky md:top-0 md:h-screen flex-col hidden md:flex"><div class="h-16 shrink-0 flex items-center px-6 border-b border-gray-800 font-bold text-lg">Acıbadem Admin</div><nav class="flex-1 min-h-0 overflow-y-auto px-4 py-6 space-y-2">';
     foreach (admin_nav() as $href => $label) {
         $out .= '<a href="' . $href . '" class="block px-4 py-2 rounded-md ' . ($href === $current ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white') . '">' . $label . '</a>';
     }
     $out .= '<a href="../" target="_blank" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">Siteyi gör ↗</a></nav>';
-    $out .= '<div class="p-4 border-t border-gray-800 text-xs text-gray-400"><div class="mb-2 truncate">' . htmlspecialchars((string)($_SESSION['admin_username'] ?? ''), ENT_QUOTES, 'UTF-8') . ' · ' . ADMIN_ROLES[is_contributor() ? 'contributor' : 'admin'] . '</div>';
+    $out .= '<div class="p-4 shrink-0 border-t border-gray-800 text-xs text-gray-400"><div class="mb-2 truncate">' . htmlspecialchars((string)($_SESSION['admin_username'] ?? ''), ENT_QUOTES, 'UTF-8') . ' · ' . ADMIN_ROLES[is_contributor() ? 'contributor' : 'admin'] . '</div>';
     $out .= '<form method="POST" action="index.php">' . csrf_field() . '<input type="hidden" name="action" value="logout"><button type="submit" class="block w-full text-center px-4 py-2 border border-gray-600 rounded-md text-sm text-gray-300 hover:bg-gray-800 hover:text-white">Çıkış Yap</button></form></div></aside>';
     return $out;
 }

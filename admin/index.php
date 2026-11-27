@@ -73,15 +73,15 @@ $h = fn($v) => htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
     <link rel="stylesheet" href="../assets/css/tailwind.css?v=<?= @filemtime(__DIR__ . '/../assets/css/tailwind.css') ?>">
 </head>
 <body class="bg-gray-100 flex min-h-screen">
-    <aside class="w-64 bg-gray-900 text-white flex-col hidden md:flex">
-        <div class="h-16 flex items-center px-6 border-b border-gray-800 font-bold text-lg">Acıbadem Admin</div>
-        <nav class="flex-1 px-4 py-6 space-y-2">
+    <aside class="w-64 shrink-0 bg-gray-900 text-white md:sticky md:top-0 md:h-screen flex-col hidden md:flex">
+        <div class="h-16 shrink-0 flex items-center px-6 border-b border-gray-800 font-bold text-lg">Acıbadem Admin</div>
+        <nav class="flex-1 min-h-0 overflow-y-auto px-4 py-6 space-y-2">
             <?php foreach ($nav as $href => $label): ?>
             <a href="<?= $href ?>" class="block px-4 py-2 rounded-md <?= $href === 'index.php' ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white' ?>"><?= $label ?></a>
             <?php endforeach; ?>
             <a href="../" target="_blank" class="block px-4 py-2 rounded-md text-gray-300 hover:bg-gray-800 hover:text-white">Siteyi gör ↗</a>
         </nav>
-        <div class="p-4 border-t border-gray-800">
+        <div class="p-4 shrink-0 border-t border-gray-800">
             <div class="text-sm text-gray-400 mb-2">Giriş yapan: <?= $h($_SESSION['admin_username']) ?></div>
             <form method="POST" action="index.php"><?= csrf_field() ?><input type="hidden" name="action" value="logout"><button type="submit" class="block w-full text-center px-4 py-2 border border-gray-600 rounded-md text-sm text-gray-300 hover:bg-gray-800 hover:text-white">Çıkış Yap</button></form>
         </div>
