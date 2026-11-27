@@ -218,7 +218,7 @@ function admin_image_src(?string $path): string {
  * assets/images/uploads/<subdir>/ with a random name. Returns the stored path relative to the app root, or null when no file was sent.
  * Throws RuntimeException with a user-facing (Turkish) message on invalid input.
  */
-function handle_pdf_upload(string $field, string $subdir): ?string {
+function handle_pdf_upload(string $field, string $subdir, int $maxMb = 15): ?string {
     $file = $_FILES[$field] ?? null;
     if (!$file || ($file['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
         return null;
@@ -226,8 +226,8 @@ function handle_pdf_upload(string $field, string $subdir): ?string {
     if ($file['error'] !== UPLOAD_ERR_OK || !is_uploaded_file($file['tmp_name'])) {
         throw new RuntimeException('PDF yüklenemedi (dosya çok büyük olabilir).');
     }
-    if ($file['size'] > 15 * 1024 * 1024) {
-        throw new RuntimeException('PDF en fazla 15 MB olabilir.');
+    if ($file['size'] > $maxMb * 1024 * 1024) {
+        throw new RuntimeException('PDF en fazla ' . $maxMb . ' MB olabilir.');
     }
     $head = (string)@file_get_contents($file['tmp_name'], false, null, 0, 5);
     $mime = function_exists('finfo_open') ? (string)@finfo_file(finfo_open(FILEINFO_MIME_TYPE), $file['tmp_name']) : 'application/pdf';
