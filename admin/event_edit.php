@@ -94,8 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $event['sort_order'] = (int)$keep['sort_order'];
         $event['external_only'] = 0;
         $event['link_url'] = $keep['link_url'];
-        $event['image_url'] = $keep['image_url']; // the cover image is chosen by the admins
-        $event['image_hero'] = $keep['image_hero'];
+        $event['image_hero'] = $keep['image_hero']; // "show behind the title" stays with the admins
     }
     if ($v2) {
         $event['audience'] = in_array($_POST['audience'] ?? '', EVENT_AUDIENCES, true) ? $_POST['audience'] : 'b2c';
@@ -109,10 +108,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST['remove_file'])) $event['file_url'] = '';
     }
     try {
-        $uploaded = $isContrib ? null : handle_image_upload('image_file', 'events', 1600);
+        $uploaded = handle_image_upload('image_file', 'events', 1600);
         if ($uploaded !== null) $event['image_url'] = $uploaded;
         if ($v2) {
-            $pdf = handle_pdf_upload('file_pdf', 'files');
+            $pdf = handle_pdf_upload('file_pdf', 'files', $isContrib ? 3 : 15); // contributors: 3 MB
             if ($pdf !== null) $event['file_url'] = $pdf;
         }
     } catch (RuntimeException $e) {
@@ -344,7 +343,6 @@ function stopRow(int $i, array $s, array $offices, callable $h, string $input): 
                         <p class="mt-1 text-xs text-gray-500"><span data-meta-count>0</span> / 160 karakter önerilir (ideal 120-155). Boş bırakılırsa açıklamanın başı kullanılır.</p>
                     </div>
                     <?php endif; ?>
-                    <?php if (!$isContrib): ?>
                     <div data-detail>
                         <label class="block text-sm font-medium text-gray-700">Kapak görseli (isteğe bağlı)</label>
                         <input type="text" name="image_url" value="<?= $h($event['image_url']) ?>" class="<?= $input ?>">
@@ -352,11 +350,10 @@ function stopRow(int $i, array $s, array $offices, callable $h, string $input): 
                         <p class="mt-1 text-xs text-gray-500">Boş bırakılırsa tipe göre hazır görünüm kullanılır.</p>
                         <p class="mt-1 text-xs text-gray-500"><?= upload_image_hint(1600, 'Görsel, etkinlik sayfasında açıklamanın üstünde kırpılmadan gösterilir; yatay, kare ya da dikey olabilir. Genişliği en az 1200 px olsun (Google Discover gibi yerlerde büyük görselle çıkmak için gereken en küçük genişlik).') ?></p>
                         <?php if (!empty($event['image_url'])): ?><img src="<?= $h(admin_image_src($event['image_url'])) ?>" alt="" class="mt-2 h-20 rounded-md border border-gray-200 object-cover"><?php endif; ?>
-                        <?php if ($heroReady): ?>
+                        <?php if ($heroReady && !$isContrib): ?>
                         <label class="mt-2 flex items-start gap-2 text-sm text-gray-700"><input type="checkbox" name="image_hero" value="1" class="mt-0.5" <?= !empty($event['image_hero']) ? 'checked' : '' ?>> <span>Başlığın arkasında (üstteki lacivert alanda) soluk arka plan olarak da göster <span class="block text-xs text-gray-500">Yazısız fotoğraflarda güzel durur. Üzerinde yazı olan afişlerde işaretlemeyin, yazılar başlıkla üst üste biner.</span></span></label>
                         <?php endif; ?>
                     </div>
-                    <?php endif; ?>
                     <?php if (!$isContrib): ?>
                     <div data-link-box>
                         <label class="block text-sm font-medium text-gray-700"><span data-site-only>Kayıt / bilgi linki (isteğe bağlı)</span><span data-ext-only>Dış link (kayıt sayfası) *</span></label>
@@ -371,8 +368,8 @@ function stopRow(int $i, array $s, array $offices, callable $h, string $input): 
                         <p class="mt-1 text-sm"><a href="<?= $h(admin_image_src($event['file_url'])) ?>" target="_blank" class="text-blue-600 hover:underline">Yüklü PDF'i aç ↗</a>
                             <label class="ml-4 inline-flex items-center gap-2 text-gray-600"><input type="checkbox" name="remove_file" value="1"> Kaldır</label></p>
                         <?php endif; ?>
-                        <input type="file" name="file_pdf" accept="application/pdf" class="mt-2 block w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700">
-                        <p class="mt-1 text-xs text-gray-500">Etkinlik sayfasında "Duyuruyu indir" düğmesi olur. En fazla 15 MB.</p>
+                        <input type="file" name="file_pdf" accept="application/pdf" data-max-mb="<?= $isContrib ? 3 : 15 ?>" class="mt-2 block w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700">
+                        <p class="mt-1 text-xs text-gray-500">Etkinlik sayfasında "Duyuruyu indir" düğmesi olur. En fazla <?= $isContrib ? 3 : 15 ?> MB.</p>
                     </div>
                     <?php endif; ?>
                 </div>
