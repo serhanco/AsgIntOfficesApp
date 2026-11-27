@@ -165,6 +165,9 @@ return [
     'event_date_tba'          => 'Data va fi anunțată',
     'event_past_badge'        => 'Încheiat',
     'event_ended'             => 'Acest eveniment s-a încheiat.',
+    'events_past_more'        => 'Afișează evenimente mai vechi',
+    'event_missed_p'          => 'Ați ratat acest eveniment? Contactați-ne și vă vom anunța despre următorul sau unul similar.',
+    'event_req_similar'       => 'Solicitați un eveniment similar',
     'event_other'             => 'Alte evenimente viitoare',
     'act_tag_webinar'         => 'Webinar',
 

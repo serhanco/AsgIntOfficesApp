@@ -14,6 +14,7 @@ seoRedirectToClean($seoPath);
 $events   = sortEvents(getEvents());
 $upcoming = array_values(array_filter($events, fn($e) => $e['status'] === 'upcoming'));
 $past     = array_values(array_filter($events, fn($e) => $e['status'] === 'past'));
+const PAST_EVENTS_FIRST = 6; // past events shown before "show older"; then this many more each time the visitor scrolls to the end
 
 // Filters: only countries and types that events actually have
 $countryNames = [];
@@ -139,18 +140,23 @@ $hqMail = 'international@acibadem.com';
         <p id="events-no-match" class="hidden text-center text-muted py-12"><?= __('events_no_match') ?></p>
 
         <?php if ($past): ?>
-        <details class="past-events mt-12 sm:mt-16">
-            <summary class="flex items-center gap-3 cursor-pointer select-none">
+        <?php // Past events stay open on the page (their pages keep their value), but only the latest few at first:
+              // "show older" reveals the next ones, then more open while scrolling. All of them are in the HTML. ?>
+        <section class="past-events mt-12 sm:mt-16" data-past>
+            <div class="flex items-center gap-3">
                 <h2 class="text-xl font-extrabold text-navy"><?= __('events_past') ?></h2>
                 <span class="count-pill"><?= count($past) ?></span>
-                <i class="ph ph-caret-down text-muted ms-auto transition-transform" aria-hidden="true"></i>
-            </summary>
+            </div>
             <div class="mt-5 grid md:grid-cols-2 gap-4 sm:gap-5">
-                <?php foreach ($past as $ev): ?>
-                <div data-event-item data-i="<?= array_search($ev['id'], array_column($events, 'id'), true) ?>"><?= v2EventCard($ev, 'h-full') ?></div>
+                <?php foreach ($past as $k => $ev): ?>
+                <div data-event-item data-past-item data-i="<?= array_search($ev['id'], array_column($events, 'id'), true) ?>"<?= $k >= PAST_EVENTS_FIRST ? ' hidden' : '' ?>><?= v2EventCard($ev, 'h-full') ?></div>
                 <?php endforeach; ?>
             </div>
-        </details>
+            <div class="mt-6 text-center">
+                <button type="button" class="btn btn--line" data-past-more<?= count($past) <= PAST_EVENTS_FIRST ? ' hidden' : '' ?>><i class="ph ph-caret-down" aria-hidden="true"></i><?= __('events_past_more') ?></button>
+            </div>
+            <div data-past-sentinel aria-hidden="true" style="height:1px"></div>
+        </section>
         <?php endif; ?>
     </div>
 
@@ -247,13 +253,20 @@ $hqMail = 'international@acibadem.com';
     function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
 
     // ---- list
+    // Past events: the latest PAST_STEP first; "show older" adds PAST_STEP more, then more open while scrolling
+    var PAST_STEP = <?= PAST_EVENTS_FIRST ?>, pastLimit = PAST_STEP, pastAuto = false, pastMore = false;
     function applyList() {
-        var shown = 0;
+        var shown = 0, pastOk = 0;
         $$('[data-event-item]').forEach(function (n) {
             var ok = matches(EVENTS[+n.dataset.i]);
+            if (ok && n.hasAttribute('data-past-item')) { pastOk++; if (pastOk > pastLimit) ok = false; }
             n.hidden = !ok;
             if (ok && !EVENTS[+n.dataset.i].past) shown++;
         });
+        pastMore = pastOk > pastLimit;
+        var sec = $('[data-past]'), more = $('[data-past-more]');
+        if (sec) sec.hidden = pastOk === 0;
+        if (more) more.hidden = pastAuto || !pastMore;
         var none = $('#events-no-match');
         if (none) none.classList.toggle('hidden', shown > 0 || !EVENTS.some(function (e) { return !e.past; }));
     }
@@ -357,6 +370,19 @@ $hqMail = 'international@acibadem.com';
         if (state.view === 'calendar') renderCal();
     }
     $$('[data-view]').forEach(function (b) { b.addEventListener('click', function () { show(b.dataset.view); trackFilter('view_' + b.dataset.view); }); });
+    // "Show older": the next past events now, then more each time the end of the list comes into view
+    var pastBtn = $('[data-past-more]'), pastEnd = $('[data-past-sentinel]');
+    if (pastBtn) pastBtn.addEventListener('click', function () {
+        pastAuto = true; pastLimit += PAST_STEP; applyList(); trackFilter('past_more');
+        if (pastEnd && 'IntersectionObserver' in window) {
+            var near = function () { var r = pastEnd.getBoundingClientRect(); return r.top < innerHeight + 300 && r.bottom > 0; };
+            var grow = function () { // keeps going while the end is still in view (short cards, tall screens)
+                if (!pastMore || state.view !== 'list' || !near()) return;
+                pastLimit += PAST_STEP; applyList(); requestAnimationFrame(grow);
+            };
+            new IntersectionObserver(function (es) { if (es[0].isIntersecting) grow(); }, { rootMargin: '0px 0px 300px 0px' }).observe(pastEnd);
+        } else { pastLimit = 1e9; applyList(); }
+    });
     $$('[data-type-filter]').forEach(function (p) {
         p.addEventListener('click', function () {
             state.type = p.dataset.typeFilter;

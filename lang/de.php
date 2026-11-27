@@ -163,6 +163,9 @@ return [
     'event_date_tba'          => 'Termin folgt',
     'event_past_badge'        => 'Vergangen',
     'event_ended'             => 'Diese Veranstaltung ist beendet.',
+    'events_past_more'        => 'Ältere Veranstaltungen anzeigen',
+    'event_missed_p'          => 'Diese Veranstaltung verpasst? Kontaktieren Sie uns, wir informieren Sie über die nächste oder eine ähnliche.',
+    'event_req_similar'       => 'Ähnliche Veranstaltung anfragen',
     'event_other'             => 'Weitere kommende Veranstaltungen',
     'act_tag_webinar'         => 'Webinar',
 

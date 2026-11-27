@@ -60,8 +60,9 @@ $fileUrl  = $event['file_url'] !== '' ? imageUrl($event['file_url']) : '';
 $people   = $event['people'];
 $program  = $event['program'];
 $contact  = eventContact($event, strtolower((string)($_SERVER['HTTP_CF_IPCOUNTRY'] ?? '')));
-// A finished external event keeps the visitor here: office contact instead of the (often closed) outside page
-$needContact = ($past && $event['external']) || (!$past && ($event['relates_hq'] || !array_filter($stops, fn($l) => $l['office'])));
+// A finished event (also an external one, whose outside page is often closed) keeps the visitor here:
+// QR codes and shared links still lead to this page, so it always offers the office (or head office) contact
+$needContact = $past || $event['relates_hq'] || !array_filter($stops, fn($l) => $l['office']);
 $waOn = officeWhatsappEnabled(); // WhatsApp buttons: switched on in Ayarlar, off by default
 $link     = $event['link_url'] && preg_match('#^https?://#i', $event['link_url']) ? $event['link_url'] : '';
 
@@ -314,10 +315,12 @@ require __DIR__ . '/includes/v2/header.php';
             <section data-track-area="event_contact" data-track-owner="<?= $contact['office'] ? 'event_contact' : 'hq' ?>"<?= $contact['office'] ? trackAttrs(measureOfficeFields($contact['office'])) : '' ?> class="card p-5 sm:p-6 reveal">
                 <h2 class="text-lg font-extrabold text-navy"><?= __('event_contact_h') ?></h2>
                 <p class="mt-1 text-sm text-muted"><?= $contact['office'] ? '<bdi>' . e($contact['office']['display_name']) . '</bdi>' : __('event_contact_hq') ?></p>
+                <?php if ($past): ?><p class="mt-3 text-sm text-ink"><?= __('event_missed_p') ?></p><?php endif; ?>
                 <div class="mt-4 grid grid-cols-2 odd-span sm:flex sm:flex-wrap gap-2">
                     <?php if ($cwa): ?><a href="<?= e($cwa) ?>" target="_blank" rel="noopener" class="btn btn--sm bg-wa text-white hover:-translate-y-0.5"><i class="ph-fill ph-whatsapp-logo" aria-hidden="true"></i><?= __('js_whatsapp') ?></a><?php endif; ?>
                     <?php if ($ctel): ?><a href="<?= e($ctel) ?>" class="btn btn--sm btn--line"><i class="ph-fill ph-phone" aria-hidden="true"></i><?= __('js_call') ?></a><?php endif; ?>
                     <?php if ($contact['email'] !== ''): ?><a href="mailto:<?= e($contact['email']) ?>" class="btn btn--sm btn--line"><i class="ph-fill ph-envelope-simple" aria-hidden="true"></i><?= __('js_email') ?></a><?php endif; ?>
+                    <?php if ($past): ?><a href="<?= getBaseUrl() ?>/events#request" data-track-id="event_request_similar" class="btn btn--sm btn--primary"><i class="ph-fill ph-paper-plane-tilt" aria-hidden="true"></i><?= __('event_req_similar') ?></a><?php endif; ?>
                 </div>
             </section>
             <?php endif; ?>

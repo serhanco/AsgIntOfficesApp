@@ -163,6 +163,9 @@ return [
     'event_date_tba'          => 'Date à confirmer',
     'event_past_badge'        => 'Passé',
     'event_ended'             => 'Cet événement est terminé.',
+    'events_past_more'        => 'Afficher les événements plus anciens',
+    'event_missed_p'          => 'Vous avez manqué cet événement ? Contactez-nous, nous vous informerons du prochain ou d\'un événement similaire.',
+    'event_req_similar'       => 'Demander un événement similaire',
     'event_other'             => 'Autres événements à venir',
     'act_tag_webinar'         => 'Webinaire',
 

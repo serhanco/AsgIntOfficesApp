@@ -165,6 +165,9 @@ return [
     'event_date_tba'          => 'Datum će biti objavljen',
     'event_past_badge'        => 'Prošlo',
     'event_ended'             => 'Ovaj događaj je završen.',
+    'events_past_more'        => 'Prikaži starije događaje',
+    'event_missed_p'          => 'Propustili ste ovaj događaj? Kontaktirajte nas i obavestićemo vas o sledećem ili sličnom.',
+    'event_req_similar'       => 'Zatražite sličan događaj',
     'event_other'             => 'Ostali predstojeći događaji',
     'act_tag_webinar'         => 'Vebinar',
 
