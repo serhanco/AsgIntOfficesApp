@@ -68,13 +68,16 @@ if ($isEdit) {
     }
 }
 
-if ($isContrib && !$isEdit) $event['is_published'] = 0;
+// Contributors: no preset type/audience (they must pick), always on this site, always listed, no outside link
+if ($isContrib && !$isEdit) { $event['is_published'] = 0; $event['tag_key'] = ''; $event['audience'] = ''; }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $readOnly) {
     http_response_code(403);
     die('Bu etkinliği düzenleme yetkiniz yok. <a href="events.php">Etkinlikler</a>');
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $keep = ['is_published' => $event['is_published'], 'featured_rank' => $event['featured_rank'], 'sort_order' => $event['sort_order']];
+    $keep = ['is_published' => $event['is_published'], 'featured_rank' => $event['featured_rank'], 'sort_order' => $event['sort_order'], 'link_url' => (string)$event['link_url'], 'image_url' => (string)$event['image_url'], 'image_hero' => (int)($event['image_hero'] ?? 0)];
+    $pickedType = array_key_exists($_POST['tag_key'] ?? '', $typeLabels);
+    $pickedAudience = in_array($_POST['audience'] ?? '', EVENT_AUDIENCES, true);
     $event['title'] = trim($_POST['title'] ?? '');
     $event['slug'] = trim($_POST['slug'] ?? '');
     $event['tag_key'] = array_key_exists($_POST['tag_key'] ?? '', $typeLabels) ? $_POST['tag_key'] : 'act_tag_doctor';
@@ -86,13 +89,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($extReady) $event['external_only'] = ($_POST['where'] ?? '') === 'external' ? 1 : 0;
     $event['is_published'] = isset($_POST['is_published']) ? 1 : 0;
     $event['sort_order'] = (int)($_POST['sort_order'] ?? 0);
-    if ($isContrib) { // contributors enter drafts; publishing and featuring stay with the admins
+    if ($isContrib) { // contributors enter drafts; publishing, featuring, visibility and outside links stay with the admins
         $event['is_published'] = 0;
         $event['sort_order'] = (int)$keep['sort_order'];
+        $event['external_only'] = 0;
+        $event['link_url'] = $keep['link_url'];
+        $event['image_url'] = $keep['image_url']; // the cover image is chosen by the admins
+        $event['image_hero'] = $keep['image_hero'];
     }
     if ($v2) {
         $event['audience'] = in_array($_POST['audience'] ?? '', EVENT_AUDIENCES, true) ? $_POST['audience'] : 'b2c';
-        $event['visibility'] = in_array($_POST['visibility'] ?? '', EVENT_VISIBILITY, true) ? $_POST['visibility'] : 'listed';
+        $event['visibility'] = $isContrib ? 'listed' : (in_array($_POST['visibility'] ?? '', EVENT_VISIBILITY, true) ? $_POST['visibility'] : 'listed');
+        if ($isContrib && !$pickedAudience) $event['audience'] = '';
         $event['featured_rank'] = $isContrib ? (int)$keep['featured_rank'] : max(0, min(3, (int)($_POST['featured_rank'] ?? 0)));
         $event['relates_hq'] = isset($_POST['relates_hq']) ? 1 : 0;
         $validOffice = array_map('intval', array_column($offices, 'id'));
@@ -101,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST['remove_file'])) $event['file_url'] = '';
     }
     try {
-        $uploaded = handle_image_upload('image_file', 'events', 1600);
+        $uploaded = $isContrib ? null : handle_image_upload('image_file', 'events', 1600);
         if ($uploaded !== null) $event['image_url'] = $uploaded;
         if ($v2) {
             $pdf = handle_pdf_upload('file_pdf', 'files');
@@ -121,6 +129,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$error && $event['title'] === '') $error = 'Başlık zorunludur.';
     if (!$error && !$stops) $error = 'En az bir lokasyon ekleyin (ofis, ofis dışı mekân, online ya da konumdan bağımsız tarih).';
+    if ($isContrib && !$error && !$pickedType) { $event['tag_key'] = ''; $error = 'Etkinlik tipini seçin.'; }
+    if ($isContrib && $v2 && !$error && !$pickedAudience) $error = 'Kitleyi seçin (hastalar ya da kurumlar).';
     if (!$error && $event['link_url'] !== '' && !preg_match('#^https?://#i', $event['link_url'])) $error = 'Kayıt/bilgi linki http:// veya https:// ile başlamalı.';
     if (!$error && $event['external_only'] && $event['link_url'] === '') $error = 'Kayıt dış linkte ise dış link adresini girin.';
     foreach ($stops as $i => $s) {
@@ -277,7 +287,7 @@ function stopRow(int $i, array $s, array $offices, callable $h, string $input): 
                 <?= csrf_field() ?>
                 <fieldset class="space-y-6 min-w-0" <?= $readOnly ? 'disabled' : '' ?>>
 
-                <?php if ($extReady): ?>
+                <?php if ($extReady && !$isContrib): ?>
                 <div class="rounded-lg border border-blue-100 bg-blue-50/60 p-4">
                     <p class="text-sm font-semibold text-gray-900">Kayıt / detay nerede?</p>
                     <div class="mt-2 flex flex-wrap gap-x-6 gap-y-2 text-sm">
@@ -296,7 +306,8 @@ function stopRow(int $i, array $s, array $offices, callable $h, string $input): 
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Tip *</label>
-                        <select name="tag_key" class="<?= $input ?>">
+                        <select name="tag_key" required class="<?= $input ?>">
+                            <?php if ($event['tag_key'] === ''): ?><option value="" selected disabled>Seçin…</option><?php endif; ?>
                             <?php foreach ($typeLabels as $k => $label): ?><option value="<?= $k ?>" <?= $event['tag_key'] === $k ? 'selected' : '' ?>><?= $label ?></option><?php endforeach; ?>
                         </select>
                     </div>
@@ -307,17 +318,20 @@ function stopRow(int $i, array $s, array $offices, callable $h, string $input): 
                     <?php if ($v2): ?>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Kitle *</label>
-                        <select name="audience" class="<?= $input ?>">
+                        <select name="audience" required class="<?= $input ?>">
+                            <?php if ($event['audience'] === ''): ?><option value="" selected disabled>Seçin…</option><?php endif; ?>
                             <?php foreach (EVENT_ADMIN_AUDIENCE as $k => $label): ?><option value="<?= $k ?>" <?= $event['audience'] === $k ? 'selected' : '' ?>><?= $label ?></option><?php endforeach; ?>
                         </select>
                         <p class="mt-1 text-xs text-gray-500">Hastalara mı, kurumlara mı yönelik? Sitede etiket olarak görünür.</p>
                     </div>
+                    <?php if (!$isContrib): ?>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Görünürlük *</label>
                         <select name="visibility" class="<?= $input ?>">
                             <?php foreach (EVENT_ADMIN_VISIBILITY as $k => $label): ?><option value="<?= $k ?>" <?= $event['visibility'] === $k ? 'selected' : '' ?>><?= $label ?></option><?php endforeach; ?>
                         </select>
                     </div>
+                    <?php endif; ?>
                     <?php endif; ?>
                     <div class="md:col-span-2" data-detail>
                         <label class="block text-sm font-medium text-gray-700">Açıklama</label>
@@ -330,6 +344,7 @@ function stopRow(int $i, array $s, array $offices, callable $h, string $input): 
                         <p class="mt-1 text-xs text-gray-500"><span data-meta-count>0</span> / 160 karakter önerilir (ideal 120-155). Boş bırakılırsa açıklamanın başı kullanılır.</p>
                     </div>
                     <?php endif; ?>
+                    <?php if (!$isContrib): ?>
                     <div data-detail>
                         <label class="block text-sm font-medium text-gray-700">Kapak görseli (isteğe bağlı)</label>
                         <input type="text" name="image_url" value="<?= $h($event['image_url']) ?>" class="<?= $input ?>">
@@ -341,11 +356,14 @@ function stopRow(int $i, array $s, array $offices, callable $h, string $input): 
                         <label class="mt-2 flex items-start gap-2 text-sm text-gray-700"><input type="checkbox" name="image_hero" value="1" class="mt-0.5" <?= !empty($event['image_hero']) ? 'checked' : '' ?>> <span>Başlığın arkasında (üstteki lacivert alanda) soluk arka plan olarak da göster <span class="block text-xs text-gray-500">Yazısız fotoğraflarda güzel durur. Üzerinde yazı olan afişlerde işaretlemeyin, yazılar başlıkla üst üste biner.</span></span></label>
                         <?php endif; ?>
                     </div>
+                    <?php endif; ?>
+                    <?php if (!$isContrib): ?>
                     <div data-link-box>
                         <label class="block text-sm font-medium text-gray-700"><span data-site-only>Kayıt / bilgi linki (isteğe bağlı)</span><span data-ext-only>Dış link (kayıt sayfası) *</span></label>
                         <input type="url" name="link_url" value="<?= $h($event['link_url']) ?>" placeholder="https://…" class="<?= $input ?>">
                         <p class="mt-1 text-xs text-gray-500" data-site-only>Boşsa ziyaretçi ofisi arar ya da WhatsApp'tan yazar.</p>
                     </div>
+                    <?php endif; ?>
                     <?php if ($v2): ?>
                     <div class="md:col-span-2" data-detail>
                         <label class="block text-sm font-medium text-gray-700">Duyuru PDF'i (isteğe bağlı)</label>
