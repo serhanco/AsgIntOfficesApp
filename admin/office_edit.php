@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/includes/upload.php';
+require_once __DIR__ . '/../includes/office_photos.php';
 require_admin_login();
 
 $db = getDb();
@@ -9,6 +10,9 @@ $success = '';
 
 // The whatsapp column exists once database/patch_20261010_office_whatsapp.sql is applied
 $hasWhatsapp = (bool)$db->query("SHOW COLUMNS FROM offices LIKE 'whatsapp'")->fetchColumn();
+// Once database/patch_20261127_office_photos.sql is applied the office image is managed in the Fotoğraflar box
+// (the cover photo is copied into image_url there); before that the old single image field is used
+$photosMode = office_photos_ready();
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $is_edit = $id > 0;
@@ -47,12 +51,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $office['email'] = trim($_POST['email'] ?? '');
     $office['latitude'] = (float)($_POST['latitude'] ?? 0);
     $office['longitude'] = (float)($_POST['longitude'] ?? 0);
-    $office['image_url'] = trim($_POST['image_url'] ?? '');
-    try {
-        $uploaded = handle_image_upload('image_file', 'offices', 1600);
-        if ($uploaded !== null) $office['image_url'] = $uploaded;
-    } catch (RuntimeException $e) {
-        $error = $e->getMessage();
+    if ($photosMode) {
+        // Photos may have changed in the box since the page was opened: keep the cover as it is now
+        $cur = $db->prepare('SELECT image_url FROM offices WHERE id = ?');
+        $cur->execute([$id]);
+        $office['image_url'] = $is_edit ? (string)$cur->fetchColumn() : '';
+    } else {
+        $office['image_url'] = trim($_POST['image_url'] ?? '');
+        try {
+            $uploaded = handle_image_upload('image_file', 'offices', 1600);
+            if ($uploaded !== null) $office['image_url'] = $uploaded;
+        } catch (RuntimeException $e) {
+            $error = $e->getMessage();
+        }
     }
     $office['is_active'] = isset($_POST['is_active']) ? 1 : 0;
     $office['sort_order'] = (int)($_POST['sort_order'] ?? 0);
@@ -232,6 +243,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="md:col-span-2">
                         <h3 class="text-lg font-medium text-gray-900 mb-4 border-b pb-2">Ekstra</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <?php if ($photosMode): ?>
+                            <div>
+                                <p class="block text-sm font-medium text-gray-700">Görsel</p>
+                                <p class="mt-1 text-sm text-gray-500">Ofis fotoğrafları aşağıdaki <a href="#fotograflar" class="text-blue-600 hover:underline">Fotoğraflar</a> bölümünden yönetilir. Kapak fotoğrafı ofis sayfasının üst görseli olur; fotoğraf yoksa varsayılan görsel kullanılır.</p>
+                            </div>
+                            <?php else: ?>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Görsel URL (İsteğe bağlı)</label>
                                 <input type="text" name="image_url" value="<?= htmlspecialchars($office['image_url']) ?>" placeholder="/assets/images/offices/london.jpg" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2 border">
@@ -241,6 +258,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <img src="<?= htmlspecialchars(admin_image_src($office['image_url'])) ?>" alt="" class="mt-2 h-20 rounded-md border border-gray-200 object-cover">
                                 <?php endif; ?>
                             </div>
+                            <?php endif; ?>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Sıralama (Küçük olan önce çıkar)</label>
                                 <input type="number" name="sort_order" value="<?= htmlspecialchars($office['sort_order']) ?>" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2 border">
@@ -258,6 +276,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </button>
                 </div>
             </form>
+
+            <?php if ($photosMode): require __DIR__ . '/includes/office_photos_box.php'; endif; ?>
         </div>
     </main>
 <?= upload_size_guard_script() ?>

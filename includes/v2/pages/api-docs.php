@@ -14,6 +14,16 @@ $fields = [
     ['email', 'string', 'Office e-mail address.'],
     ['latitude', 'number', 'Latitude in decimal degrees (WGS 84).'],
     ['longitude', 'number', 'Longitude in decimal degrees (WGS 84).'],
+    ['cover_image', 'object | null', 'Main photo of the office: url, width, height, alt. null when the office has no photo yet (use your own placeholder; the site\'s default image is not sent).'],
+    ['photos', 'array', 'All photos of the office (at most 5), cover first, then in the order set in the admin. Empty list when there are none. See "Photos" below.'],
+];
+$photoFields = [
+    ['id', 'integer', 'Stable numeric id of the photo.'],
+    ['order', 'integer', 'Position, starting at 1. The cover is always 1.'],
+    ['is_cover', 'boolean', 'True for the cover photo (the same image as cover_image).'],
+    ['alt', 'string', 'English description for the alt attribute. Never empty: defaults to "{display_name} office".'],
+    ['updated_at', 'string | null', 'ISO 8601 time of the last change.'],
+    ['sizes', 'object', 'small (up to 400 px wide), medium (up to 800 px) and large (up to 1600 px), each with url, width and height. Use the smallest that fits, e.g. with srcset.'],
 ];
 ?>
 
@@ -35,7 +45,8 @@ $fields = [
         <pre class="mt-3 card p-4 overflow-x-auto text-sm"><code>GET <?= e($endpoint) ?></code></pre>
         <ul class="mt-3 list-disc ps-6 space-y-1 text-ink">
             <li>Method: <code>GET</code> only (other methods return <code>405</code>).</li>
-            <li>No parameters: the response always lists every active office, ordered by country and name.</li>
+            <li>The response always lists every active office, ordered by country and name.</li>
+            <li>Optional parameter <code>photos=0</code>: leaves the <code>photos</code> list out (keeps <code>cover_image</code>) for a smaller response.</li>
             <li>Format: JSON, UTF-8. Texts are not translated.</li>
             <li>CORS is open (<code>Access-Control-Allow-Origin: *</code>), so browsers can call it directly.</li>
             <li>Responses are cached for 5 minutes (<code>Cache-Control: public, max-age=300</code>). Cache on your side for the same time at most, and do not call it on every page view.</li>
@@ -64,6 +75,26 @@ $fields = [
                 </tbody>
             </table>
         </div>
+    </section>
+
+    <section aria-labelledby="api-photos" class="mt-10">
+        <h2 id="api-photos" class="text-xl font-extrabold text-navy">Photos</h2>
+        <p class="mt-3 text-ink">Fields of each item in <code>photos</code>:</p>
+        <div class="mt-3 card overflow-x-auto">
+            <table class="w-full text-sm text-start">
+                <thead><tr class="border-b border-black/10"><th class="p-3 text-start">Field</th><th class="p-3 text-start">Type</th><th class="p-3 text-start">Description</th></tr></thead>
+                <tbody>
+                <?php foreach ($photoFields as $f): ?>
+                    <tr class="border-b border-black/5 last:border-0"><td class="p-3 font-mono font-bold"><?= e($f[0]) ?></td><td class="p-3"><?= e($f[1]) ?></td><td class="p-3"><?= e($f[2]) ?></td></tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <ul class="mt-3 list-disc ps-6 space-y-1 text-ink">
+            <li>Image URLs are absolute and never change: a replaced photo gets a new URL, so the files can be cached for long.</li>
+            <li>Show the images from these URLs instead of copying them, so a photo removed here also disappears from your pages.</li>
+            <li>Images are WebP (JPEG on servers without WebP support).</li>
+        </ul>
     </section>
 
     <section aria-labelledby="api-errors" class="mt-10">
