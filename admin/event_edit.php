@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $readOnly) {
     die('Bu etkinliği düzenleme yetkiniz yok. <a href="events.php">Etkinlikler</a>');
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $keep = ['is_published' => $event['is_published'], 'featured_rank' => $event['featured_rank'], 'sort_order' => $event['sort_order'], 'link_url' => (string)$event['link_url']];
+    $keep = ['is_published' => $event['is_published'], 'featured_rank' => $event['featured_rank'], 'sort_order' => $event['sort_order'], 'link_url' => (string)$event['link_url'], 'image_url' => (string)$event['image_url'], 'image_hero' => (int)($event['image_hero'] ?? 0)];
     $pickedType = array_key_exists($_POST['tag_key'] ?? '', $typeLabels);
     $pickedAudience = in_array($_POST['audience'] ?? '', EVENT_AUDIENCES, true);
     $event['title'] = trim($_POST['title'] ?? '');
@@ -94,6 +94,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $event['sort_order'] = (int)$keep['sort_order'];
         $event['external_only'] = 0;
         $event['link_url'] = $keep['link_url'];
+        $event['image_url'] = $keep['image_url']; // the cover image is chosen by the admins
+        $event['image_hero'] = $keep['image_hero'];
     }
     if ($v2) {
         $event['audience'] = in_array($_POST['audience'] ?? '', EVENT_AUDIENCES, true) ? $_POST['audience'] : 'b2c';
@@ -107,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST['remove_file'])) $event['file_url'] = '';
     }
     try {
-        $uploaded = handle_image_upload('image_file', 'events', 1600);
+        $uploaded = $isContrib ? null : handle_image_upload('image_file', 'events', 1600);
         if ($uploaded !== null) $event['image_url'] = $uploaded;
         if ($v2) {
             $pdf = handle_pdf_upload('file_pdf', 'files');
@@ -342,6 +344,7 @@ function stopRow(int $i, array $s, array $offices, callable $h, string $input): 
                         <p class="mt-1 text-xs text-gray-500"><span data-meta-count>0</span> / 160 karakter önerilir (ideal 120-155). Boş bırakılırsa açıklamanın başı kullanılır.</p>
                     </div>
                     <?php endif; ?>
+                    <?php if (!$isContrib): ?>
                     <div data-detail>
                         <label class="block text-sm font-medium text-gray-700">Kapak görseli (isteğe bağlı)</label>
                         <input type="text" name="image_url" value="<?= $h($event['image_url']) ?>" class="<?= $input ?>">
@@ -353,6 +356,7 @@ function stopRow(int $i, array $s, array $offices, callable $h, string $input): 
                         <label class="mt-2 flex items-start gap-2 text-sm text-gray-700"><input type="checkbox" name="image_hero" value="1" class="mt-0.5" <?= !empty($event['image_hero']) ? 'checked' : '' ?>> <span>Başlığın arkasında (üstteki lacivert alanda) soluk arka plan olarak da göster <span class="block text-xs text-gray-500">Yazısız fotoğraflarda güzel durur. Üzerinde yazı olan afişlerde işaretlemeyin, yazılar başlıkla üst üste biner.</span></span></label>
                         <?php endif; ?>
                     </div>
+                    <?php endif; ?>
                     <?php if (!$isContrib): ?>
                     <div data-link-box>
                         <label class="block text-sm font-medium text-gray-700"><span data-site-only>Kayıt / bilgi linki (isteğe bağlı)</span><span data-ext-only>Dış link (kayıt sayfası) *</span></label>
