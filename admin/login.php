@@ -35,12 +35,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         *, *::before, *::after { box-sizing: border-box; }
         html, body { height: 100%; margin: 0; }
         body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: #13233c;
-               background: radial-gradient(120% 90% at 50% 40%, #ffffff 0%, #f4f7fc 55%, #e9eff8 100%); -webkit-font-smoothing: antialiased; }
+               background: #fff; -webkit-font-smoothing: antialiased; }
         #login-field { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
         .wrap { position: relative; z-index: 1; min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 24px 16px; }
-        .card { width: 100%; max-width: 400px; padding: 36px 32px 32px; border-radius: 24px; background: rgba(255,255,255,.78);
+        .card { width: 100%; max-width: 400px; padding: 36px 32px 32px; border-radius: 24px; background: rgba(255,255,255,.86);
                 -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%);
-                border: 1px solid rgba(255,255,255,.9); box-shadow: 0 1px 2px rgba(9,44,116,.06), 0 24px 60px -12px rgba(9,44,116,.22); }
+                border: 1px solid #e7ecf3; box-shadow: 0 1px 2px rgba(9,44,116,.04), 0 20px 50px -18px rgba(9,44,116,.18); }
         .badge { display: inline-flex; align-items: center; justify-content: center; height: 40px; padding: 0 16px; border-radius: 999px;
                  background: linear-gradient(135deg, #092c74, #1479a8); box-shadow: 0 6px 18px -6px rgba(20,121,168,.6); }
         .badge img { height: 14px; width: auto; display: block; }
